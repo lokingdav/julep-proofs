@@ -1,0 +1,3020 @@
+maude tool: 'maude'
+ checking version: 3.5.1. OK.
+ checking installation: OK.
+[Theory JulepODA] Theory loaded
+[Theory JulepODA] Theory translated
+[Theory JulepODA] Theory closed
+>>>>>>>>>>>>>>>>>>>>>>>> START INPUT
+
+>>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
+
+>>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
+
+>>>>>>>>>>>>>>>>>>>>>>>> START INPUT
+0: AuthShare( X, ipkS, ipkR ) @ #i
+
+>>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
+0
+
+>>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
+
+[Saturating Sources] Step 1 (Max 5)
+[Saturating Sources] Step 2 (Max 5)
+[Saturating Sources] Step 3 (Max 5)
+[Saturating Sources] Step 4 (Max 5)
+[Saturating Sources] Step 5 (Max 5)
+[Saturating Sources] Saturation aborted, more than 5 iterations. (Limit can be change with -s=)
+>>>>>>>>>>>>>>>>>>>>>>>> START INPUT
+0: splitEqs(0)
+1: CaStA( $src, $dst, ipkR, <pk(skaB), vkbB, pkcB>, ~k, ~a, h(hidx),       cdt, mA, sigA, ctxA)[no_precomp] ▶₀ #i
+2: CurrentKey( 'clr', ~k, ipkR, <pk(skaB), vkbB, pkcB>, exposed)[no_precomp] ▶₁ #i
+3: !Amf( sigB, <'2', h(<'nce', mA, sigA>), X>, pk(skaB), ipkR, 'mvk')[no_precomp] ▶₂ #i
+4: !KU( h(hidx) )[no_precomp] @ #vk.1
+5: !KU( aead(<'carsp', <'2', h(<'nce', mA, sigA>), X>, sigB>, ~k,          rhoB, <h(hidx), 'carsp', 'recipient'>))[no_precomp] @ #vk.2
+6: !Ltk( $dst, <pk(skaB), vkbB, pkcB>, ka0, kb0, kc0)[no_precomp] ▶₄ #i
+7: !Ltk( $src, ipkR, ka1, kb1, kc1 )[no_precomp] ▶₅ #i
+
+>>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
+6
+7
+3
+0
+1
+2
+4
+5
+
+>>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
+
+>>>>>>>>>>>>>>>>>>>>>>>> START INPUT
+0: splitEqs(0)
+1: CaStA( $src, $dst, ipkR, <pk(~ska), pk(~skb), pk(~skc)>, ~k, ~a,       h(hidx), cdt, mA, sigA, ctxA)[no_precomp] ▶₀ #i
+2: CurrentKey( 'clr', ~k, ipkR, <pk(~ska), pk(~skb), pk(~skc)>,            exposed)[no_precomp] ▶₁ #i
+3: !Amf( sigB, <'2', h(<'nce', mA, sigA>), X>, pk(~ska), ipkR, 'mvk')[no_precomp] ▶₂ #i
+4: !KU( h(hidx) )[no_precomp] @ #vk.1
+5: !KU( aead(<'carsp', <'2', h(<'nce', mA, sigA>), X>, sigB>, ~k,          rhoB, <h(hidx), 'carsp', 'recipient'>))[no_precomp] @ #vk.2
+6: !Ltk( $src, ipkR, ka1, kb1, kc1 )[no_precomp] ▶₅ #i
+
+>>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
+6
+3
+0
+1
+2
+4
+5
+
+>>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
+
+>>>>>>>>>>>>>>>>>>>>>>>> START INPUT
+0: PairStB( $dst, $src, ipkR, <pk(skaA), vkbA, pkcA>, ~k)[no_precomp] ▶₀ #i
+1: !Amf( sigA,      <'1', h(<'ratchet-context', ~k, h(<'idx', ~k, $src, $dst, $ts>)>),        <$src, $dst, $ts>, X>,      pk(skaA), ipkR, 'mvk')[no_precomp] ▶₁ #i
+2: !KU( h(<'idx', ~k, $src, $dst, $ts>) )[no_precomp] @ #vk.1
+3: !KU( aead(<'careq',            <'1', h(<'ratchet-context', ~k, h(<'idx', ~k, $src, $dst, $ts>)>),             <$src, $dst, $ts>, X>,            sigA>,          ~k, rhoA, <h(<'idx', ~k, $src, $dst, $ts>), 'careq', 'caller'>))[no_precomp] @ #vk.2
+4: !Ltk( $src, <pk(skaA), vkbA, pkcA>, ka0, kb0, kc0)[no_precomp] ▶₃ #i
+5: !Ltk( $dst, ipkR, ka1, kb1, kc1 )[no_precomp] ▶₄ #i
+
+>>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
+4
+5
+1
+0
+2
+3
+
+>>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
+
+>>>>>>>>>>>>>>>>>>>>>>>> START INPUT
+0: PairStB( $dst, $src, ipkR, <pk(~ska), pk(~skb), pk(~skc)>, ~k)[no_precomp] ▶₀ #i
+1: !Amf( sigA,      <'1', h(<'ratchet-context', ~k, h(<'idx', ~k, $src, $dst, $ts>)>),        <$src, $dst, $ts>, X>,      pk(~ska), ipkR, 'mvk')[no_precomp] ▶₁ #i
+2: !KU( h(<'idx', ~k, $src, $dst, $ts>) )[no_precomp] @ #vk.1
+3: !KU( aead(<'careq',            <'1', h(<'ratchet-context', ~k, h(<'idx', ~k, $src, $dst, $ts>)>),             <$src, $dst, $ts>, X>,            sigA>,          ~k, rhoA, <h(<'idx', ~k, $src, $dst, $ts>), 'careq', 'caller'>))[no_precomp] @ #vk.2
+4: !Ltk( $dst, ipkR, ka1, kb1, kc1 )[no_precomp] ▶₄ #i
+
+>>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
+4
+1
+0
+2
+3
+
+>>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
+
+>>>>>>>>>>>>>>>>>>>>>>>> START INPUT
+0: CallSt( role, $tnP, $tnR, ipkR, <pk(skaR), vkbR, pkcR>,        <$cs, $cd, $cts>, h(hidx), kj)[no_precomp] ▶₀ #i
+1: !Amf( sigR,      <'3', h(<'ratchet-context', kj, h(hidx)>), <$cs, $cd, $cts>, pl, X      >,      pk(skaR), ipkR, 'mvk')[no_precomp] ▶₁ #i
+2: !KU( h(hidx) )[no_precomp] @ #vk.1
+3: !KU( aead(<'icvreq',            <'3', h(<'ratchet-context', kj, h(hidx)>), <$cs, $cd, $cts>, pl, X           >,            sigR>,          kj, rhoR, <h(hidx), 'icvreq', 'requester'>))[no_precomp] @ #vk.2
+4: !Ltk( $tnR, <pk(skaR), vkbR, pkcR>, ka0, kb0, kc0)[no_precomp] ▶₄ #i
+5: !Ltk( $tnP, ipkR, ka1, kb1, kc1 )[no_precomp] ▶₅ #i
+
+>>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
+4
+5
+1
+0
+2
+3
+
+>>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
+
+>>>>>>>>>>>>>>>>>>>>>>>> START INPUT
+0: splitEqs(0)
+1: CaStB( $dst, $src, ipkR, ipkS, ~k, h(hidx), cdt, mA, sigA, ctxA, X)[no_precomp] ▶₀ #i
+2: CurrentKey( 'rcp', ~k, ipkR, ipkS, exposed )[no_precomp] ▶₁ #i
+3: !Ltk( $dst, ipkR, ~skaB, ~skbB, ~skcB )[no_precomp] ▶₂ #i
+4: !Ltk( $src, ipkS, kaPeer, kbPeer, kcPeer )[no_precomp] ▶₆ #i
+
+>>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
+3
+4
+0
+1
+2
+
+>>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
+
+>>>>>>>>>>>>>>>>>>>>>>>> START INPUT
+0: splitEqs(0)
+1: IcvAskOk( role, $tnP, $tnR, ipkR, ipkS, cdt, h(hidx), kj, pl, ~b,          mR, sigR, X, ctxR)[no_precomp] ▶₀ #i
+2: CurrentKey( role, kj, ipkR, ipkS, exposed )[no_precomp] ▶₁ #i
+3: !Cred( ipkR, pl, $attr, csig )[no_precomp] ▶₂ #i
+4: !Ltk( $tnP, ipkR, ~skaP, ~skbP, ~skcP )[no_precomp] ▶₃ #i
+5: !Ltk( $tnR, ipkS, kaPeer, kbPeer, kcPeer )[no_precomp] ▶₇ #i
+
+>>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
+4
+5
+0
+1
+2
+3
+
+>>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
+
+>>>>>>>>>>>>>>>>>>>>>>>> START INPUT
+0: splitEqs(0)
+1: IcvAsk( role, $tnP, $tnR, ipkR, ipkS, cdt, h(hidx), kj, pl, ~b, mR,        sigR, X, ctxR)[no_precomp] ▶₀ #i
+2: CurrentKey( role, kj, ipkR, ipkS, exposed )[no_precomp] ▶₁ #i
+3: !Ltk( $tnP, ipkR, ~skaP, ~skbP, ~skcP )[no_precomp] ▶₂ #i
+4: !Ltk( $tnR, ipkS, kaPeer, kbPeer, kcPeer )[no_precomp] ▶₅ #i
+
+>>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
+3
+4
+0
+1
+2
+
+>>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
+
+>>>>>>>>>>>>>>>>>>>>>>>> START INPUT
+0: splitEqs(0)
+1: IcvStR( role, $tnR, $tnP, ipkR, <pk(skaP), vkbP, pkcP>, cdt,        h(hidx), kj, pl, ~a, mR, sigR, ctxR)[no_precomp] ▶₀ #i
+2: CurrentKey( role, kj, ipkR, <pk(skaP), vkbP, pkcP>, exposed)[no_precomp] ▶₁ #i
+3: !Amf( sigP, <'4', h(<'nce', mR, sigR>), X, pres>, pk(skaP), ipkR,      'mvk')[no_precomp] ▶₂ #i
+4: !KU( h(hidx) )[no_precomp] @ #vk.1
+5: !KU( aead(<'icvrsp', <'4', h(<'nce', mR, sigR>), X, pres>, sigP>,          kj, rhoP, <h(hidx), 'icvrsp', 'prover'>))[no_precomp] @ #vk.2
+6: !Ltk( $tnP, <pk(skaP), vkbP, pkcP>, ka0, kb0, kc0)[no_precomp] ▶₄ #i
+7: !Ltk( $tnR, ipkR, ka1, kb1, kc1 )[no_precomp] ▶₅ #i
+
+>>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
+6
+7
+3
+0
+1
+2
+4
+5
+
+>>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
+
+>>>>>>>>>>>>>>>>>>>>>>>> START INPUT
+0: PairStB( $dst, $src, <pk(~ska), pk(~skb), pk(~skc)>,         <pk(~ska.1), pk(~skb.1), pk(~skc.1)>, ~k)[no_precomp] ▶₀ #i
+1: !Amf( sigA,      <'1', h(<'ratchet-context', ~k, h(<'idx', ~k, $src, $dst, $ts>)>),        <$src, $dst, $ts>, X>,      pk(~ska.1), <pk(~ska), pk(~skb), pk(~skc)>, 'mvk')[no_precomp] ▶₁ #i
+2: !KU( h(<'idx', ~k, $src, $dst, $ts>) )[no_precomp] @ #vk.1
+3: !KU( aead(<'careq',            <'1', h(<'ratchet-context', ~k, h(<'idx', ~k, $src, $dst, $ts>)>),             <$src, $dst, $ts>, X>,            sigA>,          ~k, rhoA, <h(<'idx', ~k, $src, $dst, $ts>), 'careq', 'caller'>))[no_precomp] @ #vk.2
+
+>>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
+1
+0
+2
+3
+
+>>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
+
+>>>>>>>>>>>>>>>>>>>>>>>> START INPUT
+0: splitEqs(0)
+1: CaStB( $dst, $src, <pk(~skaB), pk(~skbB), pk(~skcB)>, ipkS, ~k,       h(hidx), cdt, mA, sigA, ctxA, X)[no_precomp] ▶₀ #i
+2: CurrentKey( 'rcp', ~k, <pk(~skaB), pk(~skbB), pk(~skcB)>, ipkS,            exposed)[no_precomp] ▶₁ #i
+3: !Ltk( $src, ipkS, kaPeer, kbPeer, kcPeer )[no_precomp] ▶₆ #i
+
+>>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
+3
+0
+1
+2
+
+>>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
+
+>>>>>>>>>>>>>>>>>>>>>>>> START INPUT
+0: CallSt( role, $tnP, $tnR, ipkR, <pk(~ska), pk(~skb), pk(~skc)>,        <$cs, $cd, $cts>, h(hidx), kj)[no_precomp] ▶₀ #i
+1: !Amf( sigR,      <'3', h(<'ratchet-context', kj, h(hidx)>), <$cs, $cd, $cts>, pl, X      >,      pk(~ska), ipkR, 'mvk')[no_precomp] ▶₁ #i
+2: !KU( h(hidx) )[no_precomp] @ #vk.1
+3: !KU( aead(<'icvreq',            <'3', h(<'ratchet-context', kj, h(hidx)>), <$cs, $cd, $cts>, pl, X           >,            sigR>,          kj, rhoR, <h(hidx), 'icvreq', 'requester'>))[no_precomp] @ #vk.2
+4: !Ltk( $tnP, ipkR, ka1, kb1, kc1 )[no_precomp] ▶₅ #i
+
+>>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
+4
+1
+0
+2
+3
+
+>>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
+
+>>>>>>>>>>>>>>>>>>>>>>>> START INPUT
+0: splitEqs(0)
+1: IcvAsk( role, $tnP, $tnR, <pk(~skaP), pk(~skbP), pk(~skcP)>, ipkS,        cdt, h(hidx), kj, pl, ~b, mR, sigR, X, ctxR)[no_precomp] ▶₀ #i
+2: CurrentKey( role, kj, <pk(~skaP), pk(~skbP), pk(~skcP)>, ipkS,            exposed)[no_precomp] ▶₁ #i
+3: !Ltk( $tnR, ipkS, kaPeer, kbPeer, kcPeer )[no_precomp] ▶₅ #i
+
+>>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
+3
+0
+1
+2
+
+>>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
+
+>>>>>>>>>>>>>>>>>>>>>>>> START INPUT
+0: splitEqs(0)
+1: IcvAsk( role, $tnP, $tnR, <pk(~skaP), pk(~skbP), pk(~skcP)>,        <pk(~ska), pk(~skb), pk(~skc)>, cdt, h(hidx), kj, pl, ~b, mR, sigR,        X, ctxR)[no_precomp] ▶₀ #i
+2: CurrentKey( role, kj, <pk(~skaP), pk(~skbP), pk(~skcP)>,            <pk(~ska), pk(~skb), pk(~skc)>, exposed)[no_precomp] ▶₁ #i
+
+>>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
+0
+1
+2
+
+>>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
+
+>>>>>>>>>>>>>>>>>>>>>>>> START INPUT
+0: splitEqs(0)
+1: IcvAskOk( role, $tnP, $tnR, <pk(~skaP), pk(~skbP), pk(~skcP)>,          ipkS, cdt, h(hidx), kj, pl, ~b, mR, sigR, X, ctxR)[no_precomp] ▶₀ #i
+2: CurrentKey( role, kj, <pk(~skaP), pk(~skbP), pk(~skcP)>, ipkS,            exposed)[no_precomp] ▶₁ #i
+3: !Cred( <pk(~skaP), pk(~skbP), pk(~skcP)>, pl, $attr, csig)[no_precomp] ▶₂ #i
+4: !Ltk( $tnR, ipkS, kaPeer, kbPeer, kcPeer )[no_precomp] ▶₇ #i
+
+>>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
+4
+0
+1
+2
+3
+
+>>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
+
+>>>>>>>>>>>>>>>>>>>>>>>> START INPUT
+0: splitEqs(0)
+1: IcvStR( role, $tnR, $tnP, ipkR, <pk(~ska), pk(~skb), pk(~skc)>,        cdt, h(hidx), kj, pl, ~a, mR, sigR, ctxR)[no_precomp] ▶₀ #i
+2: CurrentKey( role, kj, ipkR, <pk(~ska), pk(~skb), pk(~skc)>, exposed)[no_precomp] ▶₁ #i
+3: !Amf( sigP, <'4', h(<'nce', mR, sigR>), X, pres>, pk(~ska), ipkR,      'mvk')[no_precomp] ▶₂ #i
+4: !KU( h(hidx) )[no_precomp] @ #vk.1
+5: !KU( aead(<'icvrsp', <'4', h(<'nce', mR, sigR>), X, pres>, sigP>,          kj, rhoP, <h(hidx), 'icvrsp', 'prover'>))[no_precomp] @ #vk.2
+6: !Ltk( $tnR, ipkR, ka1, kb1, kc1 )[no_precomp] ▶₅ #i
+
+>>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
+6
+3
+0
+1
+2
+4
+5
+
+>>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
+
+>>>>>>>>>>>>>>>>>>>>>>>> START INPUT
+0: splitEqs(0)
+1: CaStA( $src, $dst, <pk(~ska), pk(~skb), pk(~skc)>,       <pk(~ska.1), pk(~skb.1), pk(~skc.1)>, ~k, ~a, h(hidx), cdt, mA,       sigA, ctxA)[no_precomp] ▶₀ #i
+2: CurrentKey( 'clr', ~k, <pk(~ska), pk(~skb), pk(~skc)>,            <pk(~ska.1), pk(~skb.1), pk(~skc.1)>, exposed)[no_precomp] ▶₁ #i
+3: !Amf( sigB, <'2', h(<'nce', mA, sigA>), X>, pk(~ska.1),      <pk(~ska), pk(~skb), pk(~skc)>, 'mvk')[no_precomp] ▶₂ #i
+4: !KU( h(hidx) )[no_precomp] @ #vk.1
+5: !KU( aead(<'carsp', <'2', h(<'nce', mA, sigA>), X>, sigB>, ~k,          rhoB, <h(hidx), 'carsp', 'recipient'>))[no_precomp] @ #vk.2
+
+>>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
+3
+0
+1
+2
+4
+5
+
+>>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
+
+>>>>>>>>>>>>>>>>>>>>>>>> START INPUT
+0: splitEqs(0)
+1: CaStB( $dst, $src, <pk(~skaB), pk(~skbB), pk(~skcB)>,       <pk(~ska), pk(~skb), pk(~skc)>, ~k, h(hidx), cdt, mA, sigA, ctxA, X)[no_precomp] ▶₀ #i
+2: CurrentKey( 'rcp', ~k, <pk(~skaB), pk(~skbB), pk(~skcB)>,            <pk(~ska), pk(~skb), pk(~skc)>, exposed)[no_precomp] ▶₁ #i
+
+>>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
+0
+1
+2
+
+>>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
+
+>>>>>>>>>>>>>>>>>>>>>>>> START INPUT
+0: CaStB( $dst, $src, <pk(~skaB), pk(~skbB), pk(~skcB)>,       <pk(~ska), pk(~skb), pk(~skc)>, ~k, h(hidx), cdt, mA, sigA, ctxA, X)[no_precomp] ▶₀ #i
+1: CurrentKey( 'rcp', ~k, <pk(~skaB), pk(~skbB), pk(~skcB)>,            <pk(~ska), pk(~skb), pk(~skc)>, exposed)[no_precomp] ▶₁ #i
+
+>>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
+0
+1
+
+>>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
+
+>>>>>>>>>>>>>>>>>>>>>>>> START INPUT
+0: CaStB( $dst, $src, <pk(~skaB), pk(~skbB), pk(~skcB)>,       <pk(~ska), pk(~skb), pk(~skc)>, ~k, h(hidx), cdt, mA, sigA, ctxA,       x^x.1)[no_precomp] ▶₀ #i
+1: CurrentKey( 'rcp', ~k, <pk(~skaB), pk(~skbB), pk(~skcB)>,            <pk(~ska), pk(~skb), pk(~skc)>, exposed)[no_precomp] ▶₁ #i
+
+>>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
+0
+1
+
+>>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
+
+>>>>>>>>>>>>>>>>>>>>>>>> START INPUT
+0: CaStB( $dst, $src, <pk(~skaB), pk(~skbB), pk(~skcB)>,       <pk(~ska), pk(~skb), pk(~skc)>, ~k, h(hidx), cdt, mA, sigA, ctxA,       DH_neutral)[no_precomp] ▶₀ #i
+1: CurrentKey( 'rcp', ~k, <pk(~skaB), pk(~skbB), pk(~skcB)>,            <pk(~ska), pk(~skb), pk(~skc)>, exposed)[no_precomp] ▶₁ #i
+
+>>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
+0
+1
+
+>>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
+
+>>>>>>>>>>>>>>>>>>>>>>>> START INPUT
+0: CurrentKey( 'rcp', ~k, <pk(~skaB), pk(~skbB), pk(~skcB)>,            <pk(~ska), pk(~skb), pk(~skc)>, exposed)[no_precomp] ▶₁ #i
+1: !KU( h(<'idx', ~k, $src, $dst, $ts>) )[no_precomp] @ #vk.1
+2: !KU( aead(<'careq',            <'1', h(<'ratchet-context', ~k, h(<'idx', ~k, $src, $dst, $ts>)>),             <$src, $dst, $ts>, X>,            sigA>,          ~k, rhoA, <h(<'idx', ~k, $src, $dst, $ts>), 'careq', 'caller'>))[no_precomp] @ #vk.2
+3: !Amf( sigA,      <'1', h(<'ratchet-context', ~k, h(<'idx', ~k, $src, $dst, $ts>)>),        <$src, $dst, $ts>, X>,      pk(~ska), <pk(~skaB), pk(~skbB), pk(~skcB)>, 'mvk')[no_precomp] ▶₁ #vr.3
+
+>>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
+3
+0
+1
+2
+
+>>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
+
+>>>>>>>>>>>>>>>>>>>>>>>> START INPUT
+0: CurrentKey( 'rcp', ~k, <pk(~skaB), pk(~skbB), pk(~skcB)>,            <pk(~ska), pk(~skb), pk(~skc)>, exposed)[no_precomp] ▶₁ #i
+1: !KU( h(<'idx', ~k, $src, $dst, $ts>) )[no_precomp] @ #vk.1
+2: !KU( aead(<'careq',            <'1', h(<'ratchet-context', ~k, h(<'idx', ~k, $src, $dst, $ts>)>),             <$src, $dst, $ts>, x^x.1>,            sigA>,          ~k, rhoA, <h(<'idx', ~k, $src, $dst, $ts>), 'careq', 'caller'>))[no_precomp] @ #vk.2
+3: !Amf( sigA,      <'1', h(<'ratchet-context', ~k, h(<'idx', ~k, $src, $dst, $ts>)>),        <$src, $dst, $ts>, x^x.1>,      pk(~ska), <pk(~skaB), pk(~skbB), pk(~skcB)>, 'mvk')[no_precomp] ▶₁ #vr.3
+
+>>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
+3
+0
+1
+2
+
+>>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
+
+>>>>>>>>>>>>>>>>>>>>>>>> START INPUT
+0: CurrentKey( 'rcp', ~k, <pk(~skaB), pk(~skbB), pk(~skcB)>,            <pk(~ska), pk(~skb), pk(~skc)>, exposed)[no_precomp] ▶₁ #i
+1: !KU( h(<'idx', ~k, $src, $dst, $ts>) )[no_precomp] @ #vk.1
+2: !KU( aead(<'careq',            <'1', h(<'ratchet-context', ~k, h(<'idx', ~k, $src, $dst, $ts>)>),             <$src, $dst, $ts>, DH_neutral>,            sigA>,          ~k, rhoA, <h(<'idx', ~k, $src, $dst, $ts>), 'careq', 'caller'>))[no_precomp] @ #vk.2
+3: !Amf( sigA,      <'1', h(<'ratchet-context', ~k, h(<'idx', ~k, $src, $dst, $ts>)>),        <$src, $dst, $ts>, DH_neutral>,      pk(~ska), <pk(~skaB), pk(~skbB), pk(~skcB)>, 'mvk')[no_precomp] ▶₁ #vr.3
+
+>>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
+3
+0
+1
+2
+
+>>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
+
+>>>>>>>>>>>>>>>>>>>>>>>> START INPUT
+0: CallSt( role, $tnP, $tnR, <pk(~ska), pk(~skb), pk(~skc)>,        <pk(~ska.1), pk(~skb.1), pk(~skc.1)>, <$cs, $cd, $cts>, h(hidx), kj)[no_precomp] ▶₀ #i
+1: !Amf( sigR,      <'3', h(<'ratchet-context', kj, h(hidx)>), <$cs, $cd, $cts>, pl, X      >,      pk(~ska.1), <pk(~ska), pk(~skb), pk(~skc)>, 'mvk')[no_precomp] ▶₁ #i
+2: !KU( h(hidx) )[no_precomp] @ #vk.1
+3: !KU( aead(<'icvreq',            <'3', h(<'ratchet-context', kj, h(hidx)>), <$cs, $cd, $cts>, pl, X           >,            sigR>,          kj, rhoR, <h(hidx), 'icvreq', 'requester'>))[no_precomp] @ #vk.2
+
+>>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
+1
+0
+2
+3
+
+>>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
+
+>>>>>>>>>>>>>>>>>>>>>>>> START INPUT
+0: IcvAsk( role, $tnP, $tnR, <pk(~skaP), pk(~skbP), pk(~skcP)>,        <pk(~ska), pk(~skb), pk(~skc)>, cdt, h(hidx), kj, pl, ~b, mR, sigR,        X, ctxR)[no_precomp] ▶₀ #i
+1: CurrentKey( role, kj, <pk(~skaP), pk(~skbP), pk(~skcP)>,            <pk(~ska), pk(~skb), pk(~skc)>, exposed)[no_precomp] ▶₁ #i
+
+>>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
+0
+1
+
+>>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
+
+>>>>>>>>>>>>>>>>>>>>>>>> START INPUT
+0: IcvAsk( role, $tnP, $tnR, <pk(~skaP), pk(~skbP), pk(~skcP)>,        <pk(~ska), pk(~skb), pk(~skc)>, cdt, h(hidx), kj, pl, ~b, mR, sigR,        x^x.1, ctxR)[no_precomp] ▶₀ #i
+1: CurrentKey( role, kj, <pk(~skaP), pk(~skbP), pk(~skcP)>,            <pk(~ska), pk(~skb), pk(~skc)>, exposed)[no_precomp] ▶₁ #i
+
+>>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
+0
+1
+
+>>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
+
+>>>>>>>>>>>>>>>>>>>>>>>> START INPUT
+0: IcvAsk( role, $tnP, $tnR, <pk(~skaP), pk(~skbP), pk(~skcP)>,        <pk(~ska), pk(~skb), pk(~skc)>, cdt, h(hidx), kj, pl, ~b, mR, sigR,        z^inv(~b), ctxR)[no_precomp] ▶₀ #i
+1: CurrentKey( role, kj, <pk(~skaP), pk(~skbP), pk(~skcP)>,            <pk(~ska), pk(~skb), pk(~skc)>, exposed)[no_precomp] ▶₁ #i
+
+>>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
+0
+1
+
+>>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
+
+>>>>>>>>>>>>>>>>>>>>>>>> START INPUT
+0: IcvAsk( role, $tnP, $tnR, <pk(~skaP), pk(~skbP), pk(~skcP)>,        <pk(~ska), pk(~skb), pk(~skc)>, cdt, h(hidx), kj, pl, ~b, mR, sigR,        x^(x.1*inv((~b*x.2))), ctxR)[no_precomp] ▶₀ #i
+1: CurrentKey( role, kj, <pk(~skaP), pk(~skbP), pk(~skcP)>,            <pk(~ska), pk(~skb), pk(~skc)>, exposed)[no_precomp] ▶₁ #i
+
+>>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
+0
+1
+
+>>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
+
+>>>>>>>>>>>>>>>>>>>>>>>> START INPUT
+0: IcvAsk( role, $tnP, $tnR, <pk(~skaP), pk(~skbP), pk(~skcP)>,        <pk(~ska), pk(~skb), pk(~skc)>, cdt, h(hidx), kj, pl, ~b, mR, sigR,        x^inv((~b*x.1)), ctxR)[no_precomp] ▶₀ #i
+1: CurrentKey( role, kj, <pk(~skaP), pk(~skbP), pk(~skcP)>,            <pk(~ska), pk(~skb), pk(~skc)>, exposed)[no_precomp] ▶₁ #i
+
+>>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
+0
+1
+
+>>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
+
+>>>>>>>>>>>>>>>>>>>>>>>> START INPUT
+0: IcvAsk( role, $tnP, $tnR, <pk(~skaP), pk(~skbP), pk(~skcP)>,        <pk(~ska), pk(~skb), pk(~skc)>, cdt, h(hidx), kj, pl, ~b, mR, sigR,        DH_neutral, ctxR)[no_precomp] ▶₀ #i
+1: CurrentKey( role, kj, <pk(~skaP), pk(~skbP), pk(~skcP)>,            <pk(~ska), pk(~skb), pk(~skc)>, exposed)[no_precomp] ▶₁ #i
+
+>>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
+0
+1
+
+>>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
+
+>>>>>>>>>>>>>>>>>>>>>>>> START INPUT
+0: IcvAsk( role, $tnP, $tnR, <pk(~skaP), pk(~skbP), pk(~skcP)>,        <pk(~ska), pk(~skb), pk(~skc)>, cdt, h(hidx), kj, pl, ~b, mR, sigR,        x^(x.1*inv(~b)), ctxR)[no_precomp] ▶₀ #i
+1: CurrentKey( role, kj, <pk(~skaP), pk(~skbP), pk(~skcP)>,            <pk(~ska), pk(~skb), pk(~skc)>, exposed)[no_precomp] ▶₁ #i
+
+>>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
+0
+1
+
+>>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
+
+>>>>>>>>>>>>>>>>>>>>>>>> START INPUT
+0: CurrentKey( role, kj, <pk(~skaP), pk(~skbP), pk(~skcP)>,            <pk(~ska), pk(~skb), pk(~skc)>, exposed)[no_precomp] ▶₁ #i
+1: !KU( h(hidx) )[no_precomp] @ #vk.1
+2: !KU( aead(<'icvreq',            <'3', h(<'ratchet-context', kj, h(hidx)>), <$cs, $cd, $cts>, pl, X           >,            sigR>,          kj, rhoR, <h(hidx), 'icvreq', 'requester'>))[no_precomp] @ #vk.2
+3: CallSt( role, $tnP, $tnR, <pk(~skaP), pk(~skbP), pk(~skcP)>,        <pk(~ska), pk(~skb), pk(~skc)>, <$cs, $cd, $cts>, h(hidx), kj)[no_precomp] ▶₀ #vr.3
+4: !Amf( sigR,      <'3', h(<'ratchet-context', kj, h(hidx)>), <$cs, $cd, $cts>, pl, X      >,      pk(~ska), <pk(~skaP), pk(~skbP), pk(~skcP)>, 'mvk')[no_precomp] ▶₁ #vr.3
+
+>>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
+4
+0
+3
+1
+2
+
+>>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
+
+>>>>>>>>>>>>>>>>>>>>>>>> START INPUT
+0: CurrentKey( role, kj, <pk(~skaP), pk(~skbP), pk(~skcP)>,            <pk(~ska), pk(~skb), pk(~skc)>, exposed)[no_precomp] ▶₁ #i
+1: !KU( h(hidx) )[no_precomp] @ #vk.1
+2: !KU( aead(<'icvreq',            <'3', h(<'ratchet-context', kj, h(hidx)>), <$cs, $cd, $cts>, pl,             z^inv(~b)>,            sigR>,          kj, rhoR, <h(hidx), 'icvreq', 'requester'>))[no_precomp] @ #vk.2
+3: CallSt( role, $tnP, $tnR, <pk(~skaP), pk(~skbP), pk(~skcP)>,        <pk(~ska), pk(~skb), pk(~skc)>, <$cs, $cd, $cts>, h(hidx), kj)[no_precomp] ▶₀ #vr.3
+4: !Amf( sigR,      <'3', h(<'ratchet-context', kj, h(hidx)>), <$cs, $cd, $cts>, pl,        z^inv(~b)>,      pk(~ska), <pk(~skaP), pk(~skbP), pk(~skcP)>, 'mvk')[no_precomp] ▶₁ #vr.3
+
+>>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
+4
+0
+3
+1
+2
+
+>>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
+
+>>>>>>>>>>>>>>>>>>>>>>>> START INPUT
+0: CurrentKey( role, kj, <pk(~skaP), pk(~skbP), pk(~skcP)>,            <pk(~ska), pk(~skb), pk(~skc)>, exposed)[no_precomp] ▶₁ #i
+1: !KU( h(hidx) )[no_precomp] @ #vk.1
+2: !KU( aead(<'icvreq',            <'3', h(<'ratchet-context', kj, h(hidx)>), <$cs, $cd, $cts>, pl,             x^x.1>,            sigR>,          kj, rhoR, <h(hidx), 'icvreq', 'requester'>))[no_precomp] @ #vk.2
+3: CallSt( role, $tnP, $tnR, <pk(~skaP), pk(~skbP), pk(~skcP)>,        <pk(~ska), pk(~skb), pk(~skc)>, <$cs, $cd, $cts>, h(hidx), kj)[no_precomp] ▶₀ #vr.3
+4: !Amf( sigR,      <'3', h(<'ratchet-context', kj, h(hidx)>), <$cs, $cd, $cts>, pl,        x^x.1>,      pk(~ska), <pk(~skaP), pk(~skbP), pk(~skcP)>, 'mvk')[no_precomp] ▶₁ #vr.3
+
+>>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
+4
+0
+3
+1
+2
+
+>>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
+
+>>>>>>>>>>>>>>>>>>>>>>>> START INPUT
+0: CurrentKey( role, kj, <pk(~skaP), pk(~skbP), pk(~skcP)>,            <pk(~ska), pk(~skb), pk(~skc)>, exposed)[no_precomp] ▶₁ #i
+1: !KU( h(hidx) )[no_precomp] @ #vk.1
+2: !KU( aead(<'icvreq',            <'3', h(<'ratchet-context', kj, h(hidx)>), <$cs, $cd, $cts>, pl,             x^inv((~b*x.1))>,            sigR>,          kj, rhoR, <h(hidx), 'icvreq', 'requester'>))[no_precomp] @ #vk.2
+3: CallSt( role, $tnP, $tnR, <pk(~skaP), pk(~skbP), pk(~skcP)>,        <pk(~ska), pk(~skb), pk(~skc)>, <$cs, $cd, $cts>, h(hidx), kj)[no_precomp] ▶₀ #vr.3
+4: !Amf( sigR,      <'3', h(<'ratchet-context', kj, h(hidx)>), <$cs, $cd, $cts>, pl,        x^inv((~b*x.1))>,      pk(~ska), <pk(~skaP), pk(~skbP), pk(~skcP)>, 'mvk')[no_precomp] ▶₁ #vr.3
+
+>>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
+4
+0
+3
+1
+2
+
+>>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
+
+>>>>>>>>>>>>>>>>>>>>>>>> START INPUT
+0: CurrentKey( role, kj, <pk(~skaP), pk(~skbP), pk(~skcP)>,            <pk(~ska), pk(~skb), pk(~skc)>, exposed)[no_precomp] ▶₁ #i
+1: !KU( h(hidx) )[no_precomp] @ #vk.1
+2: !KU( aead(<'icvreq',            <'3', h(<'ratchet-context', kj, h(hidx)>), <$cs, $cd, $cts>, pl,             x^(x.1*inv(~b))>,            sigR>,          kj, rhoR, <h(hidx), 'icvreq', 'requester'>))[no_precomp] @ #vk.2
+3: CallSt( role, $tnP, $tnR, <pk(~skaP), pk(~skbP), pk(~skcP)>,        <pk(~ska), pk(~skb), pk(~skc)>, <$cs, $cd, $cts>, h(hidx), kj)[no_precomp] ▶₀ #vr.3
+4: !Amf( sigR,      <'3', h(<'ratchet-context', kj, h(hidx)>), <$cs, $cd, $cts>, pl,        x^(x.1*inv(~b))>,      pk(~ska), <pk(~skaP), pk(~skbP), pk(~skcP)>, 'mvk')[no_precomp] ▶₁ #vr.3
+
+>>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
+4
+0
+3
+1
+2
+
+>>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
+
+>>>>>>>>>>>>>>>>>>>>>>>> START INPUT
+0: CurrentKey( role, kj, <pk(~skaP), pk(~skbP), pk(~skcP)>,            <pk(~ska), pk(~skb), pk(~skc)>, exposed)[no_precomp] ▶₁ #i
+1: !KU( h(hidx) )[no_precomp] @ #vk.1
+2: !KU( aead(<'icvreq',            <'3', h(<'ratchet-context', kj, h(hidx)>), <$cs, $cd, $cts>, pl,             x^(x.1*inv((~b*x.2)))>,            sigR>,          kj, rhoR, <h(hidx), 'icvreq', 'requester'>))[no_precomp] @ #vk.2
+3: CallSt( role, $tnP, $tnR, <pk(~skaP), pk(~skbP), pk(~skcP)>,        <pk(~ska), pk(~skb), pk(~skc)>, <$cs, $cd, $cts>, h(hidx), kj)[no_precomp] ▶₀ #vr.3
+4: !Amf( sigR,      <'3', h(<'ratchet-context', kj, h(hidx)>), <$cs, $cd, $cts>, pl,        x^(x.1*inv((~b*x.2)))>,      pk(~ska), <pk(~skaP), pk(~skbP), pk(~skcP)>, 'mvk')[no_precomp] ▶₁ #vr.3
+
+>>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
+4
+0
+3
+1
+2
+
+>>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
+
+>>>>>>>>>>>>>>>>>>>>>>>> START INPUT
+0: CurrentKey( role, kj, <pk(~skaP), pk(~skbP), pk(~skcP)>,            <pk(~ska), pk(~skb), pk(~skc)>, exposed)[no_precomp] ▶₁ #i
+1: !KU( h(hidx) )[no_precomp] @ #vk.1
+2: !KU( aead(<'icvreq',            <'3', h(<'ratchet-context', kj, h(hidx)>), <$cs, $cd, $cts>, pl,             DH_neutral>,            sigR>,          kj, rhoR, <h(hidx), 'icvreq', 'requester'>))[no_precomp] @ #vk.2
+3: CallSt( role, $tnP, $tnR, <pk(~skaP), pk(~skbP), pk(~skcP)>,        <pk(~ska), pk(~skb), pk(~skc)>, <$cs, $cd, $cts>, h(hidx), kj)[no_precomp] ▶₀ #vr.3
+4: !Amf( sigR,      <'3', h(<'ratchet-context', kj, h(hidx)>), <$cs, $cd, $cts>, pl,        DH_neutral>,      pk(~ska), <pk(~skaP), pk(~skbP), pk(~skcP)>, 'mvk')[no_precomp] ▶₁ #vr.3
+
+>>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
+4
+0
+3
+1
+2
+
+>>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
+
+>>>>>>>>>>>>>>>>>>>>>>>> START INPUT
+0: splitEqs(0)
+1: IcvAskOk( role, $tnP, $tnR, <pk(~skaP), pk(~skbP), pk(~skcP)>,          <pk(~ska), pk(~skb), pk(~skc)>, cdt, h(hidx), kj, pl, ~b, mR, sigR,          X, ctxR)[no_precomp] ▶₀ #i
+2: CurrentKey( role, kj, <pk(~skaP), pk(~skbP), pk(~skcP)>,            <pk(~ska), pk(~skb), pk(~skc)>, exposed)[no_precomp] ▶₁ #i
+3: !Cred( <pk(~skaP), pk(~skbP), pk(~skcP)>, pl, $attr, csig)[no_precomp] ▶₂ #i
+
+>>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
+0
+1
+2
+3
+
+>>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
+
+>>>>>>>>>>>>>>>>>>>>>>>> START INPUT
+0: IcvAskOk( role, $tnP, $tnR, <pk(~skaP), pk(~skbP), pk(~skcP)>,          <pk(~ska), pk(~skb), pk(~skc)>, cdt, h(hidx), kj, pl, ~b, mR, sigR,          x^x.1, ctxR)[no_precomp] ▶₀ #i
+1: CurrentKey( role, kj, <pk(~skaP), pk(~skbP), pk(~skcP)>,            <pk(~ska), pk(~skb), pk(~skc)>, exposed)[no_precomp] ▶₁ #i
+2: !Cred( <pk(~skaP), pk(~skbP), pk(~skcP)>, pl, $attr, csig)[no_precomp] ▶₂ #i
+
+>>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
+0
+1
+2
+
+>>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
+
+>>>>>>>>>>>>>>>>>>>>>>>> START INPUT
+0: IcvAskOk( role, $tnP, $tnR, <pk(~skaP), pk(~skbP), pk(~skcP)>,          <pk(~ska), pk(~skb), pk(~skc)>, cdt, h(hidx), kj, pl, ~b, mR, sigR,          z^inv(~b), ctxR)[no_precomp] ▶₀ #i
+1: CurrentKey( role, kj, <pk(~skaP), pk(~skbP), pk(~skcP)>,            <pk(~ska), pk(~skb), pk(~skc)>, exposed)[no_precomp] ▶₁ #i
+2: !Cred( <pk(~skaP), pk(~skbP), pk(~skcP)>, pl, $attr, csig)[no_precomp] ▶₂ #i
+
+>>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
+0
+1
+2
+
+>>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
+
+>>>>>>>>>>>>>>>>>>>>>>>> START INPUT
+0: IcvAskOk( role, $tnP, $tnR, <pk(~skaP), pk(~skbP), pk(~skcP)>,          <pk(~ska), pk(~skb), pk(~skc)>, cdt, h(hidx), kj, pl, ~b, mR, sigR,          x^inv((~b*x.1)), ctxR)[no_precomp] ▶₀ #i
+1: CurrentKey( role, kj, <pk(~skaP), pk(~skbP), pk(~skcP)>,            <pk(~ska), pk(~skb), pk(~skc)>, exposed)[no_precomp] ▶₁ #i
+2: !Cred( <pk(~skaP), pk(~skbP), pk(~skcP)>, pl, $attr, csig)[no_precomp] ▶₂ #i
+
+>>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
+0
+1
+2
+
+>>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
+
+>>>>>>>>>>>>>>>>>>>>>>>> START INPUT
+0: IcvAskOk( role, $tnP, $tnR, <pk(~skaP), pk(~skbP), pk(~skcP)>,          <pk(~ska), pk(~skb), pk(~skc)>, cdt, h(hidx), kj, pl, ~b, mR, sigR,          x^(x.1*inv((~b*x.2))), ctxR)[no_precomp] ▶₀ #i
+1: CurrentKey( role, kj, <pk(~skaP), pk(~skbP), pk(~skcP)>,            <pk(~ska), pk(~skb), pk(~skc)>, exposed)[no_precomp] ▶₁ #i
+2: !Cred( <pk(~skaP), pk(~skbP), pk(~skcP)>, pl, $attr, csig)[no_precomp] ▶₂ #i
+
+>>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
+0
+1
+2
+
+>>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
+
+>>>>>>>>>>>>>>>>>>>>>>>> START INPUT
+0: IcvAskOk( role, $tnP, $tnR, <pk(~skaP), pk(~skbP), pk(~skcP)>,          <pk(~ska), pk(~skb), pk(~skc)>, cdt, h(hidx), kj, pl, ~b, mR, sigR,          DH_neutral, ctxR)[no_precomp] ▶₀ #i
+1: CurrentKey( role, kj, <pk(~skaP), pk(~skbP), pk(~skcP)>,            <pk(~ska), pk(~skb), pk(~skc)>, exposed)[no_precomp] ▶₁ #i
+2: !Cred( <pk(~skaP), pk(~skbP), pk(~skcP)>, pl, $attr, csig)[no_precomp] ▶₂ #i
+
+>>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
+0
+1
+2
+
+>>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
+
+>>>>>>>>>>>>>>>>>>>>>>>> START INPUT
+0: IcvAskOk( role, $tnP, $tnR, <pk(~skaP), pk(~skbP), pk(~skcP)>,          <pk(~ska), pk(~skb), pk(~skc)>, cdt, h(hidx), kj, pl, ~b, mR, sigR,          X, ctxR)[no_precomp] ▶₀ #i
+1: CurrentKey( role, kj, <pk(~skaP), pk(~skbP), pk(~skcP)>,            <pk(~ska), pk(~skb), pk(~skc)>, exposed)[no_precomp] ▶₁ #i
+2: !Cred( <pk(~skaP), pk(~skbP), pk(~skcP)>, pl, $attr, csig)[no_precomp] ▶₂ #i
+
+>>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
+0
+1
+2
+
+>>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
+
+>>>>>>>>>>>>>>>>>>>>>>>> START INPUT
+0: IcvAskOk( role, $tnP, $tnR, <pk(~skaP), pk(~skbP), pk(~skcP)>,          <pk(~ska), pk(~skb), pk(~skc)>, cdt, h(hidx), kj, pl, ~b, mR, sigR,          x^(x.1*inv(~b)), ctxR)[no_precomp] ▶₀ #i
+1: CurrentKey( role, kj, <pk(~skaP), pk(~skbP), pk(~skcP)>,            <pk(~ska), pk(~skb), pk(~skc)>, exposed)[no_precomp] ▶₁ #i
+2: !Cred( <pk(~skaP), pk(~skbP), pk(~skcP)>, pl, $attr, csig)[no_precomp] ▶₂ #i
+
+>>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
+0
+1
+2
+
+>>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
+
+>>>>>>>>>>>>>>>>>>>>>>>> START INPUT
+0: CurrentKey( role, kj, <pk(~skaP), pk(~skbP), pk(~skcP)>,            <pk(~ska), pk(~skb), pk(~skc)>, exposed)[no_precomp] ▶₁ #i
+1: !Cred( <pk(~skaP), pk(~skbP), pk(~skcP)>, pl, $attr, csig)[no_precomp] ▶₂ #i
+2: !KU( h(hidx) )[no_precomp] @ #vk.1
+3: !KU( aead(<'icvreq',            <'3', h(<'ratchet-context', kj, h(hidx)>), <$cs, $cd, $cts>, pl, X           >,            sigR>,          kj, rhoR, <h(hidx), 'icvreq', 'requester'>))[no_precomp] @ #vk.2
+4: CallSt( role, $tnP, $tnR, <pk(~skaP), pk(~skbP), pk(~skcP)>,        <pk(~ska), pk(~skb), pk(~skc)>, <$cs, $cd, $cts>, h(hidx), kj)[no_precomp] ▶₀ #vr.4
+5: !Amf( sigR,      <'3', h(<'ratchet-context', kj, h(hidx)>), <$cs, $cd, $cts>, pl, X      >,      pk(~ska), <pk(~skaP), pk(~skbP), pk(~skcP)>, 'mvk')[no_precomp] ▶₁ #vr.4
+
+>>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
+5
+0
+1
+4
+2
+3
+
+>>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
+
+>>>>>>>>>>>>>>>>>>>>>>>> START INPUT
+0: CurrentKey( role, kj, <pk(~skaP), pk(~skbP), pk(~skcP)>,            <pk(~ska), pk(~skb), pk(~skc)>, exposed)[no_precomp] ▶₁ #i
+1: !Cred( <pk(~skaP), pk(~skbP), pk(~skcP)>, pl, $attr, csig)[no_precomp] ▶₂ #i
+2: !KU( h(hidx) )[no_precomp] @ #vk.1
+3: !KU( aead(<'icvreq',            <'3', h(<'ratchet-context', kj, h(hidx)>), <$cs, $cd, $cts>, pl,             z^inv(~b)>,            sigR>,          kj, rhoR, <h(hidx), 'icvreq', 'requester'>))[no_precomp] @ #vk.2
+4: CallSt( role, $tnP, $tnR, <pk(~skaP), pk(~skbP), pk(~skcP)>,        <pk(~ska), pk(~skb), pk(~skc)>, <$cs, $cd, $cts>, h(hidx), kj)[no_precomp] ▶₀ #vr.4
+5: !Amf( sigR,      <'3', h(<'ratchet-context', kj, h(hidx)>), <$cs, $cd, $cts>, pl,        z^inv(~b)>,      pk(~ska), <pk(~skaP), pk(~skbP), pk(~skcP)>, 'mvk')[no_precomp] ▶₁ #vr.4
+
+>>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
+5
+0
+1
+4
+2
+3
+
+>>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
+
+>>>>>>>>>>>>>>>>>>>>>>>> START INPUT
+0: CurrentKey( role, kj, <pk(~skaP), pk(~skbP), pk(~skcP)>,            <pk(~ska), pk(~skb), pk(~skc)>, exposed)[no_precomp] ▶₁ #i
+1: !Cred( <pk(~skaP), pk(~skbP), pk(~skcP)>, pl, $attr, csig)[no_precomp] ▶₂ #i
+2: !KU( h(hidx) )[no_precomp] @ #vk.1
+3: !KU( aead(<'icvreq',            <'3', h(<'ratchet-context', kj, h(hidx)>), <$cs, $cd, $cts>, pl,             x^x.1>,            sigR>,          kj, rhoR, <h(hidx), 'icvreq', 'requester'>))[no_precomp] @ #vk.2
+4: CallSt( role, $tnP, $tnR, <pk(~skaP), pk(~skbP), pk(~skcP)>,        <pk(~ska), pk(~skb), pk(~skc)>, <$cs, $cd, $cts>, h(hidx), kj)[no_precomp] ▶₀ #vr.4
+5: !Amf( sigR,      <'3', h(<'ratchet-context', kj, h(hidx)>), <$cs, $cd, $cts>, pl,        x^x.1>,      pk(~ska), <pk(~skaP), pk(~skbP), pk(~skcP)>, 'mvk')[no_precomp] ▶₁ #vr.4
+
+>>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
+5
+0
+1
+4
+2
+3
+
+>>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
+
+>>>>>>>>>>>>>>>>>>>>>>>> START INPUT
+0: CurrentKey( role, kj, <pk(~skaP), pk(~skbP), pk(~skcP)>,            <pk(~ska), pk(~skb), pk(~skc)>, exposed)[no_precomp] ▶₁ #i
+1: !Cred( <pk(~skaP), pk(~skbP), pk(~skcP)>, pl, $attr, csig)[no_precomp] ▶₂ #i
+2: !KU( h(hidx) )[no_precomp] @ #vk.1
+3: !KU( aead(<'icvreq',            <'3', h(<'ratchet-context', kj, h(hidx)>), <$cs, $cd, $cts>, pl,             x^inv((~b*x.1))>,            sigR>,          kj, rhoR, <h(hidx), 'icvreq', 'requester'>))[no_precomp] @ #vk.2
+4: CallSt( role, $tnP, $tnR, <pk(~skaP), pk(~skbP), pk(~skcP)>,        <pk(~ska), pk(~skb), pk(~skc)>, <$cs, $cd, $cts>, h(hidx), kj)[no_precomp] ▶₀ #vr.4
+5: !Amf( sigR,      <'3', h(<'ratchet-context', kj, h(hidx)>), <$cs, $cd, $cts>, pl,        x^inv((~b*x.1))>,      pk(~ska), <pk(~skaP), pk(~skbP), pk(~skcP)>, 'mvk')[no_precomp] ▶₁ #vr.4
+
+>>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
+5
+0
+1
+4
+2
+3
+
+>>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
+
+>>>>>>>>>>>>>>>>>>>>>>>> START INPUT
+0: CurrentKey( role, kj, <pk(~skaP), pk(~skbP), pk(~skcP)>,            <pk(~ska), pk(~skb), pk(~skc)>, exposed)[no_precomp] ▶₁ #i
+1: !Cred( <pk(~skaP), pk(~skbP), pk(~skcP)>, pl, $attr, csig)[no_precomp] ▶₂ #i
+2: !KU( h(hidx) )[no_precomp] @ #vk.1
+3: !KU( aead(<'icvreq',            <'3', h(<'ratchet-context', kj, h(hidx)>), <$cs, $cd, $cts>, pl,             x^(x.1*inv(~b))>,            sigR>,          kj, rhoR, <h(hidx), 'icvreq', 'requester'>))[no_precomp] @ #vk.2
+4: CallSt( role, $tnP, $tnR, <pk(~skaP), pk(~skbP), pk(~skcP)>,        <pk(~ska), pk(~skb), pk(~skc)>, <$cs, $cd, $cts>, h(hidx), kj)[no_precomp] ▶₀ #vr.4
+5: !Amf( sigR,      <'3', h(<'ratchet-context', kj, h(hidx)>), <$cs, $cd, $cts>, pl,        x^(x.1*inv(~b))>,      pk(~ska), <pk(~skaP), pk(~skbP), pk(~skcP)>, 'mvk')[no_precomp] ▶₁ #vr.4
+
+>>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
+5
+0
+1
+4
+2
+3
+
+>>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
+
+>>>>>>>>>>>>>>>>>>>>>>>> START INPUT
+0: CurrentKey( role, kj, <pk(~skaP), pk(~skbP), pk(~skcP)>,            <pk(~ska), pk(~skb), pk(~skc)>, exposed)[no_precomp] ▶₁ #i
+1: !Cred( <pk(~skaP), pk(~skbP), pk(~skcP)>, pl, $attr, csig)[no_precomp] ▶₂ #i
+2: !KU( h(hidx) )[no_precomp] @ #vk.1
+3: !KU( aead(<'icvreq',            <'3', h(<'ratchet-context', kj, h(hidx)>), <$cs, $cd, $cts>, pl,             x^(x.1*inv((~b*x.2)))>,            sigR>,          kj, rhoR, <h(hidx), 'icvreq', 'requester'>))[no_precomp] @ #vk.2
+4: CallSt( role, $tnP, $tnR, <pk(~skaP), pk(~skbP), pk(~skcP)>,        <pk(~ska), pk(~skb), pk(~skc)>, <$cs, $cd, $cts>, h(hidx), kj)[no_precomp] ▶₀ #vr.4
+5: !Amf( sigR,      <'3', h(<'ratchet-context', kj, h(hidx)>), <$cs, $cd, $cts>, pl,        x^(x.1*inv((~b*x.2)))>,      pk(~ska), <pk(~skaP), pk(~skbP), pk(~skcP)>, 'mvk')[no_precomp] ▶₁ #vr.4
+
+>>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
+5
+0
+1
+4
+2
+3
+
+>>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
+
+>>>>>>>>>>>>>>>>>>>>>>>> START INPUT
+0: CurrentKey( role, kj, <pk(~skaP), pk(~skbP), pk(~skcP)>,            <pk(~ska), pk(~skb), pk(~skc)>, exposed)[no_precomp] ▶₁ #i
+1: !Cred( <pk(~skaP), pk(~skbP), pk(~skcP)>, pl, $attr, csig)[no_precomp] ▶₂ #i
+2: !KU( h(hidx) )[no_precomp] @ #vk.1
+3: !KU( aead(<'icvreq',            <'3', h(<'ratchet-context', kj, h(hidx)>), <$cs, $cd, $cts>, pl,             DH_neutral>,            sigR>,          kj, rhoR, <h(hidx), 'icvreq', 'requester'>))[no_precomp] @ #vk.2
+4: CallSt( role, $tnP, $tnR, <pk(~skaP), pk(~skbP), pk(~skcP)>,        <pk(~ska), pk(~skb), pk(~skc)>, <$cs, $cd, $cts>, h(hidx), kj)[no_precomp] ▶₀ #vr.4
+5: !Amf( sigR,      <'3', h(<'ratchet-context', kj, h(hidx)>), <$cs, $cd, $cts>, pl,        DH_neutral>,      pk(~ska), <pk(~skaP), pk(~skbP), pk(~skcP)>, 'mvk')[no_precomp] ▶₁ #vr.4
+
+>>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
+5
+0
+1
+4
+2
+3
+
+>>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
+
+>>>>>>>>>>>>>>>>>>>>>>>> START INPUT
+0: splitEqs(0)
+1: IcvStR( role, $tnR, $tnP, <pk(~ska), pk(~skb), pk(~skc)>,        <pk(~ska.1), pk(~skb.1), pk(~skc.1)>, cdt, h(hidx), kj, pl, ~a, mR,        sigR, ctxR)[no_precomp] ▶₀ #i
+2: CurrentKey( role, kj, <pk(~ska), pk(~skb), pk(~skc)>,            <pk(~ska.1), pk(~skb.1), pk(~skc.1)>, exposed)[no_precomp] ▶₁ #i
+3: !Amf( sigP, <'4', h(<'nce', mR, sigR>), X, pres>, pk(~ska.1),      <pk(~ska), pk(~skb), pk(~skc)>, 'mvk')[no_precomp] ▶₂ #i
+4: !KU( h(hidx) )[no_precomp] @ #vk.1
+5: !KU( aead(<'icvrsp', <'4', h(<'nce', mR, sigR>), X, pres>, sigP>,          kj, rhoP, <h(hidx), 'icvrsp', 'prover'>))[no_precomp] @ #vk.2
+
+>>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
+3
+0
+1
+2
+4
+5
+
+>>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
+
+theory JulepODA
+
+begin
+
+// Function signature and definition of the equational theory E
+
+builtins: diffie-hellman
+functions: adec/2, aead/4, aead_nonce/1, aead_open/3, aenc/2, fst/1, h/1,
+           kdf/1, pair/2, pk/1, pok/4, sdec/2, senc/2, sign/2, snd/1
+equations:
+    adec(aenc(x.1, pk(x.2)), x.2) = x.1,
+    aead_nonce(aead(m, k, r, ad)) = r,
+    aead_open(aead(m, k, r, ad), k, ad) = m,
+    fst(<x.1, x.2>) = x.1,
+    sdec(senc(x.1, x.2), x.2) = x.1,
+    snd(<x.1, x.2>) = x.2
+
+heuristic: S
+
+restriction OnlyOnce:
+  "∀ x #i #j. ((OnlyOnce( x ) @ #i) ∧ (OnlyOnce( x ) @ #j)) ⇒ (#i = #j)"
+  // safety formula
+
+  /*
+  expanded formula:
+  "∀ x #i #j. ((OnlyOnce( x ) @ #i) ∧ (OnlyOnce( x ) @ #j)) ⇒ (#i = #j)"
+  */
+
+rule (modulo E) ES_Init:
+   [ Fr( ~skES ) ]
+  --[ OnlyOnce( 'ES' ) ]->
+   [ !ES( ~skES ), Out( pk(~skES) ) ]
+
+  /* has exactly the trivial AC variant */
+
+rule (modulo E) Enroll:
+   [ !ES( ~skES )[no_precomp], Fr( ~ska ), Fr( ~skb ), Fr( ~skc ), Fr( ~id )
+   ]
+  --[
+  Enrolled( $tn, <pk(~ska), pk(~skb), pk(~skc)>, ~id ),
+  LtkGen( <pk(~ska), pk(~skb), pk(~skc)>, ~ska, ~skb, ~skc )
+  ]->
+   [
+   !Ltk( $tn, <pk(~ska), pk(~skb), pk(~skc)>, ~ska, ~skb, ~skc ),
+   !Etk( $tn, <pk(~ska), pk(~skb), pk(~skc)>, ~id,
+         <$tn, <pk(~ska), pk(~skb), pk(~skc)>, 'ex', 
+          h(<'hid', ~id, pk(~ska), pk(~skb), pk(~skc)>), 
+          sign(<'etk', $tn, <pk(~ska), pk(~skb), pk(~skc)>, 'ex', 
+                h(<'hid', ~id, pk(~ska), pk(~skb), pk(~skc)>)>,
+               ~skES)
+         >
+   ),
+   Out( <$tn, <pk(~ska), pk(~skb), pk(~skc)>, 'ex', 
+         h(<'hid', ~id, pk(~ska), pk(~skb), pk(~skc)>), 
+         sign(<'etk', $tn, <pk(~ska), pk(~skb), pk(~skc)>, 'ex', 
+               h(<'hid', ~id, pk(~ska), pk(~skb), pk(~skc)>)>,
+              ~skES)
+        >
+   )
+   ]
+
+  /* has exactly the trivial AC variant */
+
+rule (modulo E) Delegate:
+   [
+   !Ltk( $src, <pk(~skaO), pk(~skbO), pk(~skcO)>, ~skaO, ~skbO, ~skcO
+   )[no_precomp],
+   !Etk( $src, <pk(~skaO), pk(~skbO), pk(~skcO)>, ~idO, etkO )[no_precomp],
+   !Etk( $tnD, ipkD, ~idD, etkD )[no_precomp]
+   ]
+  --[ Delegated( $src, <pk(~skaO), pk(~skbO), pk(~skcO)>, ipkD ) ]->
+   [
+   !Dtk( $src, <pk(~skaO), pk(~skbO), pk(~skcO)>, ipkD,
+         <~idO, etkO, 'exD', ipkD, sign(<'dlg', ipkD, 'exD', $src, 'orig'>, ~skbO)
+         >
+   ),
+   Out( <etkO, 'exD', ipkD, sign(<'dlg', ipkD, 'exD', $src, 'orig'>, ~skbO)>
+   )
+   ]
+
+  /* has exactly the trivial AC variant */
+
+rule (modulo E) Reveal_Ltk:
+   [ !Ltk( $tn, ipk, ~ska, ~skb, ~skc )[no_precomp] ]
+  --[ Reveal( ipk ) ]->
+   [ Out( <~ska, ~skb, ~skc> ) ]
+
+  /* has exactly the trivial AC variant */
+
+rule (modulo E) IdP_Init:
+   [ Fr( ~skI ) ]
+  --[ OnlyOnce( 'IdP' ) ]->
+   [ !IdP( ~skI ), !IdPPublic( pk(~skI) ), Out( pk(~skI) ) ]
+
+  /* has exactly the trivial AC variant */
+
+rule (modulo E) Issue_Cred:
+   [
+   !IdP( ~skI )[no_precomp], !Ltk( $tn, ipk, ~ska, ~skb, ~skc )[no_precomp]
+   ]
+  --[
+  IssuedCred( ipk, $pl, $attr ),
+  CredIssued( ipk, $pl, $attr, sign(<'crd', $pl, $attr, ipk>, ~skI) )
+  ]->
+   [ !Cred( ipk, $pl, $attr, sign(<'crd', $pl, $attr, ipk>, ~skI) ) ]
+
+  /* has exactly the trivial AC variant */
+
+rule (modulo E) Adversary_Frank:
+   [ In( <m, sk, ipkR> )[no_precomp], Fr( ~sig ) ]
+  -->
+   [ !Amf( ~sig, m, pk(sk), ipkR, 'mvk' ), Out( ~sig ) ]
+
+  /* has exactly the trivial AC variant */
+
+rule (modulo E) Adversary_Receiver_Forge:
+   [ In( <m, vkaS, skR, vkbR, pkcR> )[no_precomp], Fr( ~sig ) ]
+  -->
+   [ !Amf( ~sig, m, vkaS, <pk(skR), vkbR, pkcR>, 'mvk' ), Out( ~sig ) ]
+
+  /* has exactly the trivial AC variant */
+
+rule (modulo E) Inject_PairState:
+   [
+   Fr( ~k ),
+   !Ltk( $src, <pk(~skaA), pk(~skbA), pk(~skcA)>, ~skaA, ~skbA, ~skcA
+   )[no_precomp],
+   !Ltk( $dst, <pk(~skaB), pk(~skbB), pk(~skcB)>, ~skaB, ~skbB, ~skcB
+   )[no_precomp]
+   ]
+  --[
+  Paired( $src, $dst, <pk(~skaA), pk(~skbA), pk(~skcA)>,
+          <pk(~skaB), pk(~skbB), pk(~skcB)>, ~k
+  )
+  ]->
+   [
+   PairStA( $src, $dst, <pk(~skaA), pk(~skbA), pk(~skcA)>,
+            <pk(~skaB), pk(~skbB), pk(~skcB)>, ~k
+   ),
+   PairStB( $dst, $src, <pk(~skaB), pk(~skbB), pk(~skcB)>,
+            <pk(~skaA), pk(~skbA), pk(~skcA)>, ~k
+   ),
+   CurrentKey( 'clr', ~k, <pk(~skaA), pk(~skbA), pk(~skcA)>,
+               <pk(~skaB), pk(~skbB), pk(~skcB)>, 'private'
+   ),
+   CurrentKey( 'rcp', ~k, <pk(~skaB), pk(~skbB), pk(~skcB)>,
+               <pk(~skaA), pk(~skbA), pk(~skcA)>, 'private'
+   )
+   ]
+
+  /* has exactly the trivial AC variant */
+
+rule (modulo E) Reveal_State_Initial:
+   [ CurrentKey( role, ~k, ipkX, ipkY, 'private' )[no_precomp] ]
+  --[ RevealState( ~k, ipkX, ipkY ) ]->
+   [ CurrentKey( role, ~k, ipkX, ipkY, 'exposed' ), Out( ~k ) ]
+
+  /* has exactly the trivial AC variant */
+
+rule (modulo E) Reveal_State_Derived:
+   [ CurrentKey( role, kdf(inputs), ipkX, ipkY, 'private' )[no_precomp] ]
+  --[ RevealState( kdf(inputs), ipkX, ipkY ) ]->
+   [
+   CurrentKey( role, kdf(inputs), ipkX, ipkY, 'exposed' ),
+   Out( kdf(inputs) )
+   ]
+
+  /* has exactly the trivial AC variant */
+
+rule (modulo E) CA_A1:
+   [
+   PairStA( $src, $dst, ipkA, ipkB, ~k )[no_precomp],
+   !Ltk( $src, ipkA, ~skaA, ~skbA, ~skcA )[no_precomp], Fr( ~a ),
+   Fr( ~sigA ), Fr( ~rhoA )
+   ]
+  --[
+  DhExp( ~a ), CaRequest( ipkA, ipkB, <$src, $dst, $ts> ),
+  SendShare( 'g'^~a ), FreshShare( 'g'^~a, ~a )
+  ]->
+   [
+   CaStA( $src, $dst, ipkA, ipkB, ~k, ~a, h(<'idx', ~k, $src, $dst, $ts>),
+          <$src, $dst, $ts>,
+          <'1', h(<'ratchet-context', ~k, h(<'idx', ~k, $src, $dst, $ts>)>), 
+           <$src, $dst, $ts>, 'g'^~a>,
+          ~sigA,
+          aead(<'careq', 
+                <'1', h(<'ratchet-context', ~k, h(<'idx', ~k, $src, $dst, $ts>)>), 
+                 <$src, $dst, $ts>, 'g'^~a>, 
+                ~sigA>,
+               ~k, ~rhoA, <h(<'idx', ~k, $src, $dst, $ts>), 'careq', 'caller'>)
+   ),
+   !Amf( ~sigA,
+         <'1', h(<'ratchet-context', ~k, h(<'idx', ~k, $src, $dst, $ts>)>), 
+          <$src, $dst, $ts>, 'g'^~a>,
+         pk(~skaA), ipkB, 'mvk'
+   ),
+   Out( <h(<'idx', ~k, $src, $dst, $ts>), 
+         aead(<'careq', 
+               <'1', h(<'ratchet-context', ~k, h(<'idx', ~k, $src, $dst, $ts>)>), 
+                <$src, $dst, $ts>, 'g'^~a>, 
+               ~sigA>,
+              ~k, ~rhoA, <h(<'idx', ~k, $src, $dst, $ts>), 'careq', 'caller'>)
+        >
+   )
+   ]
+
+  /* has exactly the trivial AC variant */
+
+rule (modulo E) CA_B1_display:
+   [
+   PairStB( $dst, $src, ipkB, <pk(skaA), vkbA, pkcA>, ~k )[no_precomp],
+   !Amf( sigA,
+         <'1', h(<'ratchet-context', ~k, h(<'idx', ~k, $src, $dst, $ts>)>), 
+          <$src, $dst, $ts>, A>,
+         pk(skaA), ipkB, 'mvk'
+   )[no_precomp],
+   In( <h(<'idx', ~k, $src, $dst, $ts>), 
+        aead(<'careq', 
+              <'1', h(<'ratchet-context', ~k, h(<'idx', ~k, $src, $dst, $ts>)>), 
+               <$src, $dst, $ts>, A>, 
+              sigA>,
+             ~k, rhoA, <h(<'idx', ~k, $src, $dst, $ts>), 'careq', 'caller'>)
+       >
+   )[no_precomp],
+   !Ltk( $src, <pk(skaA), vkbA, pkcA>, ka0, kb0, kc0 )[no_precomp],
+   !Ltk( $dst, ipkB, ka1, kb1, kc1 )[no_precomp]
+   ]
+  --[
+  CaDisplay( ipkB, <pk(skaA), vkbA, pkcA>, <$src, $dst, $ts> ),
+  AuthShare( A, <pk(skaA), vkbA, pkcA>, ipkB ), RecvShare( A )
+  ]->
+   [
+   CaStB( $dst, $src, ipkB, <pk(skaA), vkbA, pkcA>, ~k,
+          h(<'idx', ~k, $src, $dst, $ts>), <$src, $dst, $ts>,
+          <'1', h(<'ratchet-context', ~k, h(<'idx', ~k, $src, $dst, $ts>)>), 
+           <$src, $dst, $ts>, A>,
+          sigA,
+          aead(<'careq', 
+                <'1', h(<'ratchet-context', ~k, h(<'idx', ~k, $src, $dst, $ts>)>), 
+                 <$src, $dst, $ts>, A>, 
+                sigA>,
+               ~k, rhoA, <h(<'idx', ~k, $src, $dst, $ts>), 'careq', 'caller'>),
+          A
+   )
+   ]
+
+  /* has exactly the trivial AC variant */
+
+rule (modulo E) CA_B2_answer:
+   [
+   CaStB( $dst, $src, ipkB, ipkA, ~k, h(hidx), cdt, mA, sigA, ctxA, A
+   )[no_precomp],
+   CurrentKey( 'rcp', ~k, ipkB, ipkA, exposed )[no_precomp],
+   !Ltk( $dst, ipkB, ~skaB, ~skbB, ~skcB )[no_precomp], Fr( ~b ),
+   Fr( ~sigB ), Fr( ~rhoB ),
+   !Ltk( $src, ipkA, kaPeer, kbPeer, kcPeer )[no_precomp]
+   ]
+  --[
+  DhSecret( A^~b, ipkB, ipkA ),
+  DerivedKey( kdf(<'ca', ~k, h(hidx), mA, sigA, 
+                   <'2', h(<'nce', mA, sigA>), 'g'^~b>, ~sigB, A^~b>),
+              ipkB, ipkA
+  ),
+  AuthShare( A, ipkA, ipkB ), DhExp( ~b ), Answered( ipkB, ipkA, cdt ),
+  CaDone( 'rcp', ipkB, ipkA, cdt ), SendShare( 'g'^~b ),
+  FreshShare( 'g'^~b, ~b ), CallState( 'rcp', ipkB, ipkA, cdt )
+  ]->
+   [
+   CallSt( 'rcp', $dst, $src, ipkB, ipkA, cdt, h(hidx),
+           kdf(<'ca', ~k, h(hidx), mA, sigA, <'2', h(<'nce', mA, sigA>), 'g'^~b>, 
+                ~sigB, A^~b>)
+   ),
+   CurrentKey( 'rcp',
+               kdf(<'ca', ~k, h(hidx), mA, sigA, <'2', h(<'nce', mA, sigA>), 'g'^~b>, 
+                    ~sigB, A^~b>),
+               ipkB, ipkA, 'private'
+   ),
+   !Amf( ~sigB, <'2', h(<'nce', mA, sigA>), 'g'^~b>, pk(~skaB), ipkA, 'mvk'
+   ),
+   Out( <h(hidx), 
+         aead(<'carsp', <'2', h(<'nce', mA, sigA>), 'g'^~b>, ~sigB>, ~k, ~rhoB,
+              <h(hidx), 'carsp', 'recipient'>)
+        >
+   )
+   ]
+
+  /*
+  rule (modulo AC) CA_B2_answer:
+     [
+     CaStB( $dst, $src, ipkB, ipkA, ~k, h(hidx), cdt, mA, sigA, ctxA, A
+     )[no_precomp],
+     CurrentKey( 'rcp', ~k, ipkB, ipkA, exposed )[no_precomp],
+     !Ltk( $dst, ipkB, ~skaB, ~skbB, ~skcB )[no_precomp], Fr( ~b ),
+     Fr( ~sigB ), Fr( ~rhoB ),
+     !Ltk( $src, ipkA, kaPeer, kbPeer, kcPeer )[no_precomp]
+     ]
+    --[
+    DhSecret( z, ipkB, ipkA ),
+    DerivedKey( kdf(<'ca', ~k, h(hidx), mA, sigA, 
+                     <'2', h(<'nce', mA, sigA>), 'g'^~b>, ~sigB, z>),
+                ipkB, ipkA
+    ),
+    AuthShare( A, ipkA, ipkB ), DhExp( ~b ), Answered( ipkB, ipkA, cdt ),
+    CaDone( 'rcp', ipkB, ipkA, cdt ), SendShare( 'g'^~b ),
+    FreshShare( 'g'^~b, ~b ), CallState( 'rcp', ipkB, ipkA, cdt )
+    ]->
+     [
+     CallSt( 'rcp', $dst, $src, ipkB, ipkA, cdt, h(hidx),
+             kdf(<'ca', ~k, h(hidx), mA, sigA, <'2', h(<'nce', mA, sigA>), 'g'^~b>, 
+                  ~sigB, z>)
+     ),
+     CurrentKey( 'rcp',
+                 kdf(<'ca', ~k, h(hidx), mA, sigA, <'2', h(<'nce', mA, sigA>), 'g'^~b>, 
+                      ~sigB, z>),
+                 ipkB, ipkA, 'private'
+     ),
+     !Amf( ~sigB, <'2', h(<'nce', mA, sigA>), 'g'^~b>, pk(~skaB), ipkA, 'mvk'
+     ),
+     Out( <h(hidx), 
+           aead(<'carsp', <'2', h(<'nce', mA, sigA>), 'g'^~b>, ~sigB>, ~k, ~rhoB,
+                <h(hidx), 'carsp', 'recipient'>)
+          >
+     )
+     ]
+    variants (modulo AC)
+    1. ~b    = ~b.36
+       A     = A.43
+       z     = A.43^~b.36
+    
+    2. ~b    = ~b.366
+       A     = x.727^x.728
+       z     = x.727^(~b.366*x.728)
+    
+    3. A     = DH_neutral
+       z     = DH_neutral
+  */
+
+rule (modulo E) CA_A2:
+   [
+   CaStA( $src, $dst, ipkA, <pk(skaB), vkbB, pkcB>, ~k, ~a, h(hidx), cdt,
+          mA, sigA, ctxA
+   )[no_precomp],
+   CurrentKey( 'clr', ~k, ipkA, <pk(skaB), vkbB, pkcB>, exposed
+   )[no_precomp],
+   !Amf( sigB, <'2', h(<'nce', mA, sigA>), B>, pk(skaB), ipkA, 'mvk'
+   )[no_precomp],
+   In( <h(hidx), 
+        aead(<'carsp', <'2', h(<'nce', mA, sigA>), B>, sigB>, ~k, rhoB,
+             <h(hidx), 'carsp', 'recipient'>)
+       >
+   )[no_precomp],
+   !Ltk( $dst, <pk(skaB), vkbB, pkcB>, ka0, kb0, kc0 )[no_precomp],
+   !Ltk( $src, ipkA, ka1, kb1, kc1 )[no_precomp]
+   ]
+  --[
+  DhExp( ~a ), DhSecret( B^~a, ipkA, <pk(skaB), vkbB, pkcB> ),
+  DerivedKey( kdf(<'ca', ~k, h(hidx), mA, sigA, 
+                   <'2', h(<'nce', mA, sigA>), B>, sigB, B^~a>),
+              ipkA, <pk(skaB), vkbB, pkcB>
+  ),
+  CaDone( 'clr', ipkA, <pk(skaB), vkbB, pkcB>, cdt ),
+  AuthShare( B, <pk(skaB), vkbB, pkcB>, ipkA ), RecvShare( B ),
+  CallState( 'clr', ipkA, <pk(skaB), vkbB, pkcB>, cdt )
+  ]->
+   [
+   CallSt( 'clr', $src, $dst, ipkA, <pk(skaB), vkbB, pkcB>, cdt, h(hidx),
+           kdf(<'ca', ~k, h(hidx), mA, sigA, <'2', h(<'nce', mA, sigA>), B>, sigB, 
+                B^~a>)
+   ),
+   CurrentKey( 'clr',
+               kdf(<'ca', ~k, h(hidx), mA, sigA, <'2', h(<'nce', mA, sigA>), B>, sigB, 
+                    B^~a>),
+               ipkA, <pk(skaB), vkbB, pkcB>, 'private'
+   )
+   ]
+
+  /*
+  rule (modulo AC) CA_A2:
+     [
+     CaStA( $src, $dst, ipkA, <pk(skaB), vkbB, pkcB>, ~k, ~a, h(hidx), cdt,
+            mA, sigA, ctxA
+     )[no_precomp],
+     CurrentKey( 'clr', ~k, ipkA, <pk(skaB), vkbB, pkcB>, exposed
+     )[no_precomp],
+     !Amf( sigB, <'2', h(<'nce', mA, sigA>), B>, pk(skaB), ipkA, 'mvk'
+     )[no_precomp],
+     In( <h(hidx), 
+          aead(<'carsp', <'2', h(<'nce', mA, sigA>), B>, sigB>, ~k, rhoB,
+               <h(hidx), 'carsp', 'recipient'>)
+         >
+     )[no_precomp],
+     !Ltk( $dst, <pk(skaB), vkbB, pkcB>, ka0, kb0, kc0 )[no_precomp],
+     !Ltk( $src, ipkA, ka1, kb1, kc1 )[no_precomp]
+     ]
+    --[
+    DhExp( ~a ), DhSecret( z, ipkA, <pk(skaB), vkbB, pkcB> ),
+    DerivedKey( kdf(<'ca', ~k, h(hidx), mA, sigA, 
+                     <'2', h(<'nce', mA, sigA>), B>, sigB, z>),
+                ipkA, <pk(skaB), vkbB, pkcB>
+    ),
+    CaDone( 'clr', ipkA, <pk(skaB), vkbB, pkcB>, cdt ),
+    AuthShare( B, <pk(skaB), vkbB, pkcB>, ipkA ), RecvShare( B ),
+    CallState( 'clr', ipkA, <pk(skaB), vkbB, pkcB>, cdt )
+    ]->
+     [
+     CallSt( 'clr', $src, $dst, ipkA, <pk(skaB), vkbB, pkcB>, cdt, h(hidx),
+             kdf(<'ca', ~k, h(hidx), mA, sigA, <'2', h(<'nce', mA, sigA>), B>, sigB, z
+                 >)
+     ),
+     CurrentKey( 'clr',
+                 kdf(<'ca', ~k, h(hidx), mA, sigA, <'2', h(<'nce', mA, sigA>), B>, sigB, z
+                     >),
+                 ipkA, <pk(skaB), vkbB, pkcB>, 'private'
+     )
+     ]
+    variants (modulo AC)
+    1. ~a    = ~a.35
+       B     = B.37
+       z     = B.37^~a.35
+    
+    2. ~a    = ~a.61
+       B     = z.89^inv(~a.61)
+       z     = z.89
+    
+    3. ~a    = ~a.244
+       B     = x.483^x.484
+       z     = x.483^(~a.244*x.484)
+    
+    4. ~a    = ~a.246
+       B     = x.487^inv((~a.246*x.488))
+       z     = x.487^inv(x.488)
+    
+    5. ~a    = ~a.246
+       B     = x.487^(x.488*inv(~a.246))
+       z     = x.487^x.488
+    
+    6. ~a    = ~a.247
+       B     = x.488^(x.489*inv((~a.247*x.490)))
+       z     = x.488^(x.489*inv(x.490))
+    
+    7. B     = DH_neutral
+       z     = DH_neutral
+  */
+
+rule (modulo E) ICV_R1:
+   [
+   CallSt( role, $tnR, $tnP, ipkR, ipkP, <$cs, $cd, $cts>, h(hidx), kj
+   )[no_precomp],
+   !Ltk( $tnR, ipkR, ~skaR, ~skbR, ~skcR )[no_precomp], Fr( ~a ),
+   Fr( ~sigR ), Fr( ~rhoR )
+   ]
+  --[
+  DhExp( ~a ), IcvRequest( ipkR, ipkP, <$cs, $cd, $cts>, $pl ),
+  SendShare( 'g'^~a ), FreshShare( 'g'^~a, ~a )
+  ]->
+   [
+   IcvStR( role, $tnR, $tnP, ipkR, ipkP, <$cs, $cd, $cts>, h(hidx), kj, $pl,
+           ~a,
+           <'3', h(<'ratchet-context', kj, h(hidx)>), <$cs, $cd, $cts>, $pl, 'g'^~a
+           >,
+           ~sigR,
+           aead(<'icvreq', 
+                 <'3', h(<'ratchet-context', kj, h(hidx)>), <$cs, $cd, $cts>, $pl, 'g'^~a
+                 >, 
+                 ~sigR>,
+                kj, ~rhoR, <h(hidx), 'icvreq', 'requester'>)
+   ),
+   !Amf( ~sigR,
+         <'3', h(<'ratchet-context', kj, h(hidx)>), <$cs, $cd, $cts>, $pl, 'g'^~a
+         >,
+         pk(~skaR), ipkP, 'mvk'
+   ),
+   Out( <h(hidx), 
+         aead(<'icvreq', 
+               <'3', h(<'ratchet-context', kj, h(hidx)>), <$cs, $cd, $cts>, $pl, 'g'^~a
+               >, 
+               ~sigR>,
+              kj, ~rhoR, <h(hidx), 'icvreq', 'requester'>)
+        >
+   )
+   ]
+
+  /* has exactly the trivial AC variant */
+
+rule (modulo E) ICV_P1_accept:
+   [
+   CallSt( role, $tnP, $tnR, ipkP, <pk(skaR), vkbR, pkcR>, <$cs, $cd, $cts>,
+           h(hidx), kj
+   )[no_precomp],
+   !Amf( sigR,
+         <'3', h(<'ratchet-context', kj, h(hidx)>), <$cs, $cd, $cts>, pl, A>,
+         pk(skaR), ipkP, 'mvk'
+   )[no_precomp],
+   In( <h(hidx), 
+        aead(<'icvreq', 
+              <'3', h(<'ratchet-context', kj, h(hidx)>), <$cs, $cd, $cts>, pl, A>, sigR
+             >,
+             kj, rhoR, <h(hidx), 'icvreq', 'requester'>)
+       >
+   )[no_precomp],
+   Fr( ~b ),
+   !Ltk( $tnR, <pk(skaR), vkbR, pkcR>, ka0, kb0, kc0 )[no_precomp],
+   !Ltk( $tnP, ipkP, ka1, kb1, kc1 )[no_precomp]
+   ]
+  --[
+  DhExp( ~b ),
+  IcvAccept( role, ipkP, <pk(skaR), vkbR, pkcR>, <$cs, $cd, $cts>, pl ),
+  Challenge( h(<'chal', kj, 
+                h(<'nce', 
+                   <'3', h(<'ratchet-context', kj, h(hidx)>), <$cs, $cd, $cts>, pl, A>, sigR
+                  >), 
+                'g'^~b>)
+  ),
+  AuthShare( A, <pk(skaR), vkbR, pkcR>, ipkP ), RecvShare( A )
+  ]->
+   [
+   IcvAsk( role, $tnP, $tnR, ipkP, <pk(skaR), vkbR, pkcR>, <$cs, $cd, $cts>,
+           h(hidx), kj, pl, ~b,
+           <'3', h(<'ratchet-context', kj, h(hidx)>), <$cs, $cd, $cts>, pl, A>,
+           sigR, A,
+           aead(<'icvreq', 
+                 <'3', h(<'ratchet-context', kj, h(hidx)>), <$cs, $cd, $cts>, pl, A>, sigR
+                >,
+                kj, rhoR, <h(hidx), 'icvreq', 'requester'>)
+   )
+   ]
+
+  /* has exactly the trivial AC variant */
+
+rule (modulo E) ICV_P2_consent:
+   [
+   IcvAsk( role, $tnP, $tnR, ipkP, ipkR, cdt, idx, kj, pl, ~b, mR, sigR, A,
+           ctxR
+   )[no_precomp]
+   ]
+  --[ Consent( ipkP, ipkR, cdt, pl ) ]->
+   [
+   IcvAskOk( role, $tnP, $tnR, ipkP, ipkR, cdt, idx, kj, pl, ~b, mR, sigR,
+             A, ctxR
+   )
+   ]
+
+  /* has exactly the trivial AC variant */
+
+rule (modulo E) ICV_P3_present:
+   [
+   IcvAskOk( role, $tnP, $tnR, ipkP, ipkR, cdt, h(hidx), kj, pl, ~b, mR,
+             sigR, A, ctxR
+   )[no_precomp],
+   CurrentKey( role, kj, ipkP, ipkR, exposed )[no_precomp],
+   !Cred( ipkP, pl, $attr, csig )[no_precomp],
+   !Ltk( $tnP, ipkP, ~skaP, ~skbP, ~skcP )[no_precomp], Fr( ~sigP ),
+   Fr( ~rhoP ), Fr( ~proof_random ),
+   !Ltk( $tnR, ipkR, kaPeer, kbPeer, kcPeer )[no_precomp]
+   ]
+  --[
+  DhExp( ~b ), DhSecret( A^~b, ipkP, ipkR ),
+  DerivedKey( kdf(<'icv', kj, h(hidx), mR, sigR, 
+                   <'4', h(<'nce', mR, sigR>), 'g'^~b, 'pres', 
+                    pok(csig, ipkP, h(<'chal', kj, h(<'nce', mR, sigR>), 'g'^~b>),
+                        ~proof_random), 
+                    $attr, pl>, 
+                   ~sigP, A^~b>),
+              ipkP, ipkR
+  ),
+  IcvKeyP( kdf(<'icv', kj, h(hidx), mR, sigR, 
+                <'4', h(<'nce', mR, sigR>), 'g'^~b, 'pres', 
+                 pok(csig, ipkP, h(<'chal', kj, h(<'nce', mR, sigR>), 'g'^~b>),
+                     ~proof_random), 
+                 $attr, pl>, 
+                ~sigP, A^~b>),
+           ipkP, ipkR, cdt
+  ),
+  AuthShare( A, ipkR, ipkP ),
+  Present( role, ipkP, ipkR, cdt, pl,
+           <'pres', 
+            pok(csig, ipkP, h(<'chal', kj, h(<'nce', mR, sigR>), 'g'^~b>),
+                ~proof_random), 
+            $attr, pl>,
+           kj
+  ),
+  SendShare( 'g'^~b ), FreshShare( 'g'^~b, ~b ),
+  MadePres( <'pres', 
+             pok(csig, ipkP, h(<'chal', kj, h(<'nce', mR, sigR>), 'g'^~b>),
+                 ~proof_random), 
+             $attr, pl>
+  ),
+  CallState( role, ipkP, ipkR, cdt )
+  ]->
+   [
+   CallSt( role, $tnP, $tnR, ipkP, ipkR, cdt, h(hidx),
+           kdf(<'icv', kj, h(hidx), mR, sigR, 
+                <'4', h(<'nce', mR, sigR>), 'g'^~b, 'pres', 
+                 pok(csig, ipkP, h(<'chal', kj, h(<'nce', mR, sigR>), 'g'^~b>),
+                     ~proof_random), 
+                 $attr, pl>, 
+                ~sigP, A^~b>)
+   ),
+   CurrentKey( role,
+               kdf(<'icv', kj, h(hidx), mR, sigR, 
+                    <'4', h(<'nce', mR, sigR>), 'g'^~b, 'pres', 
+                     pok(csig, ipkP, h(<'chal', kj, h(<'nce', mR, sigR>), 'g'^~b>),
+                         ~proof_random), 
+                     $attr, pl>, 
+                    ~sigP, A^~b>),
+               ipkP, ipkR, 'private'
+   ),
+   !Amf( ~sigP,
+         <'4', h(<'nce', mR, sigR>), 'g'^~b, 'pres', 
+          pok(csig, ipkP, h(<'chal', kj, h(<'nce', mR, sigR>), 'g'^~b>),
+              ~proof_random), 
+          $attr, pl>,
+         pk(~skaP), ipkR, 'mvk'
+   ),
+   Out( <h(hidx), 
+         aead(<'icvrsp', 
+               <'4', h(<'nce', mR, sigR>), 'g'^~b, 'pres', 
+                pok(csig, ipkP, h(<'chal', kj, h(<'nce', mR, sigR>), 'g'^~b>),
+                    ~proof_random), 
+                $attr, pl>, 
+               ~sigP>,
+              kj, ~rhoP, <h(hidx), 'icvrsp', 'prover'>)
+        >
+   )
+   ]
+
+  /*
+  rule (modulo AC) ICV_P3_present:
+     [
+     IcvAskOk( role, $tnP, $tnR, ipkP, ipkR, cdt, h(hidx), kj, pl, ~b, mR,
+               sigR, A, ctxR
+     )[no_precomp],
+     CurrentKey( role, kj, ipkP, ipkR, exposed )[no_precomp],
+     !Cred( ipkP, pl, $attr, csig )[no_precomp],
+     !Ltk( $tnP, ipkP, ~skaP, ~skbP, ~skcP )[no_precomp], Fr( ~sigP ),
+     Fr( ~rhoP ), Fr( ~proof_random ),
+     !Ltk( $tnR, ipkR, kaPeer, kbPeer, kcPeer )[no_precomp]
+     ]
+    --[
+    DhExp( ~b ), DhSecret( z, ipkP, ipkR ),
+    DerivedKey( kdf(<'icv', kj, h(hidx), mR, sigR, 
+                     <'4', h(<'nce', mR, sigR>), 'g'^~b, 'pres', 
+                      pok(csig, ipkP, h(<'chal', kj, h(<'nce', mR, sigR>), 'g'^~b>),
+                          ~proof_random), 
+                      $attr, pl>, 
+                     ~sigP, z>),
+                ipkP, ipkR
+    ),
+    IcvKeyP( kdf(<'icv', kj, h(hidx), mR, sigR, 
+                  <'4', h(<'nce', mR, sigR>), 'g'^~b, 'pres', 
+                   pok(csig, ipkP, h(<'chal', kj, h(<'nce', mR, sigR>), 'g'^~b>),
+                       ~proof_random), 
+                   $attr, pl>, 
+                  ~sigP, z>),
+             ipkP, ipkR, cdt
+    ),
+    AuthShare( A, ipkR, ipkP ),
+    Present( role, ipkP, ipkR, cdt, pl,
+             <'pres', 
+              pok(csig, ipkP, h(<'chal', kj, h(<'nce', mR, sigR>), 'g'^~b>),
+                  ~proof_random), 
+              $attr, pl>,
+             kj
+    ),
+    SendShare( 'g'^~b ), FreshShare( 'g'^~b, ~b ),
+    MadePres( <'pres', 
+               pok(csig, ipkP, h(<'chal', kj, h(<'nce', mR, sigR>), 'g'^~b>),
+                   ~proof_random), 
+               $attr, pl>
+    ),
+    CallState( role, ipkP, ipkR, cdt )
+    ]->
+     [
+     CallSt( role, $tnP, $tnR, ipkP, ipkR, cdt, h(hidx),
+             kdf(<'icv', kj, h(hidx), mR, sigR, 
+                  <'4', h(<'nce', mR, sigR>), 'g'^~b, 'pres', 
+                   pok(csig, ipkP, h(<'chal', kj, h(<'nce', mR, sigR>), 'g'^~b>),
+                       ~proof_random), 
+                   $attr, pl>, 
+                  ~sigP, z>)
+     ),
+     CurrentKey( role,
+                 kdf(<'icv', kj, h(hidx), mR, sigR, 
+                      <'4', h(<'nce', mR, sigR>), 'g'^~b, 'pres', 
+                       pok(csig, ipkP, h(<'chal', kj, h(<'nce', mR, sigR>), 'g'^~b>),
+                           ~proof_random), 
+                       $attr, pl>, 
+                      ~sigP, z>),
+                 ipkP, ipkR, 'private'
+     ),
+     !Amf( ~sigP,
+           <'4', h(<'nce', mR, sigR>), 'g'^~b, 'pres', 
+            pok(csig, ipkP, h(<'chal', kj, h(<'nce', mR, sigR>), 'g'^~b>),
+                ~proof_random), 
+            $attr, pl>,
+           pk(~skaP), ipkR, 'mvk'
+     ),
+     Out( <h(hidx), 
+           aead(<'icvrsp', 
+                 <'4', h(<'nce', mR, sigR>), 'g'^~b, 'pres', 
+                  pok(csig, ipkP, h(<'chal', kj, h(<'nce', mR, sigR>), 'g'^~b>),
+                      ~proof_random), 
+                  $attr, pl>, 
+                 ~sigP>,
+                kj, ~rhoP, <h(hidx), 'icvrsp', 'prover'>)
+          >
+     )
+     ]
+    variants (modulo AC)
+    1. ~b    = ~b.42
+       A     = A.49
+       z     = A.49^~b.42
+    
+    2. ~b    = ~b.64
+       A     = z.93^inv(~b.64)
+       z     = z.93
+    
+    3. ~b    = ~b.462
+       A     = x.918^x.919
+       z     = x.918^(~b.462*x.919)
+    
+    4. ~b    = ~b.469
+       A     = x.932^inv((~b.469*x.933))
+       z     = x.932^inv(x.933)
+    
+    5. ~b    = ~b.469
+       A     = x.932^(x.933*inv(~b.469))
+       z     = x.932^x.933
+    
+    6. ~b    = ~b.470
+       A     = x.933^(x.934*inv((~b.470*x.935)))
+       z     = x.933^(x.934*inv(x.935))
+    
+    7. A     = DH_neutral
+       z     = DH_neutral
+  */
+
+rule (modulo E) ICV_P3_decline:
+   [
+   IcvAsk( role, $tnP, $tnR, ipkP, ipkR, cdt, h(hidx), kj, pl, ~b, mR, sigR,
+           A, ctxR
+   )[no_precomp],
+   CurrentKey( role, kj, ipkP, ipkR, exposed )[no_precomp],
+   !Ltk( $tnP, ipkP, ~skaP, ~skbP, ~skcP )[no_precomp], Fr( ~sigP ),
+   Fr( ~rhoP ), !Ltk( $tnR, ipkR, kaPeer, kbPeer, kcPeer )[no_precomp]
+   ]
+  --[
+  DhExp( ~b ), DhSecret( A^~b, ipkP, ipkR ),
+  DerivedKey( kdf(<'icv', kj, h(hidx), mR, sigR, 
+                   <'4', h(<'nce', mR, sigR>), 'g'^~b, 'nopres'>, ~sigP, A^~b>),
+              ipkP, ipkR
+  ),
+  IcvKeyP( kdf(<'icv', kj, h(hidx), mR, sigR, 
+                <'4', h(<'nce', mR, sigR>), 'g'^~b, 'nopres'>, ~sigP, A^~b>),
+           ipkP, ipkR, cdt
+  ),
+  AuthShare( A, ipkR, ipkP ), IcvDeclined( role, ipkP, ipkR, cdt, pl ),
+  SendShare( 'g'^~b ), FreshShare( 'g'^~b, ~b ),
+  CallState( role, ipkP, ipkR, cdt )
+  ]->
+   [
+   CallSt( role, $tnP, $tnR, ipkP, ipkR, cdt, h(hidx),
+           kdf(<'icv', kj, h(hidx), mR, sigR, 
+                <'4', h(<'nce', mR, sigR>), 'g'^~b, 'nopres'>, ~sigP, A^~b>)
+   ),
+   CurrentKey( role,
+               kdf(<'icv', kj, h(hidx), mR, sigR, 
+                    <'4', h(<'nce', mR, sigR>), 'g'^~b, 'nopres'>, ~sigP, A^~b>),
+               ipkP, ipkR, 'private'
+   ),
+   !Amf( ~sigP, <'4', h(<'nce', mR, sigR>), 'g'^~b, 'nopres'>, pk(~skaP),
+         ipkR, 'mvk'
+   ),
+   Out( <h(hidx), 
+         aead(<'icvrsp', <'4', h(<'nce', mR, sigR>), 'g'^~b, 'nopres'>, ~sigP>,
+              kj, ~rhoP, <h(hidx), 'icvrsp', 'prover'>)
+        >
+   )
+   ]
+
+  /*
+  rule (modulo AC) ICV_P3_decline:
+     [
+     IcvAsk( role, $tnP, $tnR, ipkP, ipkR, cdt, h(hidx), kj, pl, ~b, mR, sigR,
+             A, ctxR
+     )[no_precomp],
+     CurrentKey( role, kj, ipkP, ipkR, exposed )[no_precomp],
+     !Ltk( $tnP, ipkP, ~skaP, ~skbP, ~skcP )[no_precomp], Fr( ~sigP ),
+     Fr( ~rhoP ), !Ltk( $tnR, ipkR, kaPeer, kbPeer, kcPeer )[no_precomp]
+     ]
+    --[
+    DhExp( ~b ), DhSecret( z, ipkP, ipkR ),
+    DerivedKey( kdf(<'icv', kj, h(hidx), mR, sigR, 
+                     <'4', h(<'nce', mR, sigR>), 'g'^~b, 'nopres'>, ~sigP, z>),
+                ipkP, ipkR
+    ),
+    IcvKeyP( kdf(<'icv', kj, h(hidx), mR, sigR, 
+                  <'4', h(<'nce', mR, sigR>), 'g'^~b, 'nopres'>, ~sigP, z>),
+             ipkP, ipkR, cdt
+    ),
+    AuthShare( A, ipkR, ipkP ), IcvDeclined( role, ipkP, ipkR, cdt, pl ),
+    SendShare( 'g'^~b ), FreshShare( 'g'^~b, ~b ),
+    CallState( role, ipkP, ipkR, cdt )
+    ]->
+     [
+     CallSt( role, $tnP, $tnR, ipkP, ipkR, cdt, h(hidx),
+             kdf(<'icv', kj, h(hidx), mR, sigR, 
+                  <'4', h(<'nce', mR, sigR>), 'g'^~b, 'nopres'>, ~sigP, z>)
+     ),
+     CurrentKey( role,
+                 kdf(<'icv', kj, h(hidx), mR, sigR, 
+                      <'4', h(<'nce', mR, sigR>), 'g'^~b, 'nopres'>, ~sigP, z>),
+                 ipkP, ipkR, 'private'
+     ),
+     !Amf( ~sigP, <'4', h(<'nce', mR, sigR>), 'g'^~b, 'nopres'>, pk(~skaP),
+           ipkR, 'mvk'
+     ),
+     Out( <h(hidx), 
+           aead(<'icvrsp', <'4', h(<'nce', mR, sigR>), 'g'^~b, 'nopres'>, ~sigP>,
+                kj, ~rhoP, <h(hidx), 'icvrsp', 'prover'>)
+          >
+     )
+     ]
+    variants (modulo AC)
+    1. ~b    = ~b.37
+       A     = A.43
+       z     = A.43^~b.37
+    
+    2. ~b    = ~b.57
+       A     = z.83^inv(~b.57)
+       z     = z.83
+    
+    3. ~b    = ~b.390
+       A     = x.775^x.776
+       z     = x.775^(~b.390*x.776)
+    
+    4. ~b    = ~b.396
+       A     = x.787^inv((~b.396*x.788))
+       z     = x.787^inv(x.788)
+    
+    5. ~b    = ~b.396
+       A     = x.787^(x.788*inv(~b.396))
+       z     = x.787^x.788
+    
+    6. ~b    = ~b.397
+       A     = x.788^(x.789*inv((~b.397*x.790)))
+       z     = x.788^(x.789*inv(x.790))
+    
+    7. A     = DH_neutral
+       z     = DH_neutral
+  */
+
+rule (modulo E) ICV_R2:
+   [
+   IcvStR( role, $tnR, $tnP, ipkR, <pk(skaP), vkbP, pkcP>, cdt, h(hidx), kj,
+           pl, ~a, mR, sigR, ctxR
+   )[no_precomp],
+   CurrentKey( role, kj, ipkR, <pk(skaP), vkbP, pkcP>, exposed
+   )[no_precomp],
+   !Amf( sigP, <'4', h(<'nce', mR, sigR>), B, pres>, pk(skaP), ipkR, 'mvk'
+   )[no_precomp],
+   In( <h(hidx), 
+        aead(<'icvrsp', <'4', h(<'nce', mR, sigR>), B, pres>, sigP>, kj, rhoP,
+             <h(hidx), 'icvrsp', 'prover'>)
+       >
+   )[no_precomp],
+   !Ltk( $tnP, <pk(skaP), vkbP, pkcP>, ka0, kb0, kc0 )[no_precomp],
+   !Ltk( $tnR, ipkR, ka1, kb1, kc1 )[no_precomp]
+   ]
+  --[
+  DhExp( ~a ), DhSecret( B^~a, ipkR, <pk(skaP), vkbP, pkcP> ),
+  DerivedKey( kdf(<'icv', kj, h(hidx), mR, sigR, 
+                   <'4', h(<'nce', mR, sigR>), B, pres>, sigP, B^~a>),
+              ipkR, <pk(skaP), vkbP, pkcP>
+  ),
+  IcvKeyR( kdf(<'icv', kj, h(hidx), mR, sigR, 
+                <'4', h(<'nce', mR, sigR>), B, pres>, sigP, B^~a>),
+           ipkR, <pk(skaP), vkbP, pkcP>, cdt, pres
+  ),
+  IcvComplete( ipkR, <pk(skaP), vkbP, pkcP>, cdt ),
+  AuthShare( B, <pk(skaP), vkbP, pkcP>, ipkR ), RecvShare( B ),
+  CallState( role, ipkR, <pk(skaP), vkbP, pkcP>, cdt )
+  ]->
+   [
+   CallSt( role, $tnR, $tnP, ipkR, <pk(skaP), vkbP, pkcP>, cdt, h(hidx),
+           kdf(<'icv', kj, h(hidx), mR, sigR, <'4', h(<'nce', mR, sigR>), B, pres>, 
+                sigP, B^~a>)
+   ),
+   CurrentKey( role,
+               kdf(<'icv', kj, h(hidx), mR, sigR, <'4', h(<'nce', mR, sigR>), B, pres>, 
+                    sigP, B^~a>),
+               ipkR, <pk(skaP), vkbP, pkcP>, 'private'
+   ),
+   PendingDisplay( ipkR, <pk(skaP), vkbP, pkcP>, cdt, pl,
+                   h(<'chal', kj, h(<'nce', mR, sigR>), B>), pres
+   )
+   ]
+
+  /*
+  rule (modulo AC) ICV_R2:
+     [
+     IcvStR( role, $tnR, $tnP, ipkR, <pk(skaP), vkbP, pkcP>, cdt, h(hidx), kj,
+             pl, ~a, mR, sigR, ctxR
+     )[no_precomp],
+     CurrentKey( role, kj, ipkR, <pk(skaP), vkbP, pkcP>, exposed
+     )[no_precomp],
+     !Amf( sigP, <'4', h(<'nce', mR, sigR>), B, pres>, pk(skaP), ipkR, 'mvk'
+     )[no_precomp],
+     In( <h(hidx), 
+          aead(<'icvrsp', <'4', h(<'nce', mR, sigR>), B, pres>, sigP>, kj, rhoP,
+               <h(hidx), 'icvrsp', 'prover'>)
+         >
+     )[no_precomp],
+     !Ltk( $tnP, <pk(skaP), vkbP, pkcP>, ka0, kb0, kc0 )[no_precomp],
+     !Ltk( $tnR, ipkR, ka1, kb1, kc1 )[no_precomp]
+     ]
+    --[
+    DhExp( ~a ), DhSecret( z, ipkR, <pk(skaP), vkbP, pkcP> ),
+    DerivedKey( kdf(<'icv', kj, h(hidx), mR, sigR, 
+                     <'4', h(<'nce', mR, sigR>), B, pres>, sigP, z>),
+                ipkR, <pk(skaP), vkbP, pkcP>
+    ),
+    IcvKeyR( kdf(<'icv', kj, h(hidx), mR, sigR, 
+                  <'4', h(<'nce', mR, sigR>), B, pres>, sigP, z>),
+             ipkR, <pk(skaP), vkbP, pkcP>, cdt, pres
+    ),
+    IcvComplete( ipkR, <pk(skaP), vkbP, pkcP>, cdt ),
+    AuthShare( B, <pk(skaP), vkbP, pkcP>, ipkR ), RecvShare( B ),
+    CallState( role, ipkR, <pk(skaP), vkbP, pkcP>, cdt )
+    ]->
+     [
+     CallSt( role, $tnR, $tnP, ipkR, <pk(skaP), vkbP, pkcP>, cdt, h(hidx),
+             kdf(<'icv', kj, h(hidx), mR, sigR, <'4', h(<'nce', mR, sigR>), B, pres>, 
+                  sigP, z>)
+     ),
+     CurrentKey( role,
+                 kdf(<'icv', kj, h(hidx), mR, sigR, <'4', h(<'nce', mR, sigR>), B, pres>, 
+                      sigP, z>),
+                 ipkR, <pk(skaP), vkbP, pkcP>, 'private'
+     ),
+     PendingDisplay( ipkR, <pk(skaP), vkbP, pkcP>, cdt, pl,
+                     h(<'chal', kj, h(<'nce', mR, sigR>), B>), pres
+     )
+     ]
+    variants (modulo AC)
+    1. ~a    = ~a.36
+       B     = B.37
+       z     = B.37^~a.36
+    
+    2. ~a    = ~a.65
+       B     = z.95^inv(~a.65)
+       z     = z.95
+    
+    3. ~a    = ~a.267
+       B     = x.529^x.530
+       z     = x.529^(~a.267*x.530)
+    
+    4. ~a    = ~a.268
+       B     = x.531^inv((~a.268*x.532))
+       z     = x.531^inv(x.532)
+    
+    5. ~a    = ~a.268
+       B     = x.531^(x.532*inv(~a.268))
+       z     = x.531^x.532
+    
+    6. ~a    = ~a.269
+       B     = x.532^(x.533*inv((~a.269*x.534)))
+       z     = x.532^(x.533*inv(x.534))
+    
+    7. B     = DH_neutral
+       z     = DH_neutral
+  */
+
+rule (modulo E) ICV_Display_Presentation:
+   [
+   PendingDisplay( ipkR, ipkP, cdt, pl, chal,
+                   <'pres', 
+                    pok(sign(<'crd', pl, attr, subj>, skI), subj, chal, randomness), attr, pl
+                   >
+   )[no_precomp],
+   !IdPPublic( pk(skI) )[no_precomp]
+   ]
+  --[
+  Displayed( ipkR, ipkP, cdt, pl, attr,
+             <'pres', 
+              pok(sign(<'crd', pl, attr, subj>, skI), subj, chal, randomness), attr, pl
+             >
+  )
+  ]->
+   [ ]
+
+  /* has exactly the trivial AC variant */
+
+rule (modulo E) ICV_Display_Declined:
+   [ PendingDisplay( ipkR, ipkP, cdt, pl, chal, 'nopres' )[no_precomp] ]
+  --[ DeclineDisplayed( ipkR, ipkP, cdt, pl ) ]->
+   [ ]
+
+  /* has exactly the trivial AC variant */
+
+lemma ltk_secret [reuse]:
+  all-traces
+  "∀ ipk ska skb skc #i.
+    (LtkGen( ipk, ska, skb, skc ) @ #i) ⇒
+    ((((¬(∃ #k. !KU( ska ) @ #k)) ∧ (¬(∃ #k. !KU( skb ) @ #k))) ∧
+      (¬(∃ #k. !KU( skc ) @ #k))) ∨
+     (∃ #r. Reveal( ipk ) @ #r))"
+/*
+guarded formula characterizing all counter-examples:
+"∃ ipk ska skb skc #i.
+  (LtkGen( ipk, ska, skb, skc ) @ #i)
+ ∧
+  (((∃ #k. (!KU( ska ) @ #k)) ∨
+    (∃ #k. (!KU( skb ) @ #k)) ∨
+    (∃ #k. (!KU( skc ) @ #k)))) ∧
+  (∀ #r. (Reveal( ipk ) @ #r) ⇒ ⊥)"
+*/
+by sorry
+
+lemma cred_sig_secret [reuse]:
+  all-traces
+  "∀ ipk pl attr csig #i.
+    (CredIssued( ipk, pl, attr, csig ) @ #i) ⇒ (¬(∃ #k. !KU( csig ) @ #k))"
+/*
+guarded formula characterizing all counter-examples:
+"∃ ipk pl attr csig #i.
+  (CredIssued( ipk, pl, attr, csig ) @ #i) ∧ ∃ #k. (!KU( csig ) @ #k)"
+*/
+by sorry
+
+lemma dh_exponents_secret [reuse]:
+  all-traces "∀ x #i. (DhExp( x ) @ #i) ⇒ (¬(∃ #j. !KU( x ) @ #j))"
+/*
+guarded formula characterizing all counter-examples:
+"∃ x #i. (DhExp( x ) @ #i) ∧ ∃ #j. (!KU( x ) @ #j)"
+*/
+by sorry
+
+lemma ltk_secret_ordered [reuse, use_induction]:
+  all-traces
+  "∀ ipk ska skb skc #i #k.
+    ((LtkGen( ipk, ska, skb, skc ) @ #i) ∧ (!KU( ska ) @ #k)) ⇒
+    (∃ #r. (Reveal( ipk ) @ #r) ∧ (#r < #k))"
+/*
+guarded formula characterizing all counter-examples:
+"∃ ipk ska skb skc #i #k.
+  (LtkGen( ipk, ska, skb, skc ) @ #i) ∧ (!KU( ska ) @ #k)
+ ∧
+  ∀ #r. (Reveal( ipk ) @ #r) ⇒ ¬(#r < #k)"
+*/
+by sorry
+
+lemma authenticated_share_origin [reuse, hide_lemma=ltk_secret]:
+  all-traces
+  "∀ X ipkS ipkR #i.
+    (AuthShare( X, ipkS, ipkR ) @ #i) ⇒
+    (((∃ x #s. (FreshShare( X, x ) @ #s) ∧ (#s < #i)) ∨
+      (∃ #r. (Reveal( ipkS ) @ #r) ∧ (#r < #i))) ∨
+     (∃ #r. (Reveal( ipkR ) @ #r) ∧ (#r < #i)))"
+/*
+guarded formula characterizing all counter-examples:
+"∃ X ipkS ipkR #i.
+  (AuthShare( X, ipkS, ipkR ) @ #i)
+ ∧
+  (∀ x #s. (FreshShare( X, x ) @ #s) ⇒ ¬(#s < #i)) ∧
+  (∀ #r. (Reveal( ipkS ) @ #r) ⇒ ¬(#r < #i)) ∧
+  (∀ #r. (Reveal( ipkR ) @ #r) ⇒ ¬(#r < #i))"
+*/
+simplify
+solve( AuthShare( X, ipkS, ipkR ) @ #i )
+  case CA_A2
+  solve( !Ltk( $dst, <pk(skaB), vkbB, pkcB>, ka0, kb0, kc0
+         )[no_precomp] ▶₄ #i )
+    case Enroll
+    solve( !Ltk( $src, ipkR, ka1, kb1, kc1 )[no_precomp] ▶₅ #i )
+      case Enroll
+      solve( !Amf( sigB, <'2', h(<'nce', mA, sigA>), X>, pk(~ska.1),
+                   <pk(~ska), pk(~skb), pk(~skc)>, 'mvk'
+             )[no_precomp] ▶₂ #i )
+        case Adversary_Frank
+        by contradiction /* from formulas */
+      next
+        case Adversary_Receiver_Forge
+        by contradiction /* from formulas */
+      next
+        case CA_B2_answer
+        by contradiction /* from formulas */
+      qed
+    qed
+  qed
+next
+  case CA_B1_display
+  solve( !Ltk( $src, <pk(skaA), vkbA, pkcA>, ka0, kb0, kc0
+         )[no_precomp] ▶₃ #i )
+    case Enroll
+    solve( !Ltk( $dst, ipkR, ka1, kb1, kc1 )[no_precomp] ▶₄ #i )
+      case Enroll
+      solve( !Amf( sigA,
+                   <'1', h(<'ratchet-context', ~k, h(<'idx', ~k, $src, $dst, $ts>)>), 
+                    <$src, $dst, $ts>, X>,
+                   pk(~ska.1), <pk(~ska), pk(~skb), pk(~skc)>, 'mvk'
+             )[no_precomp] ▶₁ #i )
+        case Adversary_Frank
+        by contradiction /* from formulas */
+      next
+        case Adversary_Receiver_Forge
+        by contradiction /* from formulas */
+      next
+        case CA_A1
+        by contradiction /* from formulas */
+      qed
+    qed
+  qed
+next
+  case CA_B2_answer
+  solve( !Ltk( $dst, ipkR, ~skaB, ~skbB, ~skcB )[no_precomp] ▶₂ #i )
+    case Enroll
+    solve( !Ltk( $src, ipkS, kaPeer, kbPeer, kcPeer )[no_precomp] ▶₆ #i )
+      case Enroll
+      solve( splitEqs(0) )
+        case split_case_1
+        solve( CaStB( $dst, $src, <pk(~skaB), pk(~skbB), pk(~skcB)>,
+                      <pk(~ska), pk(~skb), pk(~skc)>, ~k, h(hidx), cdt, mA, sigA, ctxA, X
+               )[no_precomp] ▶₀ #i )
+          case CA_B1_display
+          solve( !Amf( sigA,
+                       <'1', h(<'ratchet-context', ~k, h(<'idx', ~k, $src, $dst, $ts>)>), 
+                        <$src, $dst, $ts>, X>,
+                       pk(~ska), <pk(~skaB), pk(~skbB), pk(~skcB)>, 'mvk'
+                 )[no_precomp] ▶₁ #vr.3 )
+            case Adversary_Frank
+            by contradiction /* from formulas */
+          next
+            case Adversary_Receiver_Forge
+            by contradiction /* from formulas */
+          next
+            case CA_A1
+            by contradiction /* non-normal terms */
+          qed
+        qed
+      next
+        case split_case_2
+        solve( CaStB( $dst, $src, <pk(~skaB), pk(~skbB), pk(~skcB)>,
+                      <pk(~ska), pk(~skb), pk(~skc)>, ~k, h(hidx), cdt, mA, sigA, ctxA, x^x.1
+               )[no_precomp] ▶₀ #i )
+          case CA_B1_display
+          solve( !Amf( sigA,
+                       <'1', h(<'ratchet-context', ~k, h(<'idx', ~k, $src, $dst, $ts>)>), 
+                        <$src, $dst, $ts>, x^x.1>,
+                       pk(~ska), <pk(~skaB), pk(~skbB), pk(~skcB)>, 'mvk'
+                 )[no_precomp] ▶₁ #vr.3 )
+            case Adversary_Frank
+            by contradiction /* from formulas */
+          next
+            case Adversary_Receiver_Forge
+            by contradiction /* from formulas */
+          next
+            case CA_A1
+            by contradiction /* from formulas */
+          qed
+        qed
+      next
+        case split_case_3
+        solve( CaStB( $dst, $src, <pk(~skaB), pk(~skbB), pk(~skcB)>,
+                      <pk(~ska), pk(~skb), pk(~skc)>, ~k, h(hidx), cdt, mA, sigA, ctxA,
+                      DH_neutral
+               )[no_precomp] ▶₀ #i )
+          case CA_B1_display
+          solve( !Amf( sigA,
+                       <'1', h(<'ratchet-context', ~k, h(<'idx', ~k, $src, $dst, $ts>)>), 
+                        <$src, $dst, $ts>, DH_neutral>,
+                       pk(~ska), <pk(~skaB), pk(~skbB), pk(~skcB)>, 'mvk'
+                 )[no_precomp] ▶₁ #vr.3 )
+            case Adversary_Frank
+            by contradiction /* from formulas */
+          next
+            case Adversary_Receiver_Forge
+            by contradiction /* from formulas */
+          qed
+        qed
+      qed
+    qed
+  qed
+next
+  case ICV_P1_accept
+  solve( !Ltk( $tnR, <pk(skaR), vkbR, pkcR>, ka0, kb0, kc0
+         )[no_precomp] ▶₄ #i )
+    case Enroll
+    solve( !Ltk( $tnP, ipkR, ka1, kb1, kc1 )[no_precomp] ▶₅ #i )
+      case Enroll
+      solve( !Amf( sigR,
+                   <'3', h(<'ratchet-context', kj, h(hidx)>), <$cs, $cd, $cts>, pl, X>,
+                   pk(~ska.1), <pk(~ska), pk(~skb), pk(~skc)>, 'mvk'
+             )[no_precomp] ▶₁ #i )
+        case Adversary_Frank
+        by contradiction /* from formulas */
+      next
+        case Adversary_Receiver_Forge
+        by contradiction /* from formulas */
+      next
+        case ICV_R1
+        by contradiction /* from formulas */
+      qed
+    qed
+  qed
+next
+  case ICV_P3_decline
+  solve( !Ltk( $tnP, ipkR, ~skaP, ~skbP, ~skcP )[no_precomp] ▶₂ #i )
+    case Enroll
+    solve( !Ltk( $tnR, ipkS, kaPeer, kbPeer, kcPeer )[no_precomp] ▶₅ #i )
+      case Enroll
+      solve( splitEqs(0) )
+        case split_case_1
+        solve( IcvAsk( role, $tnP, $tnR, <pk(~skaP), pk(~skbP), pk(~skcP)>,
+                       <pk(~ska), pk(~skb), pk(~skc)>, cdt, h(hidx), kj, pl, ~b, mR, sigR, X,
+                       ctxR
+               )[no_precomp] ▶₀ #i )
+          case ICV_P1_accept
+          solve( !Amf( sigR,
+                       <'3', h(<'ratchet-context', kj, h(hidx)>), <$cs, $cd, $cts>, pl, X>,
+                       pk(~ska), <pk(~skaP), pk(~skbP), pk(~skcP)>, 'mvk'
+                 )[no_precomp] ▶₁ #vr.3 )
+            case Adversary_Frank
+            by contradiction /* from formulas */
+          next
+            case Adversary_Receiver_Forge
+            by contradiction /* from formulas */
+          next
+            case ICV_R1
+            by contradiction /* non-normal terms */
+          qed
+        qed
+      next
+        case split_case_2
+        solve( IcvAsk( role, $tnP, $tnR, <pk(~skaP), pk(~skbP), pk(~skcP)>,
+                       <pk(~ska), pk(~skb), pk(~skc)>, cdt, h(hidx), kj, pl, ~b, mR, sigR,
+                       z^inv(~b), ctxR
+               )[no_precomp] ▶₀ #i )
+          case ICV_P1_accept
+          solve( !Amf( sigR,
+                       <'3', h(<'ratchet-context', kj, h(hidx)>), <$cs, $cd, $cts>, pl, 
+                        z^inv(~b)>,
+                       pk(~ska), <pk(~skaP), pk(~skbP), pk(~skcP)>, 'mvk'
+                 )[no_precomp] ▶₁ #vr.3 )
+            case Adversary_Frank
+            by contradiction /* from formulas */
+          next
+            case Adversary_Receiver_Forge
+            by contradiction /* from formulas */
+          qed
+        qed
+      next
+        case split_case_3
+        solve( IcvAsk( role, $tnP, $tnR, <pk(~skaP), pk(~skbP), pk(~skcP)>,
+                       <pk(~ska), pk(~skb), pk(~skc)>, cdt, h(hidx), kj, pl, ~b, mR, sigR,
+                       x^x.1, ctxR
+               )[no_precomp] ▶₀ #i )
+          case ICV_P1_accept
+          solve( !Amf( sigR,
+                       <'3', h(<'ratchet-context', kj, h(hidx)>), <$cs, $cd, $cts>, pl, x^x.1>,
+                       pk(~ska), <pk(~skaP), pk(~skbP), pk(~skcP)>, 'mvk'
+                 )[no_precomp] ▶₁ #vr.3 )
+            case Adversary_Frank
+            by contradiction /* from formulas */
+          next
+            case Adversary_Receiver_Forge
+            by contradiction /* from formulas */
+          next
+            case ICV_R1
+            by contradiction /* from formulas */
+          qed
+        qed
+      next
+        case split_case_4
+        solve( IcvAsk( role, $tnP, $tnR, <pk(~skaP), pk(~skbP), pk(~skcP)>,
+                       <pk(~ska), pk(~skb), pk(~skc)>, cdt, h(hidx), kj, pl, ~b, mR, sigR,
+                       x^inv((~b*x.1)), ctxR
+               )[no_precomp] ▶₀ #i )
+          case ICV_P1_accept
+          solve( !Amf( sigR,
+                       <'3', h(<'ratchet-context', kj, h(hidx)>), <$cs, $cd, $cts>, pl, 
+                        x^inv((~b*x.1))>,
+                       pk(~ska), <pk(~skaP), pk(~skbP), pk(~skcP)>, 'mvk'
+                 )[no_precomp] ▶₁ #vr.3 )
+            case Adversary_Frank
+            by contradiction /* from formulas */
+          next
+            case Adversary_Receiver_Forge
+            by contradiction /* from formulas */
+          qed
+        qed
+      next
+        case split_case_5
+        solve( IcvAsk( role, $tnP, $tnR, <pk(~skaP), pk(~skbP), pk(~skcP)>,
+                       <pk(~ska), pk(~skb), pk(~skc)>, cdt, h(hidx), kj, pl, ~b, mR, sigR,
+                       x^(x.1*inv(~b)), ctxR
+               )[no_precomp] ▶₀ #i )
+          case ICV_P1_accept
+          solve( !Amf( sigR,
+                       <'3', h(<'ratchet-context', kj, h(hidx)>), <$cs, $cd, $cts>, pl, 
+                        x^(x.1*inv(~b))>,
+                       pk(~ska), <pk(~skaP), pk(~skbP), pk(~skcP)>, 'mvk'
+                 )[no_precomp] ▶₁ #vr.3 )
+            case Adversary_Frank
+            by contradiction /* from formulas */
+          next
+            case Adversary_Receiver_Forge
+            by contradiction /* from formulas */
+          qed
+        qed
+      next
+        case split_case_6
+        solve( IcvAsk( role, $tnP, $tnR, <pk(~skaP), pk(~skbP), pk(~skcP)>,
+                       <pk(~ska), pk(~skb), pk(~skc)>, cdt, h(hidx), kj, pl, ~b, mR, sigR,
+                       x^(x.1*inv((~b*x.2))), ctxR
+               )[no_precomp] ▶₀ #i )
+          case ICV_P1_accept
+          solve( !Amf( sigR,
+                       <'3', h(<'ratchet-context', kj, h(hidx)>), <$cs, $cd, $cts>, pl, 
+                        x^(x.1*inv((~b*x.2)))>,
+                       pk(~ska), <pk(~skaP), pk(~skbP), pk(~skcP)>, 'mvk'
+                 )[no_precomp] ▶₁ #vr.3 )
+            case Adversary_Frank
+            by contradiction /* from formulas */
+          next
+            case Adversary_Receiver_Forge
+            by contradiction /* from formulas */
+          qed
+        qed
+      next
+        case split_case_7
+        solve( IcvAsk( role, $tnP, $tnR, <pk(~skaP), pk(~skbP), pk(~skcP)>,
+                       <pk(~ska), pk(~skb), pk(~skc)>, cdt, h(hidx), kj, pl, ~b, mR, sigR,
+                       DH_neutral, ctxR
+               )[no_precomp] ▶₀ #i )
+          case ICV_P1_accept
+          solve( !Amf( sigR,
+                       <'3', h(<'ratchet-context', kj, h(hidx)>), <$cs, $cd, $cts>, pl, 
+                        DH_neutral>,
+                       pk(~ska), <pk(~skaP), pk(~skbP), pk(~skcP)>, 'mvk'
+                 )[no_precomp] ▶₁ #vr.3 )
+            case Adversary_Frank
+            by contradiction /* from formulas */
+          next
+            case Adversary_Receiver_Forge
+            by contradiction /* from formulas */
+          qed
+        qed
+      qed
+    qed
+  qed
+next
+  case ICV_P3_present
+  solve( !Ltk( $tnP, ipkR, ~skaP, ~skbP, ~skcP )[no_precomp] ▶₃ #i )
+    case Enroll
+    solve( !Ltk( $tnR, ipkS, kaPeer, kbPeer, kcPeer )[no_precomp] ▶₇ #i )
+      case Enroll
+      solve( splitEqs(0) )
+        case split_case_1
+        solve( IcvAskOk( role, $tnP, $tnR, <pk(~skaP), pk(~skbP), pk(~skcP)>,
+                         <pk(~ska), pk(~skb), pk(~skc)>, cdt, h(hidx), kj, pl, ~b, mR, sigR, X,
+                         ctxR
+               )[no_precomp] ▶₀ #i )
+          case ICV_P2_consent
+          solve( !Amf( sigR,
+                       <'3', h(<'ratchet-context', kj, h(hidx)>), <$cs, $cd, $cts>, pl, X>,
+                       pk(~ska), <pk(~skaP), pk(~skbP), pk(~skcP)>, 'mvk'
+                 )[no_precomp] ▶₁ #vr.4 )
+            case Adversary_Frank
+            by contradiction /* from formulas */
+          next
+            case Adversary_Receiver_Forge
+            by contradiction /* from formulas */
+          next
+            case ICV_R1
+            by contradiction /* non-normal terms */
+          qed
+        qed
+      next
+        case split_case_2
+        solve( IcvAskOk( role, $tnP, $tnR, <pk(~skaP), pk(~skbP), pk(~skcP)>,
+                         <pk(~ska), pk(~skb), pk(~skc)>, cdt, h(hidx), kj, pl, ~b, mR, sigR,
+                         z^inv(~b), ctxR
+               )[no_precomp] ▶₀ #i )
+          case ICV_P2_consent
+          solve( !Amf( sigR,
+                       <'3', h(<'ratchet-context', kj, h(hidx)>), <$cs, $cd, $cts>, pl, 
+                        z^inv(~b)>,
+                       pk(~ska), <pk(~skaP), pk(~skbP), pk(~skcP)>, 'mvk'
+                 )[no_precomp] ▶₁ #vr.4 )
+            case Adversary_Frank
+            by contradiction /* from formulas */
+          next
+            case Adversary_Receiver_Forge
+            by contradiction /* from formulas */
+          qed
+        qed
+      next
+        case split_case_3
+        solve( IcvAskOk( role, $tnP, $tnR, <pk(~skaP), pk(~skbP), pk(~skcP)>,
+                         <pk(~ska), pk(~skb), pk(~skc)>, cdt, h(hidx), kj, pl, ~b, mR, sigR,
+                         x^x.1, ctxR
+               )[no_precomp] ▶₀ #i )
+          case ICV_P2_consent
+          solve( !Amf( sigR,
+                       <'3', h(<'ratchet-context', kj, h(hidx)>), <$cs, $cd, $cts>, pl, x^x.1>,
+                       pk(~ska), <pk(~skaP), pk(~skbP), pk(~skcP)>, 'mvk'
+                 )[no_precomp] ▶₁ #vr.4 )
+            case Adversary_Frank
+            by contradiction /* from formulas */
+          next
+            case Adversary_Receiver_Forge
+            by contradiction /* from formulas */
+          next
+            case ICV_R1
+            by contradiction /* from formulas */
+          qed
+        qed
+      next
+        case split_case_4
+        solve( IcvAskOk( role, $tnP, $tnR, <pk(~skaP), pk(~skbP), pk(~skcP)>,
+                         <pk(~ska), pk(~skb), pk(~skc)>, cdt, h(hidx), kj, pl, ~b, mR, sigR,
+                         x^inv((~b*x.1)), ctxR
+               )[no_precomp] ▶₀ #i )
+          case ICV_P2_consent
+          solve( !Amf( sigR,
+                       <'3', h(<'ratchet-context', kj, h(hidx)>), <$cs, $cd, $cts>, pl, 
+                        x^inv((~b*x.1))>,
+                       pk(~ska), <pk(~skaP), pk(~skbP), pk(~skcP)>, 'mvk'
+                 )[no_precomp] ▶₁ #vr.4 )
+            case Adversary_Frank
+            by contradiction /* from formulas */
+          next
+            case Adversary_Receiver_Forge
+            by contradiction /* from formulas */
+          qed
+        qed
+      next
+        case split_case_5
+        solve( IcvAskOk( role, $tnP, $tnR, <pk(~skaP), pk(~skbP), pk(~skcP)>,
+                         <pk(~ska), pk(~skb), pk(~skc)>, cdt, h(hidx), kj, pl, ~b, mR, sigR,
+                         x^(x.1*inv(~b)), ctxR
+               )[no_precomp] ▶₀ #i )
+          case ICV_P2_consent
+          solve( !Amf( sigR,
+                       <'3', h(<'ratchet-context', kj, h(hidx)>), <$cs, $cd, $cts>, pl, 
+                        x^(x.1*inv(~b))>,
+                       pk(~ska), <pk(~skaP), pk(~skbP), pk(~skcP)>, 'mvk'
+                 )[no_precomp] ▶₁ #vr.4 )
+            case Adversary_Frank
+            by contradiction /* from formulas */
+          next
+            case Adversary_Receiver_Forge
+            by contradiction /* from formulas */
+          qed
+        qed
+      next
+        case split_case_6
+        solve( IcvAskOk( role, $tnP, $tnR, <pk(~skaP), pk(~skbP), pk(~skcP)>,
+                         <pk(~ska), pk(~skb), pk(~skc)>, cdt, h(hidx), kj, pl, ~b, mR, sigR,
+                         x^(x.1*inv((~b*x.2))), ctxR
+               )[no_precomp] ▶₀ #i )
+          case ICV_P2_consent
+          solve( !Amf( sigR,
+                       <'3', h(<'ratchet-context', kj, h(hidx)>), <$cs, $cd, $cts>, pl, 
+                        x^(x.1*inv((~b*x.2)))>,
+                       pk(~ska), <pk(~skaP), pk(~skbP), pk(~skcP)>, 'mvk'
+                 )[no_precomp] ▶₁ #vr.4 )
+            case Adversary_Frank
+            by contradiction /* from formulas */
+          next
+            case Adversary_Receiver_Forge
+            by contradiction /* from formulas */
+          qed
+        qed
+      next
+        case split_case_7
+        solve( IcvAskOk( role, $tnP, $tnR, <pk(~skaP), pk(~skbP), pk(~skcP)>,
+                         <pk(~ska), pk(~skb), pk(~skc)>, cdt, h(hidx), kj, pl, ~b, mR, sigR,
+                         DH_neutral, ctxR
+               )[no_precomp] ▶₀ #i )
+          case ICV_P2_consent
+          solve( !Amf( sigR,
+                       <'3', h(<'ratchet-context', kj, h(hidx)>), <$cs, $cd, $cts>, pl, 
+                        DH_neutral>,
+                       pk(~ska), <pk(~skaP), pk(~skbP), pk(~skcP)>, 'mvk'
+                 )[no_precomp] ▶₁ #vr.4 )
+            case Adversary_Frank
+            by contradiction /* from formulas */
+          next
+            case Adversary_Receiver_Forge
+            by contradiction /* from formulas */
+          qed
+        qed
+      qed
+    qed
+  qed
+next
+  case ICV_R2
+  solve( !Ltk( $tnP, <pk(skaP), vkbP, pkcP>, ka0, kb0, kc0
+         )[no_precomp] ▶₄ #i )
+    case Enroll
+    solve( !Ltk( $tnR, ipkR, ka1, kb1, kc1 )[no_precomp] ▶₅ #i )
+      case Enroll
+      solve( !Amf( sigP, <'4', h(<'nce', mR, sigR>), X, pres>, pk(~ska.1),
+                   <pk(~ska), pk(~skb), pk(~skc)>, 'mvk'
+             )[no_precomp] ▶₂ #i )
+        case Adversary_Frank
+        by contradiction /* from formulas */
+      next
+        case Adversary_Receiver_Forge
+        by contradiction /* from formulas */
+      next
+        case ICV_P3_decline
+        by contradiction /* from formulas */
+      next
+        case ICV_P3_present
+        by contradiction /* from formulas */
+      qed
+    qed
+  qed
+qed
+
+lemma dh_shared_secret [reuse]:
+  all-traces
+  "∀ z ipkX ipkY #i.
+    (DhSecret( z, ipkX, ipkY ) @ #i) ⇒
+    (((¬(∃ #j. !KU( z ) @ #j)) ∨ (∃ #r. (Reveal( ipkX ) @ #r) ∧ (#r < #i))) ∨
+     (∃ #r. (Reveal( ipkY ) @ #r) ∧ (#r < #i)))"
+/*
+guarded formula characterizing all counter-examples:
+"∃ z ipkX ipkY #i.
+  (DhSecret( z, ipkX, ipkY ) @ #i)
+ ∧
+  (∃ #j. (!KU( z ) @ #j)) ∧
+  (∀ #r. (Reveal( ipkX ) @ #r) ⇒ ¬(#r < #i)) ∧
+  (∀ #r. (Reveal( ipkY ) @ #r) ⇒ ¬(#r < #i))"
+*/
+by sorry
+
+lemma derived_key_secret [reuse, hide_lemma=authenticated_share_origin]:
+  all-traces
+  "∀ k ipkX ipkY #i.
+    (DerivedKey( k, ipkX, ipkY ) @ #i) ⇒
+    ((((¬(∃ #j. !KU( k ) @ #j)) ∨
+       (∃ #r. (Reveal( ipkX ) @ #r) ∧ (#r < #i))) ∨
+      (∃ #r. (Reveal( ipkY ) @ #r) ∧ (#r < #i))) ∨
+     (∃ x y #r. RevealState( k, x, y ) @ #r))"
+/*
+guarded formula characterizing all counter-examples:
+"∃ k ipkX ipkY #i.
+  (DerivedKey( k, ipkX, ipkY ) @ #i)
+ ∧
+  (∃ #j. (!KU( k ) @ #j)) ∧
+  (∀ #r. (Reveal( ipkX ) @ #r) ⇒ ¬(#r < #i)) ∧
+  (∀ #r. (Reveal( ipkY ) @ #r) ⇒ ¬(#r < #i)) ∧
+  (∀ x y #r. (RevealState( k, x, y ) @ #r) ⇒ ⊥)"
+*/
+by sorry
+
+lemma callst_only_after_ca [reuse, use_induction, heuristic=S,
+                            hide_lemma=dh_exponents_secret, hide_lemma=authenticated_share_origin,
+                            hide_lemma=dh_shared_secret, hide_lemma=derived_key_secret]:
+  all-traces
+  "∀ role ipkS ipkO cdt #i.
+    (CallState( role, ipkS, ipkO, cdt ) @ #i) ⇒
+    (∃ #c. (CaDone( role, ipkS, ipkO, cdt ) @ #c) ∧ ((#c < #i) ∨ (#c = #i)))"
+/*
+guarded formula characterizing all counter-examples:
+"∃ role ipkS ipkO cdt #i.
+  (CallState( role, ipkS, ipkO, cdt ) @ #i)
+ ∧
+  ∀ #c.
+   (CaDone( role, ipkS, ipkO, cdt ) @ #c) ⇒ (¬(#c < #i)) ∧ (¬(#c = #i))"
+*/
+by sorry
+
+lemma ca_caller_requires_answer [reuse, hide_lemma=dh_exponents_secret,
+                                 hide_lemma=authenticated_share_origin, hide_lemma=dh_shared_secret,
+                                 hide_lemma=derived_key_secret]:
+  all-traces
+  "∀ ipkA ipkB cdt #i.
+    (CaDone( 'clr', ipkA, ipkB, cdt ) @ #i) ⇒
+    (((∃ #a. (Answered( ipkB, ipkA, cdt ) @ #a) ∧ (#a < #i)) ∨
+      (∃ #r. Reveal( ipkA ) @ #r)) ∨
+     (∃ #r. Reveal( ipkB ) @ #r))"
+/*
+guarded formula characterizing all counter-examples:
+"∃ ipkA ipkB cdt #i.
+  (CaDone( 'clr', ipkA, ipkB, cdt ) @ #i)
+ ∧
+  (∀ #a. (Answered( ipkB, ipkA, cdt ) @ #a) ⇒ ¬(#a < #i)) ∧
+  (∀ #r. (Reveal( ipkA ) @ #r) ⇒ ⊥) ∧
+  (∀ #r. (Reveal( ipkB ) @ #r) ⇒ ⊥)"
+*/
+by sorry
+
+lemma oda2_accept_after_ca [hide_lemma=dh_exponents_secret,
+                            hide_lemma=authenticated_share_origin, hide_lemma=dh_shared_secret,
+                            hide_lemma=derived_key_secret]:
+  all-traces
+  "∀ role ipkP ipkR cdt pl #i.
+    (IcvAccept( role, ipkP, ipkR, cdt, pl ) @ #i) ⇒
+    (∃ #c. (CaDone( role, ipkP, ipkR, cdt ) @ #c) ∧ (#c < #i))"
+/*
+guarded formula characterizing all counter-examples:
+"∃ role ipkP ipkR cdt pl #i.
+  (IcvAccept( role, ipkP, ipkR, cdt, pl ) @ #i)
+ ∧
+  ∀ #c. (CaDone( role, ipkP, ipkR, cdt ) @ #c) ⇒ ¬(#c < #i)"
+*/
+by sorry
+
+lemma oda2_present_after_ca [reuse, hide_lemma=dh_exponents_secret,
+                             hide_lemma=authenticated_share_origin, hide_lemma=dh_shared_secret,
+                             hide_lemma=derived_key_secret]:
+  all-traces
+  "∀ role ipkP ipkR cdt pl pres kj #i.
+    (Present( role, ipkP, ipkR, cdt, pl, pres, kj ) @ #i) ⇒
+    (∃ #c. (CaDone( role, ipkP, ipkR, cdt ) @ #c) ∧ (#c < #i))"
+/*
+guarded formula characterizing all counter-examples:
+"∃ role ipkP ipkR cdt pl pres kj #i.
+  (Present( role, ipkP, ipkR, cdt, pl, pres, kj ) @ #i)
+ ∧
+  ∀ #c. (CaDone( role, ipkP, ipkR, cdt ) @ #c) ⇒ ¬(#c < #i)"
+*/
+by sorry
+
+lemma oda2_recipient_present_after_answer [reuse,
+                                           hide_lemma=dh_exponents_secret,
+                                           hide_lemma=authenticated_share_origin, hide_lemma=dh_shared_secret,
+                                           hide_lemma=derived_key_secret]:
+  all-traces
+  "∀ ipkP ipkR cdt pl pres kj #i.
+    (Present( 'rcp', ipkP, ipkR, cdt, pl, pres, kj ) @ #i) ⇒
+    (∃ #a. (Answered( ipkP, ipkR, cdt ) @ #a) ∧ (#a < #i))"
+/*
+guarded formula characterizing all counter-examples:
+"∃ ipkP ipkR cdt pl pres kj #i.
+  (Present( 'rcp', ipkP, ipkR, cdt, pl, pres, kj ) @ #i)
+ ∧
+  ∀ #a. (Answered( ipkP, ipkR, cdt ) @ #a) ⇒ ¬(#a < #i)"
+*/
+by sorry
+
+lemma oda2_caller_present_after_peer_answer [hide_lemma=dh_exponents_secret,
+                                             hide_lemma=authenticated_share_origin,
+                                             hide_lemma=dh_shared_secret, hide_lemma=derived_key_secret]:
+  all-traces
+  "∀ ipkP ipkR cdt pl pres kj #i.
+    (Present( 'clr', ipkP, ipkR, cdt, pl, pres, kj ) @ #i) ⇒
+    (((∃ #a. (Answered( ipkR, ipkP, cdt ) @ #a) ∧ (#a < #i)) ∨
+      (∃ #r. Reveal( ipkP ) @ #r)) ∨
+     (∃ #r. Reveal( ipkR ) @ #r))"
+/*
+guarded formula characterizing all counter-examples:
+"∃ ipkP ipkR cdt pl pres kj #i.
+  (Present( 'clr', ipkP, ipkR, cdt, pl, pres, kj ) @ #i)
+ ∧
+  (∀ #a. (Answered( ipkR, ipkP, cdt ) @ #a) ⇒ ¬(#a < #i)) ∧
+  (∀ #r. (Reveal( ipkP ) @ #r) ⇒ ⊥) ∧
+  (∀ #r. (Reveal( ipkR ) @ #r) ⇒ ⊥)"
+*/
+by sorry
+
+lemma oda2_present_only_with_consent [hide_lemma=dh_exponents_secret,
+                                      hide_lemma=authenticated_share_origin, hide_lemma=dh_shared_secret,
+                                      hide_lemma=derived_key_secret]:
+  all-traces
+  "∀ role ipkP ipkR cdt pl pres kj #i.
+    (Present( role, ipkP, ipkR, cdt, pl, pres, kj ) @ #i) ⇒
+    (∃ #c. (Consent( ipkP, ipkR, cdt, pl ) @ #c) ∧ (#c < #i))"
+/*
+guarded formula characterizing all counter-examples:
+"∃ role ipkP ipkR cdt pl pres kj #i.
+  (Present( role, ipkP, ipkR, cdt, pl, pres, kj ) @ #i)
+ ∧
+  ∀ #c. (Consent( ipkP, ipkR, cdt, pl ) @ #c) ⇒ ¬(#c < #i)"
+*/
+by sorry
+
+lemma presentation_key_origin [reuse,
+                               hide_lemma=authenticated_share_origin, hide_lemma=dh_shared_secret,
+                               hide_lemma=derived_key_secret, hide_lemma=ca_caller_requires_answer,
+                               hide_lemma=oda2_present_after_ca,
+                               hide_lemma=oda2_recipient_present_after_answer]:
+  all-traces
+  "∀ role ipkP ipkR cdt pl pres k #i.
+    (Present( role, ipkP, ipkR, cdt, pl, pres, k ) @ #i) ⇒
+    (∃ #j. (DerivedKey( k, ipkP, ipkR ) @ #j) ∧ (#j < #i))"
+/*
+guarded formula characterizing all counter-examples:
+"∃ role ipkP ipkR cdt pl pres k #i.
+  (Present( role, ipkP, ipkR, cdt, pl, pres, k ) @ #i)
+ ∧
+  ∀ #j. (DerivedKey( k, ipkP, ipkR ) @ #j) ⇒ ¬(#j < #i)"
+*/
+by sorry
+
+lemma oda2_presentation_secret [reuse,
+                                hide_lemma=authenticated_share_origin, hide_lemma=dh_shared_secret,
+                                hide_lemma=callst_only_after_ca, hide_lemma=ca_caller_requires_answer,
+                                hide_lemma=oda2_present_after_ca,
+                                hide_lemma=oda2_recipient_present_after_answer]:
+  all-traces
+  "∀ role ipkP ipkR cdt pl pres kj #i.
+    (Present( role, ipkP, ipkR, cdt, pl, pres, kj ) @ #i) ⇒
+    ((((¬(∃ #k. !KU( pres ) @ #k)) ∨ (∃ #r. Reveal( ipkP ) @ #r)) ∨
+      (∃ #r. Reveal( ipkR ) @ #r)) ∨
+     (∃ x y #r. RevealState( kj, x, y ) @ #r))"
+/*
+guarded formula characterizing all counter-examples:
+"∃ role ipkP ipkR cdt pl pres kj #i.
+  (Present( role, ipkP, ipkR, cdt, pl, pres, kj ) @ #i)
+ ∧
+  (∃ #k. (!KU( pres ) @ #k)) ∧
+  (∀ #r. (Reveal( ipkP ) @ #r) ⇒ ⊥) ∧
+  (∀ #r. (Reveal( ipkR ) @ #r) ⇒ ⊥) ∧
+  (∀ x y #r. (RevealState( kj, x, y ) @ #r) ⇒ ⊥)"
+*/
+by sorry
+
+lemma oda2_no_harvesting [hide_lemma=authenticated_share_origin,
+                          hide_lemma=dh_shared_secret, hide_lemma=callst_only_after_ca,
+                          hide_lemma=ca_caller_requires_answer, hide_lemma=oda2_present_after_ca]:
+  all-traces
+  "∀ ipkP ipkR cdt pl pres kj #i #k.
+    ((Present( 'rcp', ipkP, ipkR, cdt, pl, pres, kj ) @ #i) ∧
+     (!KU( pres ) @ #k)) ⇒
+    ((∃ #a. (Answered( ipkP, ipkR, cdt ) @ #a) ∧ (#a < #i)) ∧
+     (((∃ #r. Reveal( ipkP ) @ #r) ∨ (∃ #r. Reveal( ipkR ) @ #r)) ∨
+      (∃ x y #r. RevealState( kj, x, y ) @ #r)))"
+/*
+guarded formula characterizing all counter-examples:
+"∃ ipkP ipkR cdt pl pres kj #i #k.
+  (Present( 'rcp', ipkP, ipkR, cdt, pl, pres, kj ) @ #i) ∧
+  (!KU( pres ) @ #k)
+ ∧
+  ((∀ #a. (Answered( ipkP, ipkR, cdt ) @ #a) ⇒ ¬(#a < #i)) ∨
+   ((∀ #r. (Reveal( ipkP ) @ #r) ⇒ ⊥) ∧
+    (∀ #r. (Reveal( ipkR ) @ #r) ⇒ ⊥) ∧
+    (∀ x y #r. (RevealState( kj, x, y ) @ #r) ⇒ ⊥)))"
+*/
+by sorry
+
+lemma icv_request_authentic [hide_lemma=dh_exponents_secret,
+                             hide_lemma=dh_shared_secret, hide_lemma=derived_key_secret,
+                             hide_lemma=callst_only_after_ca, hide_lemma=oda2_present_after_ca,
+                             hide_lemma=oda2_recipient_present_after_answer,
+                             hide_lemma=presentation_key_origin, hide_lemma=oda2_presentation_secret]:
+  all-traces
+  "∀ role ipkP ipkR cdt pl #i.
+    (IcvAccept( role, ipkP, ipkR, cdt, pl ) @ #i) ⇒
+    (((∃ #j. (IcvRequest( ipkR, ipkP, cdt, pl ) @ #j) ∧ (#j < #i)) ∨
+      (∃ #r. Reveal( ipkR ) @ #r)) ∨
+     (∃ #r. Reveal( ipkP ) @ #r))"
+/*
+guarded formula characterizing all counter-examples:
+"∃ role ipkP ipkR cdt pl #i.
+  (IcvAccept( role, ipkP, ipkR, cdt, pl ) @ #i)
+ ∧
+  (∀ #j. (IcvRequest( ipkR, ipkP, cdt, pl ) @ #j) ⇒ ¬(#j < #i)) ∧
+  (∀ #r. (Reveal( ipkR ) @ #r) ⇒ ⊥) ∧
+  (∀ #r. (Reveal( ipkP ) @ #r) ⇒ ⊥)"
+*/
+by sorry
+
+lemma icv_display_authentic [hide_lemma=dh_exponents_secret,
+                             hide_lemma=dh_shared_secret, hide_lemma=derived_key_secret,
+                             hide_lemma=callst_only_after_ca, hide_lemma=oda2_present_after_ca,
+                             hide_lemma=oda2_recipient_present_after_answer,
+                             hide_lemma=presentation_key_origin, hide_lemma=oda2_presentation_secret]:
+  all-traces
+  "∀ ipkR ipkP cdt pl attr pres #i.
+    (Displayed( ipkR, ipkP, cdt, pl, attr, pres ) @ #i) ⇒
+    (((∃ role kj #j.
+        (Present( role, ipkP, ipkR, cdt, pl, pres, kj ) @ #j) ∧ (#j < #i)) ∨
+      (∃ #r. Reveal( ipkR ) @ #r)) ∨
+     (∃ #r. Reveal( ipkP ) @ #r))"
+/*
+guarded formula characterizing all counter-examples:
+"∃ ipkR ipkP cdt pl attr pres #i.
+  (Displayed( ipkR, ipkP, cdt, pl, attr, pres ) @ #i)
+ ∧
+  (∀ role kj #j.
+    (Present( role, ipkP, ipkR, cdt, pl, pres, kj ) @ #j) ⇒ ¬(#j < #i)) ∧
+  (∀ #r. (Reveal( ipkR ) @ #r) ⇒ ⊥) ∧
+  (∀ #r. (Reveal( ipkP ) @ #r) ⇒ ⊥)"
+*/
+by sorry
+
+lemma icv_key_agreement [hide_lemma=dh_exponents_secret,
+                         hide_lemma=dh_shared_secret, hide_lemma=derived_key_secret,
+                         hide_lemma=callst_only_after_ca, hide_lemma=oda2_present_after_ca,
+                         hide_lemma=oda2_recipient_present_after_answer,
+                         hide_lemma=presentation_key_origin, hide_lemma=oda2_presentation_secret]:
+  all-traces
+  "∀ k ipkR ipkP cdt pres #i.
+    (IcvKeyR( k, ipkR, ipkP, cdt, pres ) @ #i) ⇒
+    (((∃ #j. (IcvKeyP( k, ipkP, ipkR, cdt ) @ #j) ∧ (#j < #i)) ∨
+      (∃ #r. Reveal( ipkR ) @ #r)) ∨
+     (∃ #r. Reveal( ipkP ) @ #r))"
+/*
+guarded formula characterizing all counter-examples:
+"∃ k ipkR ipkP cdt pres #i.
+  (IcvKeyR( k, ipkR, ipkP, cdt, pres ) @ #i)
+ ∧
+  (∀ #j. (IcvKeyP( k, ipkP, ipkR, cdt ) @ #j) ⇒ ¬(#j < #i)) ∧
+  (∀ #r. (Reveal( ipkR ) @ #r) ⇒ ⊥) ∧
+  (∀ #r. (Reveal( ipkP ) @ #r) ⇒ ⊥)"
+*/
+by sorry
+
+lemma executable [hide_lemma=ltk_secret, hide_lemma=cred_sig_secret,
+                  hide_lemma=dh_exponents_secret, hide_lemma=authenticated_share_origin,
+                  hide_lemma=dh_shared_secret, hide_lemma=derived_key_secret,
+                  hide_lemma=callst_only_after_ca, hide_lemma=ca_caller_requires_answer,
+                  hide_lemma=oda2_present_after_ca,
+                  hide_lemma=oda2_recipient_present_after_answer,
+                  hide_lemma=presentation_key_origin, hide_lemma=oda2_presentation_secret]:
+  exists-trace
+  "∃ ipkP ipkR cdt pl pres kj attr #a #c #i #d #q #f.
+    ((((((((((((((((((IcvComplete( ipkR, ipkP, cdt ) @ #f) ∧
+                     (¬(ipkP = ipkR))) ∧
+                    (#i < #f)) ∧
+                   (#f < #d)) ∧
+                  (∀ x y c.1 #r. (IcvComplete( x, y, c.1 ) @ #r) ⇒ (#r = #f))) ∧
+                 (IcvRequest( ipkR, ipkP, cdt, pl ) @ #q)) ∧
+                (Answered( ipkP, ipkR, cdt ) @ #a)) ∧
+               (Consent( ipkP, ipkR, cdt, pl ) @ #c)) ∧
+              (Present( 'rcp', ipkP, ipkR, cdt, pl, pres, kj ) @ #i)) ∧
+             (Displayed( ipkR, ipkP, cdt, pl, attr, pres ) @ #d)) ∧
+            (#q < #c)) ∧
+           (∀ x y c.1 p #r. (IcvRequest( x, y, c.1, p ) @ #r) ⇒ (#r = #q))) ∧
+          (∀ ro x y c.1 p pr k #r.
+            (Present( ro, x, y, c.1, p, pr, k ) @ #r) ⇒ (#r = #i))) ∧
+         (¬(∃ ro x y c.1 p #r. IcvDeclined( ro, x, y, c.1, p ) @ #r))) ∧
+        (#a < #c)) ∧
+       (#c < #i)) ∧
+      (#i < #d)) ∧
+     (¬(∃ x #r. Reveal( x ) @ #r))) ∧
+    (¬(∃ k x y #r. RevealState( k, x, y ) @ #r))"
+/*
+guarded formula characterizing all satisfying traces:
+"∃ ipkP ipkR cdt pl pres kj attr #a #c #i #d #q #f.
+  (IcvComplete( ipkR, ipkP, cdt ) @ #f) ∧
+  (IcvRequest( ipkR, ipkP, cdt, pl ) @ #q) ∧
+  (Answered( ipkP, ipkR, cdt ) @ #a) ∧
+  (Consent( ipkP, ipkR, cdt, pl ) @ #c) ∧
+  (Present( 'rcp', ipkP, ipkR, cdt, pl, pres, kj ) @ #i) ∧
+  (Displayed( ipkR, ipkP, cdt, pl, attr, pres ) @ #d)
+ ∧
+  (¬(ipkP = ipkR)) ∧
+  (#i < #f) ∧
+  (#f < #d) ∧
+  (∀ x y c.1 #r. (IcvComplete( x, y, c.1 ) @ #r) ⇒ #r = #f) ∧
+  (#q < #c) ∧
+  (∀ x y c.1 p #r. (IcvRequest( x, y, c.1, p ) @ #r) ⇒ #r = #q) ∧
+  (∀ ro x y c.1 p pr k #r.
+    (Present( ro, x, y, c.1, p, pr, k ) @ #r) ⇒ #r = #i) ∧
+  (∀ ro x y c.1 p #r. (IcvDeclined( ro, x, y, c.1, p ) @ #r) ⇒ ⊥) ∧
+  (#a < #c) ∧
+  (#c < #i) ∧
+  (#i < #d) ∧
+  (∀ x #r. (Reveal( x ) @ #r) ⇒ ⊥) ∧
+  (∀ k x y #r. (RevealState( k, x, y ) @ #r) ⇒ ⊥)"
+*/
+by sorry
+
+lemma executable_declined [hide_lemma=ltk_secret,
+                           hide_lemma=cred_sig_secret, hide_lemma=dh_exponents_secret,
+                           hide_lemma=authenticated_share_origin, hide_lemma=dh_shared_secret,
+                           hide_lemma=derived_key_secret, hide_lemma=callst_only_after_ca,
+                           hide_lemma=ca_caller_requires_answer, hide_lemma=oda2_present_after_ca,
+                           hide_lemma=oda2_recipient_present_after_answer,
+                           hide_lemma=presentation_key_origin, hide_lemma=oda2_presentation_secret]:
+  exists-trace
+  "∃ ipkR ipkP cdt pl #q #d #f #i.
+    (((((((((((((IcvRequest( ipkR, ipkP, cdt, pl ) @ #q) ∧
+                (IcvDeclined( 'rcp', ipkP, ipkR, cdt, pl ) @ #d)) ∧
+               (IcvComplete( ipkR, ipkP, cdt ) @ #f)) ∧
+              (DeclineDisplayed( ipkR, ipkP, cdt, pl ) @ #i)) ∧
+             (¬(ipkP = ipkR))) ∧
+            (#q < #d)) ∧
+           (#d < #f)) ∧
+          (#f < #i)) ∧
+         (∀ x y c p #r. (IcvRequest( x, y, c, p ) @ #r) ⇒ (#r = #q))) ∧
+        (∀ ro x y c p #r. (IcvDeclined( ro, x, y, c, p ) @ #r) ⇒ (#r = #d))) ∧
+       (∀ x y c #r. (IcvComplete( x, y, c ) @ #r) ⇒ (#r = #f))) ∧
+      (¬(∃ ro x y c p pr k #r. Present( ro, x, y, c, p, pr, k ) @ #r))) ∧
+     (¬(∃ x #r. Reveal( x ) @ #r))) ∧
+    (¬(∃ k x y #r. RevealState( k, x, y ) @ #r))"
+/*
+guarded formula characterizing all satisfying traces:
+"∃ ipkR ipkP cdt pl #q #d #f #i.
+  (IcvRequest( ipkR, ipkP, cdt, pl ) @ #q) ∧
+  (IcvDeclined( 'rcp', ipkP, ipkR, cdt, pl ) @ #d) ∧
+  (IcvComplete( ipkR, ipkP, cdt ) @ #f) ∧
+  (DeclineDisplayed( ipkR, ipkP, cdt, pl ) @ #i)
+ ∧
+  (¬(ipkP = ipkR)) ∧
+  (#q < #d) ∧
+  (#d < #f) ∧
+  (#f < #i) ∧
+  (∀ x y c p #r. (IcvRequest( x, y, c, p ) @ #r) ⇒ #r = #q) ∧
+  (∀ ro x y c p #r. (IcvDeclined( ro, x, y, c, p ) @ #r) ⇒ #r = #d) ∧
+  (∀ x y c #r. (IcvComplete( x, y, c ) @ #r) ⇒ #r = #f) ∧
+  (∀ ro x y c p pr k #r. (Present( ro, x, y, c, p, pr, k ) @ #r) ⇒ ⊥) ∧
+  (∀ x #r. (Reveal( x ) @ #r) ⇒ ⊥) ∧
+  (∀ k x y #r. (RevealState( k, x, y ) @ #r) ⇒ ⊥)"
+*/
+by sorry
+
+lemma executable_after_state_exposure [hide_lemma=authenticated_share_origin,
+                                       hide_lemma=dh_shared_secret, hide_lemma=derived_key_secret,
+                                       hide_lemma=callst_only_after_ca, hide_lemma=ca_caller_requires_answer,
+                                       hide_lemma=oda2_present_after_ca,
+                                       hide_lemma=oda2_recipient_present_after_answer,
+                                       hide_lemma=presentation_key_origin,
+                                       hide_lemma=oda2_presentation_secret]:
+  exists-trace
+  "∃ ipkP ipkR cdt pl pres kj attr #a #c #i #d #q #f #r #ca.
+    (((((((((((((((((((((((IcvComplete( ipkR, ipkP, cdt ) @ #f) ∧
+                          (CaRequest( ipkR, ipkP, cdt ) @ #ca)) ∧
+                         (∀ x y c.1 #t. (CaRequest( x, y, c.1 ) @ #t) ⇒ (#t = #ca))) ∧
+                        (∀ x y c.1 #t. (Answered( x, y, c.1 ) @ #t) ⇒ (#t = #a))) ∧
+                       (¬(ipkP = ipkR))) ∧
+                      (#i < #f)) ∧
+                     (#f < #d)) ∧
+                    (∀ x y c.1 #r.1. (IcvComplete( x, y, c.1 ) @ #r.1) ⇒ (#r.1 = #f))) ∧
+                   (IcvRequest( ipkR, ipkP, cdt, pl ) @ #q)) ∧
+                  (Answered( ipkP, ipkR, cdt ) @ #a)) ∧
+                 (Consent( ipkP, ipkR, cdt, pl ) @ #c)) ∧
+                (Present( 'rcp', ipkP, ipkR, cdt, pl, pres, kj ) @ #i)) ∧
+               (Displayed( ipkR, ipkP, cdt, pl, attr, pres ) @ #d)) ∧
+              (#q < #c)) ∧
+             (∀ x y c.1 p #r.1. (IcvRequest( x, y, c.1, p ) @ #r.1) ⇒ (#r.1 = #q))) ∧
+            (∀ ro x y c.1 p pr k #r.1.
+              (Present( ro, x, y, c.1, p, pr, k ) @ #r.1) ⇒ (#r.1 = #i))) ∧
+           (¬(∃ ro x y c.1 p #r.1. IcvDeclined( ro, x, y, c.1, p ) @ #r.1))) ∧
+          (#a < #c)) ∧
+         (#c < #i)) ∧
+        (#i < #d)) ∧
+       (¬(∃ x #r.1. Reveal( x ) @ #r.1))) ∧
+      (RevealState( kj, ipkP, ipkR ) @ #r)) ∧
+     (#r < #q)) ∧
+    (∀ k x y #t. (RevealState( k, x, y ) @ #t) ⇒ (#t = #r))"
+/*
+guarded formula characterizing all satisfying traces:
+"∃ ipkP ipkR cdt pl pres kj attr #a #c #i #d #q #f #r #ca.
+  (IcvComplete( ipkR, ipkP, cdt ) @ #f) ∧
+  (CaRequest( ipkR, ipkP, cdt ) @ #ca) ∧
+  (IcvRequest( ipkR, ipkP, cdt, pl ) @ #q) ∧
+  (Answered( ipkP, ipkR, cdt ) @ #a) ∧
+  (Consent( ipkP, ipkR, cdt, pl ) @ #c) ∧
+  (Present( 'rcp', ipkP, ipkR, cdt, pl, pres, kj ) @ #i) ∧
+  (Displayed( ipkR, ipkP, cdt, pl, attr, pres ) @ #d) ∧
+  (RevealState( kj, ipkP, ipkR ) @ #r)
+ ∧
+  (∀ x y c.1 #t. (CaRequest( x, y, c.1 ) @ #t) ⇒ #t = #ca) ∧
+  (∀ x y c.1 #t. (Answered( x, y, c.1 ) @ #t) ⇒ #t = #a) ∧
+  (¬(ipkP = ipkR)) ∧
+  (#i < #f) ∧
+  (#f < #d) ∧
+  (∀ x y c.1 #r.1. (IcvComplete( x, y, c.1 ) @ #r.1) ⇒ #r.1 = #f) ∧
+  (#q < #c) ∧
+  (∀ x y c.1 p #r.1. (IcvRequest( x, y, c.1, p ) @ #r.1) ⇒ #r.1 = #q) ∧
+  (∀ ro x y c.1 p pr k #r.1.
+    (Present( ro, x, y, c.1, p, pr, k ) @ #r.1) ⇒ #r.1 = #i) ∧
+  (∀ ro x y c.1 p #r.1. (IcvDeclined( ro, x, y, c.1, p ) @ #r.1) ⇒ ⊥) ∧
+  (#a < #c) ∧
+  (#c < #i) ∧
+  (#i < #d) ∧
+  (∀ x #r.1. (Reveal( x ) @ #r.1) ⇒ ⊥) ∧
+  (#r < #q) ∧
+  (∀ k x y #t. (RevealState( k, x, y ) @ #t) ⇒ #t = #r)"
+*/
+by sorry
+
+lemma deniability_witness_icv_request [hide_lemma=ltk_secret,
+                                       hide_lemma=cred_sig_secret, hide_lemma=dh_exponents_secret,
+                                       hide_lemma=authenticated_share_origin, hide_lemma=dh_shared_secret,
+                                       hide_lemma=derived_key_secret, hide_lemma=callst_only_after_ca,
+                                       hide_lemma=ca_caller_requires_answer, hide_lemma=oda2_present_after_ca,
+                                       hide_lemma=oda2_recipient_present_after_answer,
+                                       hide_lemma=presentation_key_origin,
+                                       hide_lemma=oda2_presentation_secret]:
+  exists-trace
+  "∃ role ipkP ipkR cdt pl #i.
+    (((IcvAccept( role, ipkP, ipkR, cdt, pl ) @ #i) ∧ (¬(ipkP = ipkR))) ∧
+     (¬(∃ x y c p #j. IcvRequest( x, y, c, p ) @ #j))) ∧
+    (∀ x #j. (Reveal( x ) @ #j) ⇒ (x = ipkP))"
+/*
+guarded formula characterizing all satisfying traces:
+"∃ role ipkP ipkR cdt pl #i.
+  (IcvAccept( role, ipkP, ipkR, cdt, pl ) @ #i)
+ ∧
+  (¬(ipkP = ipkR)) ∧
+  (∀ x y c p #j. (IcvRequest( x, y, c, p ) @ #j) ⇒ ⊥) ∧
+  (∀ x #j. (Reveal( x ) @ #j) ⇒ x = ipkP)"
+*/
+by sorry
+
+lemma executable_caller_prover [hide_lemma=ltk_secret,
+                                hide_lemma=cred_sig_secret, hide_lemma=dh_exponents_secret,
+                                hide_lemma=authenticated_share_origin, hide_lemma=dh_shared_secret,
+                                hide_lemma=derived_key_secret, hide_lemma=callst_only_after_ca,
+                                hide_lemma=ca_caller_requires_answer, hide_lemma=oda2_present_after_ca,
+                                hide_lemma=oda2_recipient_present_after_answer,
+                                hide_lemma=presentation_key_origin, hide_lemma=oda2_presentation_secret]:
+  exists-trace
+  "∃ ipkP ipkR cdt pl pres kj attr #ca #a #q #c #i #f #d.
+    (((((((((((((((((((((CaRequest( ipkP, ipkR, cdt ) @ #ca) ∧
+                        (Answered( ipkR, ipkP, cdt ) @ #a)) ∧
+                       (IcvRequest( ipkR, ipkP, cdt, pl ) @ #q)) ∧
+                      (Consent( ipkP, ipkR, cdt, pl ) @ #c)) ∧
+                     (Present( 'clr', ipkP, ipkR, cdt, pl, pres, kj ) @ #i)) ∧
+                    (IcvComplete( ipkR, ipkP, cdt ) @ #f)) ∧
+                   (Displayed( ipkR, ipkP, cdt, pl, attr, pres ) @ #d)) ∧
+                  (¬(ipkP = ipkR))) ∧
+                 (#ca < #a)) ∧
+                (#a < #q)) ∧
+               (#q < #c)) ∧
+              (#c < #i)) ∧
+             (#i < #f)) ∧
+            (#f < #d)) ∧
+           (∀ x y c.1 #t. (CaRequest( x, y, c.1 ) @ #t) ⇒ (#t = #ca))) ∧
+          (∀ x y c.1 #t. (Answered( x, y, c.1 ) @ #t) ⇒ (#t = #a))) ∧
+         (∀ x y c.1 p #r. (IcvRequest( x, y, c.1, p ) @ #r) ⇒ (#r = #q))) ∧
+        (∀ ro x y c.1 p pr k #r.
+          (Present( ro, x, y, c.1, p, pr, k ) @ #r) ⇒ (#r = #i))) ∧
+       (∀ x y c.1 #r. (IcvComplete( x, y, c.1 ) @ #r) ⇒ (#r = #f))) ∧
+      (¬(∃ ro x y c.1 p #r. IcvDeclined( ro, x, y, c.1, p ) @ #r))) ∧
+     (¬(∃ x #r. Reveal( x ) @ #r))) ∧
+    (¬(∃ k x y #r. RevealState( k, x, y ) @ #r))"
+/*
+guarded formula characterizing all satisfying traces:
+"∃ ipkP ipkR cdt pl pres kj attr #ca #a #q #c #i #f #d.
+  (CaRequest( ipkP, ipkR, cdt ) @ #ca) ∧
+  (Answered( ipkR, ipkP, cdt ) @ #a) ∧
+  (IcvRequest( ipkR, ipkP, cdt, pl ) @ #q) ∧
+  (Consent( ipkP, ipkR, cdt, pl ) @ #c) ∧
+  (Present( 'clr', ipkP, ipkR, cdt, pl, pres, kj ) @ #i) ∧
+  (IcvComplete( ipkR, ipkP, cdt ) @ #f) ∧
+  (Displayed( ipkR, ipkP, cdt, pl, attr, pres ) @ #d)
+ ∧
+  (¬(ipkP = ipkR)) ∧
+  (#ca < #a) ∧
+  (#a < #q) ∧
+  (#q < #c) ∧
+  (#c < #i) ∧
+  (#i < #f) ∧
+  (#f < #d) ∧
+  (∀ x y c.1 #t. (CaRequest( x, y, c.1 ) @ #t) ⇒ #t = #ca) ∧
+  (∀ x y c.1 #t. (Answered( x, y, c.1 ) @ #t) ⇒ #t = #a) ∧
+  (∀ x y c.1 p #r. (IcvRequest( x, y, c.1, p ) @ #r) ⇒ #r = #q) ∧
+  (∀ ro x y c.1 p pr k #r.
+    (Present( ro, x, y, c.1, p, pr, k ) @ #r) ⇒ #r = #i) ∧
+  (∀ x y c.1 #r. (IcvComplete( x, y, c.1 ) @ #r) ⇒ #r = #f) ∧
+  (∀ ro x y c.1 p #r. (IcvDeclined( ro, x, y, c.1, p ) @ #r) ⇒ ⊥) ∧
+  (∀ x #r. (Reveal( x ) @ #r) ⇒ ⊥) ∧
+  (∀ k x y #r. (RevealState( k, x, y ) @ #r) ⇒ ⊥)"
+*/
+by sorry
+
+lemma executable_two_rounds [hide_lemma=ltk_secret,
+                             hide_lemma=cred_sig_secret, hide_lemma=dh_exponents_secret,
+                             hide_lemma=authenticated_share_origin, hide_lemma=dh_shared_secret,
+                             hide_lemma=derived_key_secret, hide_lemma=callst_only_after_ca,
+                             hide_lemma=ca_caller_requires_answer, hide_lemma=oda2_present_after_ca,
+                             hide_lemma=oda2_recipient_present_after_answer,
+                             hide_lemma=presentation_key_origin, hide_lemma=oda2_presentation_secret]:
+  exists-trace
+  "∃ ipkP ipkR cdt pl #ca #a #q1 #d1 #f1 #q2 #d2 #f2.
+    (((((((((((((((((((((((CaRequest( ipkR, ipkP, cdt ) @ #ca) ∧
+                          (Answered( ipkP, ipkR, cdt ) @ #a)) ∧
+                         (IcvRequest( ipkR, ipkP, cdt, pl ) @ #q1)) ∧
+                        (IcvDeclined( 'rcp', ipkP, ipkR, cdt, pl ) @ #d1)) ∧
+                       (IcvComplete( ipkR, ipkP, cdt ) @ #f1)) ∧
+                      (IcvRequest( ipkR, ipkP, cdt, pl ) @ #q2)) ∧
+                     (IcvDeclined( 'rcp', ipkP, ipkR, cdt, pl ) @ #d2)) ∧
+                    (IcvComplete( ipkR, ipkP, cdt ) @ #f2)) ∧
+                   (¬(ipkP = ipkR))) ∧
+                  (#ca < #a)) ∧
+                 (#a < #q1)) ∧
+                (#q1 < #d1)) ∧
+               (#d1 < #f1)) ∧
+              (#f1 < #q2)) ∧
+             (#q2 < #d2)) ∧
+            (#d2 < #f2)) ∧
+           (∀ x y c #t. (CaRequest( x, y, c ) @ #t) ⇒ (#t = #ca))) ∧
+          (∀ x y c #t. (Answered( x, y, c ) @ #t) ⇒ (#t = #a))) ∧
+         (∀ x y c p #r.
+           (IcvRequest( x, y, c, p ) @ #r) ⇒ ((#r = #q1) ∨ (#r = #q2)))) ∧
+        (∀ ro x y c p #r.
+          (IcvDeclined( ro, x, y, c, p ) @ #r) ⇒ ((#r = #d1) ∨ (#r = #d2)))) ∧
+       (∀ x y c #r.
+         (IcvComplete( x, y, c ) @ #r) ⇒ ((#r = #f1) ∨ (#r = #f2)))) ∧
+      (¬(∃ ro x y c p pr k #r. Present( ro, x, y, c, p, pr, k ) @ #r))) ∧
+     (¬(∃ x #r. Reveal( x ) @ #r))) ∧
+    (¬(∃ k x y #r. RevealState( k, x, y ) @ #r))"
+/*
+guarded formula characterizing all satisfying traces:
+"∃ ipkP ipkR cdt pl #ca #a #q1 #d1 #f1 #q2 #d2 #f2.
+  (CaRequest( ipkR, ipkP, cdt ) @ #ca) ∧
+  (Answered( ipkP, ipkR, cdt ) @ #a) ∧
+  (IcvRequest( ipkR, ipkP, cdt, pl ) @ #q1) ∧
+  (IcvDeclined( 'rcp', ipkP, ipkR, cdt, pl ) @ #d1) ∧
+  (IcvComplete( ipkR, ipkP, cdt ) @ #f1) ∧
+  (IcvRequest( ipkR, ipkP, cdt, pl ) @ #q2) ∧
+  (IcvDeclined( 'rcp', ipkP, ipkR, cdt, pl ) @ #d2) ∧
+  (IcvComplete( ipkR, ipkP, cdt ) @ #f2)
+ ∧
+  (¬(ipkP = ipkR)) ∧
+  (#ca < #a) ∧
+  (#a < #q1) ∧
+  (#q1 < #d1) ∧
+  (#d1 < #f1) ∧
+  (#f1 < #q2) ∧
+  (#q2 < #d2) ∧
+  (#d2 < #f2) ∧
+  (∀ x y c #t. (CaRequest( x, y, c ) @ #t) ⇒ #t = #ca) ∧
+  (∀ x y c #t. (Answered( x, y, c ) @ #t) ⇒ #t = #a) ∧
+  (∀ x y c p #r.
+    (IcvRequest( x, y, c, p ) @ #r) ⇒ ((#r = #q1) ∨ (#r = #q2))) ∧
+  (∀ ro x y c p #r.
+    (IcvDeclined( ro, x, y, c, p ) @ #r) ⇒ ((#r = #d1) ∨ (#r = #d2))) ∧
+  (∀ x y c #r. (IcvComplete( x, y, c ) @ #r) ⇒ ((#r = #f1) ∨ (#r = #f2))) ∧
+  (∀ ro x y c p pr k #r. (Present( ro, x, y, c, p, pr, k ) @ #r) ⇒ ⊥) ∧
+  (∀ x #r. (Reveal( x ) @ #r) ⇒ ⊥) ∧
+  (∀ k x y #r. (RevealState( k, x, y ) @ #r) ⇒ ⊥)"
+*/
+by sorry
+
+/* All wellformedness checks were successful. */
+
+/*
+Generated from:
+Tamarin version 1.12.0
+Maude version 3.5.1
+Git revision: UNKNOWN, branch: UNKNOWN
+Compiled at: 2026-03-08 10:05:47.616272992 UTC
+*/
+
+end
+
+==============================================================================
+summary of summaries:
+
+analyzed: logs/review/5b6437639e3e5898/julep_oda.spthy
+
+  processing time: 18.39s
+  
+  ltk_secret (all-traces): analysis incomplete (1 steps)
+  cred_sig_secret (all-traces): analysis incomplete (1 steps)
+  dh_exponents_secret (all-traces): analysis incomplete (1 steps)
+  ltk_secret_ordered (all-traces): analysis incomplete (1 steps)
+  authenticated_share_origin (all-traces): verified (110 steps)
+  dh_shared_secret (all-traces): analysis incomplete (1 steps)
+  derived_key_secret (all-traces): analysis incomplete (1 steps)
+  callst_only_after_ca (all-traces): analysis incomplete (1 steps)
+  ca_caller_requires_answer (all-traces): analysis incomplete (1 steps)
+  oda2_accept_after_ca (all-traces): analysis incomplete (1 steps)
+  oda2_present_after_ca (all-traces): analysis incomplete (1 steps)
+  oda2_recipient_present_after_answer (all-traces): analysis incomplete (1 steps)
+  oda2_caller_present_after_peer_answer (all-traces): analysis incomplete (1 steps)
+  oda2_present_only_with_consent (all-traces): analysis incomplete (1 steps)
+  presentation_key_origin (all-traces): analysis incomplete (1 steps)
+  oda2_presentation_secret (all-traces): analysis incomplete (1 steps)
+  oda2_no_harvesting (all-traces): analysis incomplete (1 steps)
+  icv_request_authentic (all-traces): analysis incomplete (1 steps)
+  icv_display_authentic (all-traces): analysis incomplete (1 steps)
+  icv_key_agreement (all-traces): analysis incomplete (1 steps)
+  executable (exists-trace): analysis incomplete (1 steps)
+  executable_declined (exists-trace): analysis incomplete (1 steps)
+  executable_after_state_exposure (exists-trace): analysis incomplete (1 steps)
+  deniability_witness_icv_request (exists-trace): analysis incomplete (1 steps)
+  executable_caller_prover (exists-trace): analysis incomplete (1 steps)
+  executable_two_rounds (exists-trace): analysis incomplete (1 steps)
+
+==============================================================================

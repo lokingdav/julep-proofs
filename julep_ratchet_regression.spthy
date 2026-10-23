@@ -1,0 +1,81 @@
+/* Focused regression for AEAD re-encryption after current-state exposure.
+ * Computes the old ciphertext KDF and the corrected signed-transcript KDF
+ * on the SAME exchange. This isolates the ratchet issue; it does not replace
+ * the enrollment, delegation, identity, or ODA proofs in the full models.
+ */
+theory JulepRatchetRegression
+begin
+heuristic: S
+builtins: hashing, asymmetric-encryption, diffie-hellman
+functions: kdf/1, aead/4, open/3, nonce/1
+equations: open(aead(m,k,r,ad),k,ad) = m,
+           nonce(aead(m,k,r,ad)) = r
+
+rule Setup:
+  [ Fr(~skA), Fr(~skB), Fr(~k), Fr(~call) ]
+  --[ Keys(~skA,~skB) ]-> [ StartA(~skA,pk(~skB),~k,~call), StartB(~skB,pk(~skA),~k,~call),
+        !State(~k), Out(<pk(~skA),pk(~skB),~call>) ]
+
+rule Reveal_State:
+  [ !State(k) ] --[ RevealState(k) ]-> [ Out(k) ]
+
+rule Adversary_Frank:
+  [ In(<m,sk,vkR>), Fr(~sig) ]
+  --> [ !Amf(~sig,m,pk(sk),vkR), Out(~sig) ]
+
+rule Adversary_Receiver_Forge:
+  [ In(<m,vkS,skR>), Fr(~sig) ]
+  --> [ !Amf(~sig,m,vkS,pk(skR)), Out(~sig) ]
+
+rule Send_Request:
+  let idx = h(<k,call>)
+      mA = <'1',call,'g'^~a>
+      cA = aead(<mA,~sigA>,k,~rhoA,<idx,'request'>)
+  in
+  [ StartA(skA,vkB,k,call), Fr(~a), Fr(~sigA), Fr(~rhoA) ]
+  --> [ PendingA(pk(skA),vkB,k,~a,idx,mA,~sigA,cA),
+        !Amf(~sigA,mA,pk(skA),vkB), Out(cA) ]
+
+rule Answer:
+  let idx = h(<k,call>)
+      mA = <'1',call,A>
+      cA = aead(<mA,sigA>,k,rhoA,<idx,'request'>)
+      mB = <'2',h(<mA,sigA>),'g'^~b>
+      cB = aead(<mB,~sigB>,k,~rhoB,<idx,'response'>)
+      old = kdf(<k,idx,cA,cB,A^~b>)
+      fixed = kdf(<k,idx,mA,sigA,mB,~sigB,A^~b>)
+  in
+  [ StartB(skB,vkA,k,call), !Amf(sigA,mA,vkA,pk(skB)), In(cA),
+    Fr(~b), Fr(~sigB), Fr(~rhoB) ]
+  --[ LegacyB(k,old), FixedB(k,fixed) ]->
+  [ !Amf(~sigB,mB,pk(skB),vkA), Out(cB) ]
+
+rule Finish:
+  let mB = <'2',h(<mA,sigA>),B>
+      cB = aead(<mB,sigB>,k,rhoB,<idx,'response'>)
+      old = kdf(<k,idx,cA,cB,B^~a>)
+      fixed = kdf(<k,idx,mA,sigA,mB,sigB,B^~a>)
+  in
+  [ PendingA(vkA,vkB,k,~a,idx,mA,sigA,cA),
+    !Amf(sigB,mB,vkB,vkA), In(cB) ]
+  --[ LegacyA(k,old), FixedA(k,fixed) ]-> []
+
+lemma private_keys [reuse, use_induction]:
+  "All a b #i. Keys(a,b) @i
+    ==> not (Ex #j. KU(a) @j) & not (Ex #j. KU(b) @j)"
+
+lemma legacy_agreement_expected_falsified:
+  "All k next #i. LegacyA(k,next) @i
+    ==> Ex #j. LegacyB(k,next) @j & #j < #i"
+
+lemma corrected_agreement:
+  "All k next #i. FixedA(k,next) @i
+    ==> Ex #j. FixedB(k,next) @j & #j < #i"
+
+lemma executable_reencryption: exists-trace
+  "Ex k oldA oldB fixed #r #i #j.
+      RevealState(k) @r
+    & LegacyB(k,oldB) @i & FixedB(k,fixed) @i
+    & LegacyA(k,oldA) @j & FixedA(k,fixed) @j
+    & #r < #j & #i < #j & not (oldA = oldB)"
+end

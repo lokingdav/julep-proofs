@@ -1,0 +1,28 @@
+maude tool: 'maude'
+ checking version: 3.5.1. OK.
+ checking installation: OK.
+[Theory JulepPairing] Theory loaded
+[Theory JulepPairing] Theory translated
+[Theory JulepPairing] Derivation checks started
+[Open Chains] Too many chain constraints, stopping precomputation. Open Chains limits (can be changed with -c=): 10
+[Open Chains] Too many chain constraints, stopping precomputation. Open Chains limits (can be changed with -c=): 10
+[Theory JulepPairing] Derivation checks ended
+[Theory JulepPairing] Theory closed
+quit-on-warning mode selected - aborting on wellformedness errors.
+
+WARNING: the following wellformedness checks failed!
+
+Message Derivation Checks
+=========================
+
+  The variables of the following rule(s) are not derivable from their premises, you may be performing unintended pattern matching.
+
+Rule Pair_B1_delegated: 
+Failed to derive Variable(s): skbO
+
+Rule Pair_A2: 
+Failed to derive Variable(s): xb
+
+Rule Pair_B2: 
+Failed to derive Variable(s): xa
+

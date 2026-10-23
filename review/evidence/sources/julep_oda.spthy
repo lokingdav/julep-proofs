@@ -1,0 +1,614 @@
+/* Julep ICV / ODA, with a compact CA prefix and unbounded ICV rounds.
+ * The local post-CA state implements the figure's use of K_{i+1}; it is not
+ * a cryptographic proof of an implementation that accepts ICV under K_i.
+ * Each endpoint keeps one current shared key per exchange. Linear CurrentKey
+ * facts track which value a shared-key compromise can reveal; an update
+ * consumes that value. Attacker knowledge survives honest erasure.
+ * Randomized AMF includes receiver forgery. See ABSTRACTIONS.md.
+ */
+theory JulepODA
+begin
+
+heuristic: S
+
+builtins: hashing, asymmetric-encryption, diffie-hellman, symmetric-encryption
+
+functions: sign/2, pok/4, kdf/1, aead/4, aead_open/3, aead_nonce/1
+
+equations: aead_open(aead(m,k,r,ad),k,ad) = m,
+           aead_nonce(aead(m,k,r,ad)) = r
+
+restriction OnlyOnce: "All x #i #j. OnlyOnce(x) @i & OnlyOnce(x) @j ==> #i = #j"
+
+rule ES_Init:
+  [ Fr(~skES) ] --[ OnlyOnce('ES') ]-> [ !ES(~skES), Out(pk(~skES)) ]
+
+rule Enroll:
+  let ipk  = <pk(~ska), pk(~skb), pk(~skc)>
+      hid  = h(<'hid', ~id, ipk>)
+      esig = sign(<'etk', $tn, ipk, 'ex', hid>, ~skES)
+      etk  = <$tn, ipk, 'ex', hid, esig>
+  in
+  [ !ES(~skES)[no_precomp], Fr(~ska), Fr(~skb), Fr(~skc), Fr(~id) ]
+  --[ Enrolled($tn, ipk, ~id), LtkGen(ipk, ~ska, ~skb, ~skc) ]->
+  [ !Ltk($tn, ipk, ~ska, ~skb, ~skc), !Etk($tn, ipk, ~id, etk), Out(etk) ]
+
+rule Delegate:
+  let ipkO = <pk(~skaO), pk(~skbO), pk(~skcO)>
+      dsig = sign(<'dlg', ipkD, 'exD', $src, 'orig'>, ~skbO)
+      dtk  = <~idO, etkO, 'exD', ipkD, dsig>
+  in
+  [ !Ltk($src, ipkO, ~skaO, ~skbO, ~skcO)[no_precomp], !Etk($src, ipkO, ~idO, etkO)[no_precomp],
+    !Etk($tnD, ipkD, ~idD, etkD)[no_precomp] ]
+  --[ Delegated($src, ipkO, ipkD) ]->
+  [ !Dtk($src, ipkO, ipkD, dtk), Out(<etkO, 'exD', ipkD, dsig>) ]
+
+rule Reveal_Ltk:
+  [ !Ltk($tn, ipk, ~ska, ~skb, ~skc)[no_precomp] ]
+  --[ Reveal(ipk) ]->
+  [ Out(<~ska, ~skb, ~skc>) ]
+
+rule IdP_Init:
+  [ Fr(~skI) ] --[ OnlyOnce('IdP') ]-> [ !IdP(~skI), !IdPPublic(pk(~skI)), Out(pk(~skI)) ]
+
+rule Issue_Cred:
+  let csig = sign(<'crd', $pl, $attr, ipk>, ~skI) in
+  [ !IdP(~skI)[no_precomp], !Ltk($tn, ipk, ~ska, ~skb, ~skc)[no_precomp] ]
+  --[ IssuedCred(ipk, $pl, $attr), CredIssued(ipk, $pl, $attr, csig) ]->
+  [ !Cred(ipk, $pl, $attr, csig) ]
+
+rule Adversary_Frank:
+  [ In(<m, sk, ipkR>)[no_precomp], Fr(~sig) ]
+  --> [ !Amf(~sig, m, pk(sk), ipkR, 'mvk'), Out(~sig) ]
+
+rule Adversary_Receiver_Forge:
+  [ In(<m, vkaS, skR, vkbR, pkcR>)[no_precomp], Fr(~sig) ]
+  --> [ !Amf(~sig, m, vkaS, <pk(skR), vkbR, pkcR>, 'mvk'), Out(~sig) ]
+
+rule Inject_PairState:
+  let ipkA = <pk(~skaA), pk(~skbA), pk(~skcA)>
+      ipkB = <pk(~skaB), pk(~skbB), pk(~skcB)>
+  in
+  [ Fr(~k),
+    !Ltk($src, ipkA, ~skaA, ~skbA, ~skcA)[no_precomp],
+    !Ltk($dst, ipkB, ~skaB, ~skbB, ~skcB)[no_precomp] ]
+  --[ Paired($src, $dst, ipkA, ipkB, ~k) ]->
+  [ PairStA($src, $dst, ipkA, ipkB, ~k),
+    PairStB($dst, $src, ipkB, ipkA, ~k),
+    CurrentKey('clr', ~k, ipkA, ipkB, 'private'), CurrentKey('rcp', ~k, ipkB, ipkA, 'private') ]
+
+// These two cases exhaust the shared-key shapes produced by this model.
+// One reveal per local key copy suffices: the attacker remembers the value.
+// The flag remains consumable by updates, including after that reveal.
+rule Reveal_State_Initial:
+  [ CurrentKey(role, ~k, ipkX, ipkY, 'private')[no_precomp] ]
+  --[ RevealState(~k, ipkX, ipkY) ]-> [ CurrentKey(role, ~k, ipkX, ipkY, 'exposed'), Out(~k) ]
+
+rule Reveal_State_Derived:
+  [ CurrentKey(role, kdf(inputs), ipkX, ipkY, 'private')[no_precomp] ]
+  --[ RevealState(kdf(inputs), ipkX, ipkY) ]-> [ CurrentKey(role, kdf(inputs), ipkX, ipkY, 'exposed'), Out(kdf(inputs)) ]
+
+rule CA_A1:
+  let cdt  = <$src, $dst, $ts>
+      idx  = h(<'idx', ~k, cdt>)
+      A    = 'g'^~a
+      mA   = <'1', h(<'ratchet-context', ~k, idx>), cdt, A>
+      ctxA = aead(<'careq', mA, ~sigA>, ~k, ~rhoA, <idx, 'careq', 'caller'>)
+  in
+  [ PairStA($src, $dst, ipkA, ipkB, ~k)[no_precomp],
+    !Ltk($src, ipkA, ~skaA, ~skbA, ~skcA)[no_precomp], Fr(~a), Fr(~sigA), Fr(~rhoA) ]
+  --[ DhExp(~a), CaRequest(ipkA, ipkB, cdt), SendShare(A), FreshShare(A, ~a) ]->
+  [ CaStA($src, $dst, ipkA, ipkB, ~k, ~a, idx, cdt, mA, ~sigA, ctxA),
+    !Amf(~sigA, mA, pk(~skaA), ipkB, 'mvk'), Out(<idx, ctxA>) ]
+
+// The extra Ltk premises at receive/update steps are redundant enrollment
+// bookkeeping: Inject_PairState already requires both bundles, and protocol
+// state preserves them. They neither disclose peer secrets nor add a check
+// to the wire protocol. Explicit hash-index and public-attribute patterns
+// below likewise preserve shapes already enforced by their generation rules.
+rule CA_B1_display:
+  let cdt  = <$src, $dst, $ts>
+      idx  = h(<'idx', ~k, cdt>)
+      ipkA = <pk(skaA), vkbA, pkcA>
+      mA   = <'1', h(<'ratchet-context', ~k, idx>), cdt, A>
+      ctxA = aead(<'careq', mA, sigA>, ~k, rhoA, <idx, 'careq', 'caller'>)
+  in
+  [ PairStB($dst, $src, ipkB, ipkA, ~k)[no_precomp], !Amf(sigA, mA, pk(skaA), ipkB, 'mvk')[no_precomp], In(<idx, ctxA>)[no_precomp],
+    !Ltk($src, ipkA, ka0, kb0, kc0)[no_precomp], !Ltk($dst, ipkB, ka1, kb1, kc1)[no_precomp] ]
+  --[ CaDisplay(ipkB, ipkA, cdt), AuthShare(A, ipkA, ipkB), RecvShare(A) ]->
+  [ CaStB($dst, $src, ipkB, ipkA, ~k, idx, cdt, mA, sigA, ctxA, A) ]
+
+rule CA_B2_answer:
+  let idx = h(hidx)
+      B    = 'g'^~b
+      nce  = h(<'nce', mA, sigA>)
+      mB   = <'2', nce, B>
+      ctxB = aead(<'carsp', mB, ~sigB>, ~k, ~rhoB, <idx, 'carsp', 'recipient'>)
+      k2   = kdf(<'ca', ~k, idx, mA, sigA, mB, ~sigB, A^~b>)
+  in
+  [ CaStB($dst, $src, ipkB, ipkA, ~k, idx, cdt, mA, sigA, ctxA, A)[no_precomp],
+    CurrentKey('rcp', ~k, ipkB, ipkA, exposed)[no_precomp], !Ltk($dst, ipkB, ~skaB, ~skbB, ~skcB)[no_precomp], Fr(~b), Fr(~sigB), Fr(~rhoB),
+    !Ltk($src, ipkA, kaPeer, kbPeer, kcPeer)[no_precomp] ]
+  --[ DhSecret(A^~b, ipkB, ipkA), DerivedKey(k2, ipkB, ipkA), AuthShare(A, ipkA, ipkB), DhExp(~b), Answered(ipkB, ipkA, cdt), CaDone('rcp', ipkB, ipkA, cdt), SendShare(B), FreshShare(B, ~b),
+      CallState('rcp', ipkB, ipkA, cdt) ]->
+  [ CallSt('rcp', $dst, $src, ipkB, ipkA, cdt, idx, k2),
+    CurrentKey('rcp', k2, ipkB, ipkA, 'private'), !Amf(~sigB, mB, pk(~skaB), ipkA, 'mvk'), Out(<idx, ctxB>) ]
+
+rule CA_A2:
+  let idx = h(hidx)
+      ipkB = <pk(skaB), vkbB, pkcB>
+      nce  = h(<'nce', mA, sigA>)
+      mB   = <'2', nce, B>
+      ctxB = aead(<'carsp', mB, sigB>, ~k, rhoB, <idx, 'carsp', 'recipient'>)
+      k2   = kdf(<'ca', ~k, idx, mA, sigA, mB, sigB, B^~a>)
+  in
+  [ CaStA($src, $dst, ipkA, ipkB, ~k, ~a, idx, cdt, mA, sigA, ctxA)[no_precomp],
+    CurrentKey('clr', ~k, ipkA, ipkB, exposed)[no_precomp], !Amf(sigB, mB, pk(skaB), ipkA, 'mvk')[no_precomp], In(<idx, ctxB>)[no_precomp],
+    !Ltk($dst, ipkB, ka0, kb0, kc0)[no_precomp], !Ltk($src, ipkA, ka1, kb1, kc1)[no_precomp] ]
+  --[ DhExp(~a), DhSecret(B^~a, ipkA, ipkB), DerivedKey(k2, ipkA, ipkB), CaDone('clr', ipkA, ipkB, cdt), AuthShare(B, ipkB, ipkA), RecvShare(B),
+      CallState('clr', ipkA, ipkB, cdt) ]->
+  [ CallSt('clr', $src, $dst, ipkA, ipkB, cdt, idx, k2),
+    CurrentKey('clr', k2, ipkA, ipkB, 'private') ]
+
+rule ICV_R1:
+  let cdt  = <$cs, $cd, $cts>
+      idx  = h(hidx)
+      A    = 'g'^~a
+      mR   = <'3', h(<'ratchet-context', kj, idx>), cdt, $pl, A>
+      ctxR = aead(<'icvreq', mR, ~sigR>, kj, ~rhoR, <idx, 'icvreq', 'requester'>)
+  in
+  [ CallSt(role, $tnR, $tnP, ipkR, ipkP, cdt, idx, kj)[no_precomp],
+    !Ltk($tnR, ipkR, ~skaR, ~skbR, ~skcR)[no_precomp], Fr(~a), Fr(~sigR), Fr(~rhoR) ]
+  --[ DhExp(~a), IcvRequest(ipkR, ipkP, cdt, $pl), SendShare(A), FreshShare(A, ~a) ]->
+  [ IcvStR(role, $tnR, $tnP, ipkR, ipkP, cdt, idx, kj, $pl, ~a, mR, ~sigR, ctxR),
+    !Amf(~sigR, mR, pk(~skaR), ipkP, 'mvk'), Out(<idx, ctxR>) ]
+
+rule ICV_P1_accept:
+  let cdt  = <$cs, $cd, $cts>
+      idx  = h(hidx)
+      ipkR = <pk(skaR), vkbR, pkcR>
+      mR   = <'3', h(<'ratchet-context', kj, idx>), cdt, pl, A>
+      ctxR = aead(<'icvreq', mR, sigR>, kj, rhoR, <idx, 'icvreq', 'requester'>)
+      nce  = h(<'nce', mR, sigR>)
+      B    = 'g'^~b
+      chal = h(<'chal', kj, nce, B>)
+  in
+  [ CallSt(role, $tnP, $tnR, ipkP, ipkR, cdt, idx, kj)[no_precomp], !Amf(sigR, mR, pk(skaR), ipkP, 'mvk')[no_precomp], In(<idx, ctxR>)[no_precomp], Fr(~b),
+    !Ltk($tnR, ipkR, ka0, kb0, kc0)[no_precomp], !Ltk($tnP, ipkP, ka1, kb1, kc1)[no_precomp] ]
+  --[ DhExp(~b), IcvAccept(role, ipkP, ipkR, cdt, pl), Challenge(chal), AuthShare(A, ipkR, ipkP), RecvShare(A) ]->
+  [ IcvAsk(role, $tnP, $tnR, ipkP, ipkR, cdt, idx, kj, pl, ~b, mR, sigR, A, ctxR) ]
+
+rule ICV_P2_consent:
+  [ IcvAsk(role, $tnP, $tnR, ipkP, ipkR, cdt, idx, kj, pl, ~b, mR, sigR, A, ctxR)[no_precomp] ]
+  --[ Consent(ipkP, ipkR, cdt, pl) ]->
+  [ IcvAskOk(role, $tnP, $tnR, ipkP, ipkR, cdt, idx, kj, pl, ~b, mR, sigR, A, ctxR) ]
+
+rule ICV_P3_present:
+  let idx = h(hidx)
+      B    = 'g'^~b
+      nce  = h(<'nce', mR, sigR>)
+      chal = h(<'chal', kj, nce, B>)
+      pres = <'pres', pok(csig, ipkP, chal, ~proof_random), $attr, pl>
+      mP   = <'4', nce, B, pres>
+      ctxP = aead(<'icvrsp', mP, ~sigP>, kj, ~rhoP, <idx, 'icvrsp', 'prover'>)
+      k3   = kdf(<'icv', kj, idx, mR, sigR, mP, ~sigP, A^~b>)
+  in
+  [ IcvAskOk(role, $tnP, $tnR, ipkP, ipkR, cdt, idx, kj, pl, ~b, mR, sigR, A, ctxR)[no_precomp],
+    CurrentKey(role, kj, ipkP, ipkR, exposed)[no_precomp], !Cred(ipkP, pl, $attr, csig)[no_precomp],
+    !Ltk($tnP, ipkP, ~skaP, ~skbP, ~skcP)[no_precomp], Fr(~sigP), Fr(~rhoP), Fr(~proof_random),
+    !Ltk($tnR, ipkR, kaPeer, kbPeer, kcPeer)[no_precomp] ]
+  --[ DhExp(~b), DhSecret(A^~b, ipkP, ipkR), DerivedKey(k3, ipkP, ipkR), IcvKeyP(k3, ipkP, ipkR, cdt), AuthShare(A, ipkR, ipkP), Present(role, ipkP, ipkR, cdt, pl, pres, kj), SendShare(B), FreshShare(B, ~b), MadePres(pres),
+      CallState(role, ipkP, ipkR, cdt) ]->
+  [ CallSt(role, $tnP, $tnR, ipkP, ipkR, cdt, idx, k3),
+    CurrentKey(role, k3, ipkP, ipkR, 'private'), !Amf(~sigP, mP, pk(~skaP), ipkR, 'mvk'), Out(<idx, ctxP>) ]
+
+rule ICV_P3_decline:
+  let idx = h(hidx)
+      B    = 'g'^~b
+      nce  = h(<'nce', mR, sigR>)
+      mP   = <'4', nce, B, 'nopres'>
+      ctxP = aead(<'icvrsp', mP, ~sigP>, kj, ~rhoP, <idx, 'icvrsp', 'prover'>)
+      k3   = kdf(<'icv', kj, idx, mR, sigR, mP, ~sigP, A^~b>)
+  in
+  [ IcvAsk(role, $tnP, $tnR, ipkP, ipkR, cdt, idx, kj, pl, ~b, mR, sigR, A, ctxR)[no_precomp],
+    CurrentKey(role, kj, ipkP, ipkR, exposed)[no_precomp], !Ltk($tnP, ipkP, ~skaP, ~skbP, ~skcP)[no_precomp], Fr(~sigP), Fr(~rhoP),
+    !Ltk($tnR, ipkR, kaPeer, kbPeer, kcPeer)[no_precomp] ]
+  --[ DhExp(~b), DhSecret(A^~b, ipkP, ipkR), DerivedKey(k3, ipkP, ipkR), IcvKeyP(k3, ipkP, ipkR, cdt), AuthShare(A, ipkR, ipkP), IcvDeclined(role, ipkP, ipkR, cdt, pl), SendShare(B), FreshShare(B, ~b),
+      CallState(role, ipkP, ipkR, cdt) ]->
+  [ CallSt(role, $tnP, $tnR, ipkP, ipkR, cdt, idx, k3),
+    CurrentKey(role, k3, ipkP, ipkR, 'private'), !Amf(~sigP, mP, pk(~skaP), ipkR, 'mvk'), Out(<idx, ctxP>) ]
+
+rule ICV_R2:
+  let idx = h(hidx)
+      ipkP = <pk(skaP), vkbP, pkcP>
+      nce  = h(<'nce', mR, sigR>)
+      chal = h(<'chal', kj, nce, B>)
+      mP   = <'4', nce, B, pres>
+      ctxP = aead(<'icvrsp', mP, sigP>, kj, rhoP, <idx, 'icvrsp', 'prover'>)
+      k3   = kdf(<'icv', kj, idx, mR, sigR, mP, sigP, B^~a>)
+  in
+  [ IcvStR(role, $tnR, $tnP, ipkR, ipkP, cdt, idx, kj, pl, ~a, mR, sigR, ctxR)[no_precomp],
+    CurrentKey(role, kj, ipkR, ipkP, exposed)[no_precomp], !Amf(sigP, mP, pk(skaP), ipkR, 'mvk')[no_precomp], In(<idx, ctxP>)[no_precomp],
+    !Ltk($tnP, ipkP, ka0, kb0, kc0)[no_precomp], !Ltk($tnR, ipkR, ka1, kb1, kc1)[no_precomp] ]
+  --[ DhExp(~a), DhSecret(B^~a, ipkR, ipkP), DerivedKey(k3, ipkR, ipkP), IcvKeyR(k3, ipkR, ipkP, cdt, pres), IcvComplete(ipkR,ipkP,cdt), AuthShare(B, ipkP, ipkR), RecvShare(B),
+      CallState(role, ipkR, ipkP, cdt) ]->
+  [ CallSt(role, $tnR, $tnP, ipkR, ipkP, cdt, idx, k3),
+    CurrentKey(role, k3, ipkR, ipkP, 'private'), PendingDisplay(ipkR, ipkP, cdt, pl, chal, pres) ]
+
+rule ICV_Display_Presentation:
+  let pres = <'pres', pok(sign(<'crd', pl, attr, subj>, skI), subj, chal, randomness), attr, pl> in
+  [ PendingDisplay(ipkR, ipkP, cdt, pl, chal, pres)[no_precomp], !IdPPublic(pk(skI))[no_precomp] ]
+  --[ Displayed(ipkR, ipkP, cdt, pl, attr, pres) ]-> []
+
+rule ICV_Display_Declined:
+  [ PendingDisplay(ipkR, ipkP, cdt, pl, chal, 'nopres')[no_precomp] ]
+  --[ DeclineDisplayed(ipkR, ipkP, cdt, pl) ]-> []
+
+lemma ltk_secret [reuse]:
+  "All ipk ska skb skc #i. LtkGen(ipk, ska, skb, skc) @i
+     ==> ( ( not (Ex #k. KU(ska) @k)
+           & not (Ex #k. KU(skb) @k)
+           & not (Ex #k. KU(skc) @k) )
+         | (Ex #r. Reveal(ipk) @r) )"
+
+lemma cred_sig_secret [reuse]:
+  "All ipk pl attr csig #i. CredIssued(ipk, pl, attr, csig) @i
+     ==> not (Ex #k. KU(csig) @k)"
+
+// DhExp records generation/use of an ephemeral exponent. These events and
+// AuthShare/FreshShare/DhSecret/DerivedKey are proof instrumentation only.
+lemma dh_exponents_secret [reuse]:
+  "All x #i. DhExp(x) @i ==> not (Ex #j. KU(x) @j)"
+
+lemma ltk_secret_ordered [reuse, use_induction]:
+  "All ipk ska skb skc #i #k. LtkGen(ipk, ska, skb, skc) @i & KU(ska) @k
+     ==> Ex #r. Reveal(ipk) @r & #r < #k"
+
+// The three key-secrecy helpers below excuse a long-term-key reveal only when
+// it happens BEFORE the accepted share, DH result, or derived key. A later
+// reveal therefore does not expose earlier keys (forward secrecy).
+lemma authenticated_share_origin [reuse, hide_lemma=ltk_secret]:
+  "All X ipkS ipkR #i. AuthShare(X,ipkS,ipkR) @i
+     ==> (Ex x #s. FreshShare(X,x) @s & #s < #i)
+       | (Ex #r. Reveal(ipkS) @r & #r < #i) | (Ex #r. Reveal(ipkR) @r & #r < #i)"
+
+lemma dh_shared_secret [reuse]:
+  "All z ipkX ipkY #i. DhSecret(z,ipkX,ipkY) @i
+     ==> not (Ex #j. KU(z) @j)
+       | (Ex #r. Reveal(ipkX) @r & #r < #i) | (Ex #r. Reveal(ipkY) @r & #r < #i)"
+
+lemma derived_key_secret [reuse, hide_lemma=authenticated_share_origin]:
+  "All k ipkX ipkY #i. DerivedKey(k,ipkX,ipkY) @i
+     ==> not (Ex #j. KU(k) @j)
+       | (Ex #r. Reveal(ipkX) @r & #r < #i) | (Ex #r. Reveal(ipkY) @r & #r < #i)
+       | (Ex x y #r. RevealState(k,x,y) @r)"
+
+lemma callst_only_after_ca [
+  reuse,
+  use_induction,
+  heuristic=S,
+  hide_lemma=dh_exponents_secret,
+  hide_lemma=authenticated_share_origin,
+  hide_lemma=dh_shared_secret,
+  hide_lemma=derived_key_secret]:
+  "All role ipkS ipkO cdt #i. CallState(role, ipkS, ipkO, cdt) @i
+     ==> Ex #c. CaDone(role, ipkS, ipkO, cdt) @c & (#c < #i | #c = #i)"
+
+lemma ca_caller_requires_answer [
+  reuse,
+  hide_lemma=dh_exponents_secret,
+  hide_lemma=authenticated_share_origin,
+  hide_lemma=dh_shared_secret,
+  hide_lemma=derived_key_secret]:
+  "All ipkA ipkB cdt #i. CaDone('clr', ipkA, ipkB, cdt) @i
+    ==> (Ex #a. Answered(ipkB,ipkA,cdt) @a & #a < #i)
+      | (Ex #r. Reveal(ipkA) @r) | (Ex #r. Reveal(ipkB) @r)"
+
+lemma oda2_accept_after_ca [
+  hide_lemma=dh_exponents_secret,
+  hide_lemma=authenticated_share_origin,
+  hide_lemma=dh_shared_secret,
+  hide_lemma=derived_key_secret]:
+ "All role ipkP ipkR cdt pl #i. IcvAccept(role,ipkP,ipkR,cdt,pl) @i
+   ==> Ex #c. CaDone(role,ipkP,ipkR,cdt) @c & #c < #i"
+
+lemma oda2_present_after_ca [
+  reuse,
+  hide_lemma=dh_exponents_secret,
+  hide_lemma=authenticated_share_origin,
+  hide_lemma=dh_shared_secret,
+  hide_lemma=derived_key_secret]:
+  "All role ipkP ipkR cdt pl pres kj #i.
+       Present(role, ipkP, ipkR, cdt, pl, pres, kj) @i
+     ==> Ex #c. CaDone(role, ipkP, ipkR, cdt) @c & #c < #i"
+
+lemma oda2_recipient_present_after_answer [
+  reuse,
+  hide_lemma=dh_exponents_secret,
+  hide_lemma=authenticated_share_origin,
+  hide_lemma=dh_shared_secret,
+  hide_lemma=derived_key_secret]:
+  "All ipkP ipkR cdt pl pres kj #i.
+       Present('rcp', ipkP, ipkR, cdt, pl, pres, kj) @i
+     ==> Ex #a. Answered(ipkP, ipkR, cdt) @a & #a < #i"
+
+lemma oda2_caller_present_after_peer_answer [
+  hide_lemma=dh_exponents_secret,
+  hide_lemma=authenticated_share_origin,
+  hide_lemma=dh_shared_secret,
+  hide_lemma=derived_key_secret]:
+  "All ipkP ipkR cdt pl pres kj #i.
+       Present('clr', ipkP, ipkR, cdt, pl, pres, kj) @i
+     ==> (Ex #a. Answered(ipkR, ipkP, cdt) @a & #a < #i)
+       | (Ex #r. Reveal(ipkP) @r) | (Ex #r. Reveal(ipkR) @r)"
+
+lemma oda2_present_only_with_consent [
+  hide_lemma=dh_exponents_secret,
+  hide_lemma=authenticated_share_origin,
+  hide_lemma=dh_shared_secret,
+  hide_lemma=derived_key_secret]:
+  "All role ipkP ipkR cdt pl pres kj #i.
+       Present(role, ipkP, ipkR, cdt, pl, pres, kj) @i
+     ==> Ex #c. Consent(ipkP, ipkR, cdt, pl) @c & #c < #i"
+
+lemma presentation_key_origin [
+  reuse,
+  hide_lemma=authenticated_share_origin,
+  hide_lemma=dh_shared_secret,
+  hide_lemma=derived_key_secret,
+  hide_lemma=ca_caller_requires_answer,
+  hide_lemma=oda2_present_after_ca,
+  hide_lemma=oda2_recipient_present_after_answer]:
+  "All role ipkP ipkR cdt pl pres k #i.
+       Present(role,ipkP,ipkR,cdt,pl,pres,k) @i
+     ==> Ex #j. DerivedKey(k,ipkP,ipkR) @j & #j < #i"
+
+lemma oda2_presentation_secret [
+  reuse,
+  hide_lemma=authenticated_share_origin,
+  hide_lemma=dh_shared_secret,
+  hide_lemma=callst_only_after_ca,
+  hide_lemma=ca_caller_requires_answer,
+  hide_lemma=oda2_present_after_ca,
+  hide_lemma=oda2_recipient_present_after_answer]:
+  "All role ipkP ipkR cdt pl pres kj #i.
+       Present(role, ipkP, ipkR, cdt, pl, pres, kj) @i
+     ==> not (Ex #k. KU(pres) @k)
+       | (Ex #r. Reveal(ipkP) @r) | (Ex #r. Reveal(ipkR) @r)
+       | (Ex x y #r. RevealState(kj, x, y) @r)"
+
+lemma oda2_no_harvesting [
+  hide_lemma=authenticated_share_origin,
+  hide_lemma=dh_shared_secret,
+  hide_lemma=callst_only_after_ca,
+  hide_lemma=ca_caller_requires_answer,
+  hide_lemma=oda2_present_after_ca]:
+  "All ipkP ipkR cdt pl pres kj #i #k.
+       Present('rcp', ipkP, ipkR, cdt, pl, pres, kj) @i & KU(pres) @k
+     ==> ( (Ex #a. Answered(ipkP, ipkR, cdt) @a & #a < #i)
+         & ( (Ex #r. Reveal(ipkP) @r) | (Ex #r. Reveal(ipkR) @r)
+           | (Ex x y #r. RevealState(kj, x, y) @r) ) )"
+
+/* ICV authentication and key agreement. An accepted request and a displayed
+ * presentation originate from the paired peer for this call and policy, and
+ * the requester's replacement key was already derived by the prover. The key
+ * agreement statement admits exposure of the current shared key. */
+lemma icv_request_authentic [
+  hide_lemma=dh_exponents_secret,
+  hide_lemma=dh_shared_secret,
+  hide_lemma=derived_key_secret,
+  hide_lemma=callst_only_after_ca,
+  hide_lemma=oda2_present_after_ca,
+  hide_lemma=oda2_recipient_present_after_answer,
+  hide_lemma=presentation_key_origin,
+  hide_lemma=oda2_presentation_secret]:
+  "All role ipkP ipkR cdt pl #i. IcvAccept(role, ipkP, ipkR, cdt, pl) @i
+     ==> (Ex #j. IcvRequest(ipkR, ipkP, cdt, pl) @j & #j < #i)
+       | (Ex #r. Reveal(ipkR) @r) | (Ex #r. Reveal(ipkP) @r)"
+
+lemma icv_display_authentic [
+  hide_lemma=dh_exponents_secret,
+  hide_lemma=dh_shared_secret,
+  hide_lemma=derived_key_secret,
+  hide_lemma=callst_only_after_ca,
+  hide_lemma=oda2_present_after_ca,
+  hide_lemma=oda2_recipient_present_after_answer,
+  hide_lemma=presentation_key_origin,
+  hide_lemma=oda2_presentation_secret]:
+  "All ipkR ipkP cdt pl attr pres #i. Displayed(ipkR, ipkP, cdt, pl, attr, pres) @i
+     ==> (Ex role kj #j. Present(role, ipkP, ipkR, cdt, pl, pres, kj) @j & #j < #i)
+       | (Ex #r. Reveal(ipkR) @r) | (Ex #r. Reveal(ipkP) @r)"
+
+lemma icv_key_agreement [
+  hide_lemma=dh_exponents_secret,
+  hide_lemma=dh_shared_secret,
+  hide_lemma=derived_key_secret,
+  hide_lemma=callst_only_after_ca,
+  hide_lemma=oda2_present_after_ca,
+  hide_lemma=oda2_recipient_present_after_answer,
+  hide_lemma=presentation_key_origin,
+  hide_lemma=oda2_presentation_secret]:
+  "All k ipkR ipkP cdt pres #i. IcvKeyR(k, ipkR, ipkP, cdt, pres) @i
+     ==> (Ex #j. IcvKeyP(k, ipkP, ipkR, cdt) @j & #j < #i)
+       | (Ex #r. Reveal(ipkR) @r) | (Ex #r. Reveal(ipkP) @r)"
+
+lemma executable [
+  hide_lemma=ltk_secret,
+  hide_lemma=cred_sig_secret,
+  hide_lemma=dh_exponents_secret,
+  hide_lemma=authenticated_share_origin,
+  hide_lemma=dh_shared_secret,
+  hide_lemma=derived_key_secret,
+  hide_lemma=callst_only_after_ca,
+  hide_lemma=ca_caller_requires_answer,
+  hide_lemma=oda2_present_after_ca,
+  hide_lemma=oda2_recipient_present_after_answer,
+  hide_lemma=presentation_key_origin,
+  hide_lemma=oda2_presentation_secret]: exists-trace
+  "Ex ipkP ipkR cdt pl pres kj attr #a #c #i #d #q #f.
+       IcvComplete(ipkR,ipkP,cdt) @f
+     & not (ipkP = ipkR)
+     & #i < #f & #f < #d
+     & (All x y c #r. IcvComplete(x,y,c) @r ==> #r = #f)
+     & IcvRequest(ipkR, ipkP, cdt, pl) @q
+     & Answered(ipkP, ipkR, cdt) @a
+     & Consent(ipkP, ipkR, cdt, pl) @c
+     & Present('rcp', ipkP, ipkR, cdt, pl, pres, kj) @i
+     & Displayed(ipkR, ipkP, cdt, pl, attr, pres) @d
+     & #q < #c
+     & (All x y c p #r. IcvRequest(x,y,c,p) @r ==> #r = #q)
+     & (All ro x y c p pr k #r. Present(ro,x,y,c,p,pr,k) @r ==> #r = #i)
+     & not (Ex ro x y c p #r. IcvDeclined(ro,x,y,c,p) @r)
+     & #a < #c & #c < #i & #i < #d
+     & not (Ex x #r. Reveal(x) @r)
+     & not (Ex k x y #r. RevealState(k, x, y) @r)"
+
+lemma executable_declined [
+  hide_lemma=ltk_secret,
+  hide_lemma=cred_sig_secret,
+  hide_lemma=dh_exponents_secret,
+  hide_lemma=authenticated_share_origin,
+  hide_lemma=dh_shared_secret,
+  hide_lemma=derived_key_secret,
+  hide_lemma=callst_only_after_ca,
+  hide_lemma=ca_caller_requires_answer,
+  hide_lemma=oda2_present_after_ca,
+  hide_lemma=oda2_recipient_present_after_answer,
+  hide_lemma=presentation_key_origin,
+  hide_lemma=oda2_presentation_secret]: exists-trace
+ "Ex ipkR ipkP cdt pl #q #d #f #i.
+    IcvRequest(ipkR,ipkP,cdt,pl) @q
+    & IcvDeclined('rcp',ipkP,ipkR,cdt,pl) @d
+    & IcvComplete(ipkR,ipkP,cdt) @f
+    & DeclineDisplayed(ipkR,ipkP,cdt,pl) @i
+    & not (ipkP = ipkR) & #q < #d & #d < #f & #f < #i
+    & (All x y c p #r. IcvRequest(x,y,c,p) @r ==> #r = #q)
+    & (All ro x y c p #r. IcvDeclined(ro,x,y,c,p) @r ==> #r = #d)
+    & (All x y c #r. IcvComplete(x,y,c) @r ==> #r = #f)
+    & not (Ex ro x y c p pr k #r. Present(ro,x,y,c,p,pr,k) @r)
+    & not (Ex x #r. Reveal(x) @r)
+    & not (Ex k x y #r. RevealState(k,x,y) @r)"
+
+lemma executable_after_state_exposure [
+  hide_lemma=authenticated_share_origin,
+  hide_lemma=dh_shared_secret,
+  hide_lemma=derived_key_secret,
+  hide_lemma=callst_only_after_ca,
+  hide_lemma=ca_caller_requires_answer,
+  hide_lemma=oda2_present_after_ca,
+  hide_lemma=oda2_recipient_present_after_answer,
+  hide_lemma=presentation_key_origin,
+  hide_lemma=oda2_presentation_secret]: exists-trace
+  "Ex ipkP ipkR cdt pl pres kj attr #a #c #i #d #q #f #r #ca.
+       IcvComplete(ipkR,ipkP,cdt) @f
+     & CaRequest(ipkR, ipkP, cdt) @ca
+     & (All x y c #t. CaRequest(x,y,c) @t ==> #t = #ca)
+     & (All x y c #t. Answered(x,y,c) @t ==> #t = #a)
+     & not (ipkP = ipkR)
+     & #i < #f & #f < #d
+     & (All x y c #r. IcvComplete(x,y,c) @r ==> #r = #f)
+     & IcvRequest(ipkR, ipkP, cdt, pl) @q
+     & Answered(ipkP, ipkR, cdt) @a
+     & Consent(ipkP, ipkR, cdt, pl) @c
+     & Present('rcp', ipkP, ipkR, cdt, pl, pres, kj) @i
+     & Displayed(ipkR, ipkP, cdt, pl, attr, pres) @d
+     & #q < #c
+     & (All x y c p #r. IcvRequest(x,y,c,p) @r ==> #r = #q)
+     & (All ro x y c p pr k #r. Present(ro,x,y,c,p,pr,k) @r ==> #r = #i)
+     & not (Ex ro x y c p #r. IcvDeclined(ro,x,y,c,p) @r)
+     & #a < #c & #c < #i & #i < #d
+     & not (Ex x #r. Reveal(x) @r)
+     & RevealState(kj, ipkP, ipkR) @r & #r < #q
+     & (All k x y #t. RevealState(k,x,y) @t ==> #t = #r)"
+
+/* Deniability witness: the prover, represented by the attacker holding only the
+ * prover's long-term keys and the current shared key, produces a credential
+ * request that its own verification accepts although the requester never sent
+ * it. The prover's own presentation cannot be forged this way (cred_sig_secret). */
+lemma deniability_witness_icv_request [
+  hide_lemma=ltk_secret,
+  hide_lemma=cred_sig_secret,
+  hide_lemma=dh_exponents_secret,
+  hide_lemma=authenticated_share_origin,
+  hide_lemma=dh_shared_secret,
+  hide_lemma=derived_key_secret,
+  hide_lemma=callst_only_after_ca,
+  hide_lemma=ca_caller_requires_answer,
+  hide_lemma=oda2_present_after_ca,
+  hide_lemma=oda2_recipient_present_after_answer,
+  hide_lemma=presentation_key_origin,
+  hide_lemma=oda2_presentation_secret]: exists-trace
+  "Ex role ipkP ipkR cdt pl #i.
+      IcvAccept(role, ipkP, ipkR, cdt, pl) @i
+    & not (ipkP = ipkR)
+    & not (Ex x y c p #j. IcvRequest(x, y, c, p) @j)
+    & (All x #j. Reveal(x) @j ==> x = ipkP)"
+
+/* The caller can act as prover (premise of oda2_caller_present_after_peer_answer). */
+lemma executable_caller_prover [
+  hide_lemma=ltk_secret,
+  hide_lemma=cred_sig_secret,
+  hide_lemma=dh_exponents_secret,
+  hide_lemma=authenticated_share_origin,
+  hide_lemma=dh_shared_secret,
+  hide_lemma=derived_key_secret,
+  hide_lemma=callst_only_after_ca,
+  hide_lemma=ca_caller_requires_answer,
+  hide_lemma=oda2_present_after_ca,
+  hide_lemma=oda2_recipient_present_after_answer,
+  hide_lemma=presentation_key_origin,
+  hide_lemma=oda2_presentation_secret]: exists-trace
+  "Ex ipkP ipkR cdt pl pres kj attr #ca #a #q #c #i #f #d.
+       CaRequest(ipkP, ipkR, cdt) @ca
+     & Answered(ipkR, ipkP, cdt) @a
+     & IcvRequest(ipkR, ipkP, cdt, pl) @q
+     & Consent(ipkP, ipkR, cdt, pl) @c
+     & Present('clr', ipkP, ipkR, cdt, pl, pres, kj) @i
+     & IcvComplete(ipkR, ipkP, cdt) @f
+     & Displayed(ipkR, ipkP, cdt, pl, attr, pres) @d
+     & not (ipkP = ipkR)
+     & #ca < #a & #a < #q & #q < #c & #c < #i & #i < #f & #f < #d
+     & (All x y c #t. CaRequest(x,y,c) @t ==> #t = #ca)
+     & (All x y c #t. Answered(x,y,c) @t ==> #t = #a)
+     & (All x y c p #r. IcvRequest(x,y,c,p) @r ==> #r = #q)
+     & (All ro x y c p pr k #r. Present(ro,x,y,c,p,pr,k) @r ==> #r = #i)
+     & (All x y c #r. IcvComplete(x,y,c) @r ==> #r = #f)
+     & not (Ex ro x y c p #r. IcvDeclined(ro,x,y,c,p) @r)
+     & not (Ex x #r. Reveal(x) @r)
+     & not (Ex k x y #r. RevealState(k, x, y) @r)"
+
+/* Two consecutive ICV rounds on one call; the second runs under the first's replacement key. */
+lemma executable_two_rounds [
+  hide_lemma=ltk_secret,
+  hide_lemma=cred_sig_secret,
+  hide_lemma=dh_exponents_secret,
+  hide_lemma=authenticated_share_origin,
+  hide_lemma=dh_shared_secret,
+  hide_lemma=derived_key_secret,
+  hide_lemma=callst_only_after_ca,
+  hide_lemma=ca_caller_requires_answer,
+  hide_lemma=oda2_present_after_ca,
+  hide_lemma=oda2_recipient_present_after_answer,
+  hide_lemma=presentation_key_origin,
+  hide_lemma=oda2_presentation_secret]: exists-trace
+  "Ex ipkP ipkR cdt pl #ca #a #q1 #d1 #f1 #q2 #d2 #f2.
+       CaRequest(ipkR, ipkP, cdt) @ca
+     & Answered(ipkP, ipkR, cdt) @a
+     & IcvRequest(ipkR, ipkP, cdt, pl) @q1
+     & IcvDeclined('rcp', ipkP, ipkR, cdt, pl) @d1
+     & IcvComplete(ipkR, ipkP, cdt) @f1
+     & IcvRequest(ipkR, ipkP, cdt, pl) @q2
+     & IcvDeclined('rcp', ipkP, ipkR, cdt, pl) @d2
+     & IcvComplete(ipkR, ipkP, cdt) @f2
+     & not (ipkP = ipkR)
+     & #ca < #a & #a < #q1 & #q1 < #d1 & #d1 < #f1 & #f1 < #q2 & #q2 < #d2 & #d2 < #f2
+     & (All x y c #t. CaRequest(x,y,c) @t ==> #t = #ca)
+     & (All x y c #t. Answered(x,y,c) @t ==> #t = #a)
+     & (All x y c p #r. IcvRequest(x,y,c,p) @r ==> (#r = #q1 | #r = #q2))
+     & (All ro x y c p #r. IcvDeclined(ro,x,y,c,p) @r ==> (#r = #d1 | #r = #d2))
+     & (All x y c #r. IcvComplete(x,y,c) @r ==> (#r = #f1 | #r = #f2))
+     & not (Ex ro x y c p pr k #r. Present(ro,x,y,c,p,pr,k) @r)
+     & not (Ex x #r. Reveal(x) @r)
+     & not (Ex k x y #r. RevealState(k,x,y) @r)"
+
+end

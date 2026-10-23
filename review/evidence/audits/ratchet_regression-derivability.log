@@ -1,0 +1,279 @@
+maude tool: 'maude'
+ checking version: 3.5.1. OK.
+ checking installation: OK.
+[Theory JulepRatchetRegression] Theory loaded
+[Theory JulepRatchetRegression] Theory translated
+[Theory JulepRatchetRegression] Derivation checks started
+[Theory JulepRatchetRegression] Derivation checks ended
+[Theory JulepRatchetRegression] Theory closed
+theory JulepRatchetRegression
+
+begin
+
+// Function signature and definition of the equational theory E
+
+builtins: diffie-hellman
+functions: adec/2, aead/4, aenc/2, fst/1, h/1, kdf/1, nonce/1, open/3,
+           pair/2, pk/1, snd/1
+equations:
+    adec(aenc(x.1, pk(x.2)), x.2) = x.1,
+    fst(<x.1, x.2>) = x.1,
+    nonce(aead(m, k, r, ad)) = r,
+    open(aead(m, k, r, ad), k, ad) = m,
+    snd(<x.1, x.2>) = x.2
+
+heuristic: S
+
+rule (modulo E) Setup:
+   [ Fr( ~skA ), Fr( ~skB ), Fr( ~k ), Fr( ~call ) ]
+  --[ Keys( ~skA, ~skB ) ]->
+   [
+   StartA( ~skA, pk(~skB), ~k, ~call ), StartB( ~skB, pk(~skA), ~k, ~call ),
+   !State( ~k ), Out( <pk(~skA), pk(~skB), ~call> )
+   ]
+
+  /* has exactly the trivial AC variant */
+
+rule (modulo E) Reveal_State:
+   [ !State( k ) ] --[ RevealState( k ) ]-> [ Out( k ) ]
+
+  /* has exactly the trivial AC variant */
+
+rule (modulo E) Adversary_Frank:
+   [ In( <m, sk, vkR> ), Fr( ~sig ) ]
+  -->
+   [ !Amf( ~sig, m, pk(sk), vkR ), Out( ~sig ) ]
+
+  /* has exactly the trivial AC variant */
+
+rule (modulo E) Adversary_Receiver_Forge:
+   [ In( <m, vkS, skR> ), Fr( ~sig ) ]
+  -->
+   [ !Amf( ~sig, m, vkS, pk(skR) ), Out( ~sig ) ]
+
+  /* has exactly the trivial AC variant */
+
+rule (modulo E) Send_Request:
+   [ StartA( skA, vkB, k, call ), Fr( ~a ), Fr( ~sigA ), Fr( ~rhoA ) ]
+  -->
+   [
+   PendingA( pk(skA), vkB, k, ~a, h(<k, call>), <'1', call, 'g'^~a>, ~sigA,
+             aead(<<'1', call, 'g'^~a>, ~sigA>, k, ~rhoA, <h(<k, call>), 'request'>)
+   ),
+   !Amf( ~sigA, <'1', call, 'g'^~a>, pk(skA), vkB ),
+   Out( aead(<<'1', call, 'g'^~a>, ~sigA>, k, ~rhoA,
+             <h(<k, call>), 'request'>)
+   )
+   ]
+
+  /* has exactly the trivial AC variant */
+
+rule (modulo E) Answer:
+   [
+   StartB( skB, vkA, k, call ), !Amf( sigA, <'1', call, A>, vkA, pk(skB) ),
+   In( aead(<<'1', call, A>, sigA>, k, rhoA, <h(<k, call>), 'request'>) ),
+   Fr( ~b ), Fr( ~sigB ), Fr( ~rhoB )
+   ]
+  --[
+  LegacyB( k,
+           kdf(<k, h(<k, call>), 
+                aead(<<'1', call, A>, sigA>, k, rhoA, <h(<k, call>), 'request'>), 
+                aead(<<'2', h(<<'1', call, A>, sigA>), 'g'^~b>, ~sigB>, k, ~rhoB,
+                     <h(<k, call>), 'response'>), 
+                A^~b>)
+  ),
+  FixedB( k,
+          kdf(<k, h(<k, call>), <'1', call, A>, sigA, 
+               <'2', h(<<'1', call, A>, sigA>), 'g'^~b>, ~sigB, A^~b>)
+  )
+  ]->
+   [
+   !Amf( ~sigB, <'2', h(<<'1', call, A>, sigA>), 'g'^~b>, pk(skB), vkA ),
+   Out( aead(<<'2', h(<<'1', call, A>, sigA>), 'g'^~b>, ~sigB>, k, ~rhoB,
+             <h(<k, call>), 'response'>)
+   )
+   ]
+
+  /*
+  rule (modulo AC) Answer:
+     [
+     StartB( skB, vkA, k, call ), !Amf( sigA, <'1', call, A>, vkA, pk(skB) ),
+     In( aead(<<'1', call, A>, sigA>, k, rhoA, <h(<k, call>), 'request'>) ),
+     Fr( ~b ), Fr( ~sigB ), Fr( ~rhoB )
+     ]
+    --[
+    LegacyB( k,
+             kdf(<k, h(<k, call>), 
+                  aead(<<'1', call, A>, sigA>, k, rhoA, <h(<k, call>), 'request'>), 
+                  aead(<<'2', h(<<'1', call, A>, sigA>), 'g'^~b>, ~sigB>, k, ~rhoB,
+                       <h(<k, call>), 'response'>), 
+                  z>)
+    ),
+    FixedB( k,
+            kdf(<k, h(<k, call>), <'1', call, A>, sigA, 
+                 <'2', h(<<'1', call, A>, sigA>), 'g'^~b>, ~sigB, z>)
+    )
+    ]->
+     [
+     !Amf( ~sigB, <'2', h(<<'1', call, A>, sigA>), 'g'^~b>, pk(skB), vkA ),
+     Out( aead(<<'2', h(<<'1', call, A>, sigA>), 'g'^~b>, ~sigB>, k, ~rhoB,
+               <h(<k, call>), 'response'>)
+     )
+     ]
+    variants (modulo AC)
+    1. ~b    = ~b.21
+       A     = A.24
+       z     = A.24^~b.21
+    
+    2. ~b    = ~b.144
+       A     = x.285^x.286
+       z     = x.285^(~b.144*x.286)
+    
+    3. A     = DH_neutral
+       z     = DH_neutral
+  */
+
+rule (modulo E) Finish:
+   [
+   PendingA( vkA, vkB, k, ~a, idx, mA, sigA, cA ),
+   !Amf( sigB, <'2', h(<mA, sigA>), B>, vkB, vkA ),
+   In( aead(<<'2', h(<mA, sigA>), B>, sigB>, k, rhoB, <idx, 'response'>) )
+   ]
+  --[
+  LegacyA( k,
+           kdf(<k, idx, cA, 
+                aead(<<'2', h(<mA, sigA>), B>, sigB>, k, rhoB, <idx, 'response'>), B^~a>)
+  ),
+  FixedA( k, kdf(<k, idx, mA, sigA, <'2', h(<mA, sigA>), B>, sigB, B^~a>) )
+  ]->
+   [ ]
+
+  /*
+  rule (modulo AC) Finish:
+     [
+     PendingA( vkA, vkB, k, ~a, idx, mA, sigA, cA ),
+     !Amf( sigB, <'2', h(<mA, sigA>), B>, vkB, vkA ),
+     In( aead(<<'2', h(<mA, sigA>), B>, sigB>, k, rhoB, <idx, 'response'>) )
+     ]
+    --[
+    LegacyA( k,
+             kdf(<k, idx, cA, 
+                  aead(<<'2', h(<mA, sigA>), B>, sigB>, k, rhoB, <idx, 'response'>), z>)
+    ),
+    FixedA( k, kdf(<k, idx, mA, sigA, <'2', h(<mA, sigA>), B>, sigB, z>) )
+    ]->
+     [ ]
+    variants (modulo AC)
+    1. ~a    = ~a.17
+       B     = B.18
+       z     = B.18^~a.17
+    
+    2. ~a    = ~a.29
+       B     = z.42^inv(~a.29)
+       z     = z.42
+    
+    3. ~a    = ~a.31
+       B     = x.59^x.60
+       z     = x.59^(~a.31*x.60)
+    
+    4. ~a    = ~a.32
+       B     = x.61^inv((~a.32*x.62))
+       z     = x.61^inv(x.62)
+    
+    5. ~a    = ~a.32
+       B     = x.61^(x.62*inv(~a.32))
+       z     = x.61^x.62
+    
+    6. ~a    = ~a.33
+       B     = x.62^(x.63*inv((~a.33*x.64)))
+       z     = x.62^(x.63*inv(x.64))
+    
+    7. B     = DH_neutral
+       z     = DH_neutral
+  */
+
+lemma private_keys [reuse, use_induction]:
+  all-traces
+  "∀ a b #i.
+    (Keys( a, b ) @ #i) ⇒
+    ((¬(∃ #j. !KU( a ) @ #j)) ∧ (¬(∃ #j. !KU( b ) @ #j)))"
+/*
+guarded formula characterizing all counter-examples:
+"∃ a b #i.
+  (Keys( a, b ) @ #i)
+ ∧
+  ((∃ #j. (!KU( a ) @ #j)) ∨ (∃ #j. (!KU( b ) @ #j)))"
+*/
+by sorry
+
+lemma legacy_agreement_expected_falsified:
+  all-traces
+  "∀ k next #i.
+    (LegacyA( k, next ) @ #i) ⇒
+    (∃ #j. (LegacyB( k, next ) @ #j) ∧ (#j < #i))"
+/*
+guarded formula characterizing all counter-examples:
+"∃ k next #i.
+  (LegacyA( k, next ) @ #i) ∧ ∀ #j. (LegacyB( k, next ) @ #j) ⇒ ¬(#j < #i)"
+*/
+by sorry
+
+lemma corrected_agreement:
+  all-traces
+  "∀ k next #i.
+    (FixedA( k, next ) @ #i) ⇒ (∃ #j. (FixedB( k, next ) @ #j) ∧ (#j < #i))"
+/*
+guarded formula characterizing all counter-examples:
+"∃ k next #i.
+  (FixedA( k, next ) @ #i) ∧ ∀ #j. (FixedB( k, next ) @ #j) ⇒ ¬(#j < #i)"
+*/
+by sorry
+
+lemma executable_reencryption:
+  exists-trace
+  "∃ k oldA oldB fixed #r #i #j.
+    (((((((RevealState( k ) @ #r) ∧ (LegacyB( k, oldB ) @ #i)) ∧
+         (FixedB( k, fixed ) @ #i)) ∧
+        (LegacyA( k, oldA ) @ #j)) ∧
+       (FixedA( k, fixed ) @ #j)) ∧
+      (#r < #j)) ∧
+     (#i < #j)) ∧
+    (¬(oldA = oldB))"
+/*
+guarded formula characterizing all satisfying traces:
+"∃ k oldA oldB fixed #r #i #j.
+  (RevealState( k ) @ #r) ∧
+  (LegacyB( k, oldB ) @ #i) ∧
+  (FixedB( k, fixed ) @ #i) ∧
+  (LegacyA( k, oldA ) @ #j) ∧
+  (FixedA( k, fixed ) @ #j)
+ ∧
+  (#r < #j) ∧ (#i < #j) ∧ (¬(oldA = oldB))"
+*/
+by sorry
+
+/* All wellformedness checks were successful. */
+
+/*
+Generated from:
+Tamarin version 1.12.0
+Maude version 3.5.1
+Git revision: UNKNOWN, branch: UNKNOWN
+Compiled at: 2026-03-08 10:05:47.616272992 UTC
+*/
+
+end
+
+==============================================================================
+summary of summaries:
+
+analyzed: julep_ratchet_regression.spthy
+
+  processing time: 2.42s
+  
+  private_keys (all-traces): analysis incomplete (1 steps)
+  legacy_agreement_expected_falsified (all-traces): analysis incomplete (1 steps)
+  corrected_agreement (all-traces): analysis incomplete (1 steps)
+  executable_reencryption (exists-trace): analysis incomplete (1 steps)
+
+==============================================================================

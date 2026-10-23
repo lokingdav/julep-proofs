@@ -1,0 +1,212 @@
+{
+  "reviewed_at_utc": "2026-09-19T23:33:29.176746+00:00",
+  "prover_version": "maude tool: 'maude'\n checking version: tamarin-prover 1.12.0, (C) David Basin, Cas Cremers, Jannik Dreier, Simon Meier, Ralf Sasse, Benedikt Schmidt, 2010-2023\n\nThis program comes with ABSOLUTELY NO WARRANTY. It is free software, and you\nare welcome to redistribute it according to its LICENSE, see\n'https://github.com/tamarin-prover/tamarin-prover/blob/master/LICENSE'.\n\n3.5.1. OK.\n checking installation: OK.\nGenerated from:\nTamarin version 1.12.0\nMaude version 3.5.1\nGit revision: UNKNOWN, branch: UNKNOWN\nCompiled at: 2026-03-08 10:05:47.616272992 UTC",
+  "source_sha256": {
+    "tamarin/proofs/collect.sh": "aae6b5706175cbda854d24fff7e27d9f56523a2d347c22f42369ace4e471ea0a",
+    "tamarin/proofs/export_evidence.py": "4cbbbc26630df4e601c0fc8b3bd571dcfe8cebc1126ce8f719221d7abadab8f6",
+    "tamarin/proofs/finish.sh": "cb67e893c1f370c31899b0597d13a3020db13c35f457386130d1ccfe3191edfa",
+    "tamarin/proofs/julep_auth.spthy": "6b62b8e9a6c40eca1e9ce293796baea8374d5215188bde6e63e91679bdc9b5f8",
+    "tamarin/proofs/julep_oda.spthy": "5b6437639e3e589804ed0677d30b0737a21e1d413aa1399605a534605bfb7e8a",
+    "tamarin/proofs/julep_pairing.spthy": "56608b3a8fcf1e5efa419c24ecf0393ba34dad56bf5267f1e0df7c3d6096d6ba",
+    "tamarin/proofs/julep_ratchet_regression.spthy": "729cd2a88868c656aff340f3ab9814c606a659cfba699ae21ebd15349cce5c2d",
+    "tamarin/proofs/oracle.py": "108b5b5b689afb7c803227c3a2876303d96f740843e455e5be7e16cf34cc9e05",
+    "tamarin/proofs/prove.sh": "a66c096ad47baa94d8a3b6bcf939b3efee5da100a1fe7291ae14f5b353f5230e",
+    "tamarin/proofs/refresh_validation.py": "95f90fb4dd1c97afbb795ab5a232ae177e066ab6f97d94334dd7b58422b0fdb8",
+    "tamarin/proofs/results_report.py": "eb7d9466d410d2a4f0ecf24ac2e9ec1f98d0df6ef7a442d13b914e576f843f80",
+    "tamarin/proofs/suite.py": "e836ecf308c799b82369250576c4d7636d9c0213cbc29f77f92d1613b36acc6b",
+    "tamarin/proofs/sweep.sh": "c9d5342992a9c162c56319c3cbd0cb1e5349c395240a891d94f1fd6a7585c869",
+    "tamarin/proofs/test_export_evidence.py": "79c006cd02624b934c95966758f9db788cde1e75af9cd9e1eac2c3681225e60b",
+    "tamarin/proofs/test_results_report.py": "c072871b81f5193fe867da80b8ea408de2907589cf1ea85759a95f2e9e810217",
+    "tamarin/proofs/test_workflow.py": "09357fb9be1c2f75115237633568ed3cc9e53aec842528dbdf0ee6b6e62ba579",
+    "tamarin/proofs/watchdog.sh": "0addd28cebdbe8deebdfa92dabf0e1fcb07269310c50e2a20e16b857397cb719",
+    "tamarin/proofs/workflow.py": "c8bc5deb868a5eea77982479628f2552238182cd27fc016276bce84fa640ba93"
+  },
+  "artifact_sha256": {
+    "tamarin/proofs/review/audits/auth-derivability.log": "1edf2077a1894ea2527961c43916d9a029044b04e5cde32ea241001502e6f371",
+    "tamarin/proofs/review/audits/julep_auth-wellformedness.log": "470fbe1d7548edc4a95d5972a15237399aceb5b286fa7bc63426eb714b3f268c",
+    "tamarin/proofs/review/audits/julep_oda-wellformedness.log": "ecfb064e387ec0a943fe51dda560855052a0e4ab704e64d9d2b0fb56d1312675",
+    "tamarin/proofs/review/audits/julep_pairing-wellformedness.log": "8ef0ec512034dcc00bfdae836fa6e1e5951d819b93ff7b876c000504cc8186f7",
+    "tamarin/proofs/review/audits/julep_ratchet_regression-wellformedness.log": "0c537dd3f4b7e4bcd1f6af2fb91dcba513f4dc7958fecc2625cd2f2571e39f59",
+    "tamarin/proofs/review/audits/oda-derivability.log": "4e076d0829a7d980f50ec0d75ad44a0fa622002b84f6ffb021cfb3afc6c2caad",
+    "tamarin/proofs/review/audits/pairing-derivability.log": "a22c9b1b5c4d5be6476d970d5479e19608b5a9bf27a505830db7a0443292c03f",
+    "tamarin/proofs/review/audits/ratchet_regression-derivability.log": "da7d1845cf39cf5a19eaff15d8a1400aada4c91da740965a8e3526a45e982eb0",
+    "tamarin/proofs/review/audits/tamarin-selftest.log": "f7fb56fc077702a3d35d4f5a8a1989655aa9e03e500c9417033c5c9f47b781b5",
+    "tamarin/proofs/review/audits/workflow-tests.log": "a4a55913afdeaba179899af21c6c877e5d4452a57f1be4df38b093e0734f75b6"
+  },
+  "lemma_evidence": {
+    "collector_exit_code": 0,
+    "obligations": 76,
+    "verified": 72,
+    "expected_falsified": 4,
+    "note": "Exact current model sources and verified helper chains collected. See MANIFEST.json for each selected run."
+  },
+  "wellformedness": {
+    "julep_pairing.spthy": {
+      "command": [
+        "tamarin-prover",
+        "--derivcheck-timeout=0",
+        "--quit-on-warning",
+        "--quiet",
+        "+RTS",
+        "-M4g",
+        "-N2",
+        "-RTS",
+        "julep_pairing.spthy"
+      ],
+      "exit_code": 0,
+      "log": "tamarin/proofs/review/audits/julep_pairing-wellformedness.log",
+      "note": "Syntax and other well-formedness checks; derivability checking disabled and audited separately."
+    },
+    "julep_auth.spthy": {
+      "command": [
+        "tamarin-prover",
+        "--derivcheck-timeout=0",
+        "--quit-on-warning",
+        "--quiet",
+        "+RTS",
+        "-M4g",
+        "-N2",
+        "-RTS",
+        "julep_auth.spthy"
+      ],
+      "exit_code": 0,
+      "log": "tamarin/proofs/review/audits/julep_auth-wellformedness.log",
+      "note": "Syntax and other well-formedness checks; derivability checking disabled and audited separately."
+    },
+    "julep_oda.spthy": {
+      "command": [
+        "tamarin-prover",
+        "--derivcheck-timeout=0",
+        "--quit-on-warning",
+        "--quiet",
+        "+RTS",
+        "-M4g",
+        "-N2",
+        "-RTS",
+        "julep_oda.spthy"
+      ],
+      "exit_code": 0,
+      "log": "tamarin/proofs/review/audits/julep_oda-wellformedness.log",
+      "note": "Syntax and other well-formedness checks; derivability checking disabled and audited separately."
+    },
+    "julep_ratchet_regression.spthy": {
+      "command": [
+        "tamarin-prover",
+        "--derivcheck-timeout=0",
+        "--quit-on-warning",
+        "--quiet",
+        "+RTS",
+        "-M4g",
+        "-N2",
+        "-RTS",
+        "julep_ratchet_regression.spthy"
+      ],
+      "exit_code": 0,
+      "log": "tamarin/proofs/review/audits/julep_ratchet_regression-wellformedness.log",
+      "note": "Syntax and other well-formedness checks; derivability checking disabled and audited separately."
+    }
+  },
+  "derivability": {
+    "pairing": {
+      "source": "tamarin/proofs/julep_pairing.spthy",
+      "sha256": "56608b3a8fcf1e5efa419c24ecf0393ba34dad56bf5267f1e0df7c3d6096d6ba",
+      "command": [
+        "tamarin-prover",
+        "--derivcheck-timeout=30",
+        "--quit-on-warning",
+        "--quiet",
+        "+RTS",
+        "-M4g",
+        "-N2",
+        "-RTS",
+        "julep_pairing.spthy"
+      ],
+      "exit_code": 1,
+      "result": "derivability warnings: manual review required",
+      "seconds": 7.98,
+      "log": "tamarin/proofs/review/audits/pairing-derivability.log",
+      "log_sha256": "a22c9b1b5c4d5be6476d970d5479e19608b5a9bf27a505830db7a0443292c03f"
+    },
+    "auth": {
+      "source": "tamarin/proofs/julep_auth.spthy",
+      "sha256": "6b62b8e9a6c40eca1e9ce293796baea8374d5215188bde6e63e91679bdc9b5f8",
+      "command": [
+        "tamarin-prover",
+        "--derivcheck-timeout=30",
+        "--quit-on-warning",
+        "--quiet",
+        "+RTS",
+        "-M4g",
+        "-N2",
+        "-RTS",
+        "julep_auth.spthy"
+      ],
+      "exit_code": 1,
+      "result": "inconclusive: derivability timeout",
+      "seconds": 30.43,
+      "log": "tamarin/proofs/review/audits/auth-derivability.log",
+      "log_sha256": "1edf2077a1894ea2527961c43916d9a029044b04e5cde32ea241001502e6f371"
+    },
+    "oda": {
+      "source": "tamarin/proofs/julep_oda.spthy",
+      "sha256": "5b6437639e3e589804ed0677d30b0737a21e1d413aa1399605a534605bfb7e8a",
+      "command": [
+        "tamarin-prover",
+        "--derivcheck-timeout=30",
+        "--quit-on-warning",
+        "--quiet",
+        "+RTS",
+        "-M4g",
+        "-N2",
+        "-RTS",
+        "julep_oda.spthy"
+      ],
+      "exit_code": 1,
+      "result": "inconclusive: derivability timeout",
+      "seconds": 30.47,
+      "log": "tamarin/proofs/review/audits/oda-derivability.log",
+      "log_sha256": "4e076d0829a7d980f50ec0d75ad44a0fa622002b84f6ffb021cfb3afc6c2caad"
+    },
+    "ratchet_regression": {
+      "source": "tamarin/proofs/julep_ratchet_regression.spthy",
+      "sha256": "729cd2a88868c656aff340f3ab9814c606a659cfba699ae21ebd15349cce5c2d",
+      "command": [
+        "tamarin-prover",
+        "--derivcheck-timeout=30",
+        "--quit-on-warning",
+        "--quiet",
+        "+RTS",
+        "-M4g",
+        "-N2",
+        "-RTS",
+        "julep_ratchet_regression.spthy"
+      ],
+      "exit_code": 0,
+      "result": "passed",
+      "seconds": 2.48,
+      "log": "tamarin/proofs/review/audits/ratchet_regression-derivability.log",
+      "log_sha256": "da7d1845cf39cf5a19eaff15d8a1400aada4c91da740965a8e3526a45e982eb0"
+    }
+  },
+  "derivability_interpretation": "Automated derivability checks are diagnostics of pattern matching, not proofs. Warnings and time limits are reviewed manually in ABSTRACTIONS.md; complete lemma proofs do not constitute a clean automated derivability audit.",
+  "workflow_tests": {
+    "command": "python3 -m unittest discover -s tamarin/proofs -p 'test_*.py' -v",
+    "tests": 24,
+    "result": "passed",
+    "log": "tamarin/proofs/review/audits/workflow-tests.log"
+  },
+  "shell_syntax": {
+    "command": "bash -n <each tamarin/proofs/*.sh>",
+    "scripts": 5,
+    "result": "passed"
+  },
+  "installation_selftest": {
+    "command": [
+      "tamarin-prover",
+      "test"
+    ],
+    "result": "passed",
+    "log": "tamarin/proofs/review/audits/tamarin-selftest.log"
+  },
+  "note_release": "Trimmed for the standalone release: the paper-build audit and the hashes of the paper sources were removed; proof sources, tooling, and audit logs are unchanged."
+}

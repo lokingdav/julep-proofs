@@ -1,0 +1,29 @@
+test_changed_source_or_audit_log_rejects_validation (test_export_evidence.EvidenceValidationTests.test_changed_source_or_audit_log_rejects_validation) ... [32mok[0m
+test_missing_hash_inventory_cannot_masquerade_as_validation (test_export_evidence.EvidenceValidationTests.test_missing_hash_inventory_cannot_masquerade_as_validation) ... [32mok[0m
+test_current_protocol_failure_and_timeout_remain_visible (test_results_report.ResultsReportTests.test_current_protocol_failure_and_timeout_remain_visible) ... [32mok[0m
+test_every_lemma_appears_in_its_assigned_report_with_context_and_links (test_results_report.ResultsReportTests.test_every_lemma_appears_in_its_assigned_report_with_context_and_links) ... [32mok[0m
+test_example_cannot_be_mislabeled_as_a_security_claim (test_results_report.ResultsReportTests.test_example_cannot_be_mislabeled_as_a_security_claim) ... [32mok[0m
+test_invalid_report_assignment_cannot_hide_or_promote_checks (test_results_report.ResultsReportTests.test_invalid_report_assignment_cannot_hide_or_promote_checks) ... [32mok[0m
+test_malformed_findings_markers_cannot_overwrite_author_text (test_results_report.ResultsReportTests.test_malformed_findings_markers_cannot_overwrite_author_text) ... [32mok[0m
+test_missing_or_duplicate_result_cannot_be_silently_dropped (test_results_report.ResultsReportTests.test_missing_or_duplicate_result_cannot_be_silently_dropped) ... [32mok[0m
+test_missing_or_unknown_paper_mapping_is_rejected (test_results_report.ResultsReportTests.test_missing_or_unknown_paper_mapping_is_rejected) ... [32mok[0m
+test_new_lemma_requires_an_explanation (test_results_report.ResultsReportTests.test_new_lemma_requires_an_explanation) ... [32mok[0m
+test_number_authorization_is_mapped_to_the_design_objective (test_results_report.ResultsReportTests.test_number_authorization_is_mapped_to_the_design_objective) ... [32mok[0m
+test_outcome_labels_distinguish_proofs_examples_and_negative_controls (test_results_report.ResultsReportTests.test_outcome_labels_distinguish_proofs_examples_and_negative_controls) ... [32mok[0m
+test_paper_requirement_numbers_and_source_links_match_the_paper (test_results_report.ResultsReportTests.test_paper_requirement_numbers_and_source_links_match_the_paper) ... [32mok[0m
+test_refresh_findings_preserves_author_text_and_is_idempotent (test_results_report.ResultsReportTests.test_refresh_findings_preserves_author_text_and_is_idempotent) ... [32mok[0m
+test_report_keeps_dependency_failure_and_conflict_visible (test_results_report.ResultsReportTests.test_report_keeps_dependency_failure_and_conflict_visible) ... [32mok[0m
+test_reports_partition_the_full_suite_without_changing_verdicts (test_results_report.ResultsReportTests.test_reports_partition_the_full_suite_without_changing_verdicts) ... [32mok[0m
+test_conflicting_helper_invalidates_dependent_result (test_workflow.WorkflowTests.test_conflicting_helper_invalidates_dependent_result) ... [32mok[0m
+test_dependencies_and_source_hash (test_workflow.WorkflowTests.test_dependencies_and_source_hash) ... [32mok[0m
+test_error_with_printed_verdict_is_not_success (test_workflow.WorkflowTests.test_error_with_printed_verdict_is_not_success) ... [32mok[0m
+test_exit_zero_without_verdict_is_incomplete (test_workflow.WorkflowTests.test_exit_zero_without_verdict_is_incomplete) ... [32mok[0m
+test_missing_selected_verdict_is_incomplete (test_workflow.WorkflowTests.test_missing_selected_verdict_is_incomplete) ... [32mok[0m
+test_timeout_is_not_success (test_workflow.WorkflowTests.test_timeout_is_not_success) ... [32mok[0m
+test_transitive_dependencies_and_explicit_hiding (test_workflow.WorkflowTests.test_transitive_dependencies_and_explicit_hiding) ... [32mok[0m
+test_unexpected_counterexample_fails (test_workflow.WorkflowTests.test_unexpected_counterexample_fails) ... [32mok[0m
+
+----------------------------------------------------------------------
+Ran 24 tests in 1.745s
+
+[32mOK[0m

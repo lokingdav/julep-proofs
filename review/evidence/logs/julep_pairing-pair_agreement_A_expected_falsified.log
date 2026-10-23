@@ -1,0 +1,1920 @@
+maude tool: 'maude'
+ checking version: 3.5.1. OK.
+ checking installation: OK.
+[Theory JulepPairing] Theory loaded
+[Theory JulepPairing] Theory translated
+[Theory JulepPairing] Theory closed
+>>>>>>>>>>>>>>>>>>>>>>>> START INPUT
+
+>>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
+
+>>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
+
+>>>>>>>>>>>>>>>>>>>>>>>> START INPUT
+0: splitEqs(0)
+1: StA1( $src, $dst, $ts, ipkA, h(<'idx0', $src, $ts>), phiA)[no_precomp] ▶₀ #i
+2: !LtkK( ipkA, ~ska, ~skb, ~skc )[no_precomp] ▶₁ #i
+3: !Proof( piB, $dst, <vkaB, vkbB, pkcB>, hidB,        h(<'n1', phiA, z, h(<'n0', h(<'idx0', $src, $ts>)>)>))[no_precomp] ▶₂ #i
+4: !KU( h(<'idx0', $src, $ts>) )[no_precomp] @ #vk.1
+5: !KU( aenc(<'rsp',            <'phi', piB, $dst, <vkaB, vkbB, pkcB>, 'ex', 'nodlg'>, z>,          pk(~skc)))[no_precomp] @ #vk.2
+6:  (∃ #j. (!KU( z ) @ #j) ∧ #j < #i)  ∥ (∃ #j. (SendB( z ) @ #j) ∧ #j < #i)
+7:  (∃ #j.   (ResponseSent( z,                  <'phi', piB, $dst, <vkaB, vkbB, pkcB>, 'ex', 'nodlg'>,                  <vkaB, vkbB, pkcB>    ) @ #j)  ∧   #j < #i)  ∥ (∃ #j. (!KU( z ) @ #j) ∧ #j < #i)
+
+>>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
+6
+7
+3
+1
+2
+0
+4
+5
+
+>>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
+
+[Saturating Sources] Step 1 (Max 5)
+[Saturating Sources] Step 2 (Max 5)
+[Open Chains] Too many chain constraints, stopping precomputation. Open Chains limits (can be changed with -c=): 10
+[Saturating Sources] Step 3 (Max 5)
+[Saturating Sources] Done
+>>>>>>>>>>>>>>>>>>>>>>>> START INPUT
+0: splitEqs(0)
+1: StA1( $src, $dst, $ts, ipkA, h(<'idx0', $src, $ts>), phiA)[no_precomp] ▶₀ #i
+2: !LtkK( ipkA, ~ska, ~skb, ~skc )[no_precomp] ▶₁ #i
+3: !Proof( piB, $dst, <vkaB, vkbB, pkcB>, hidB,        h(<'n1', phiA, z, h(<'n0', h(<'idx0', $src, $ts>)>)>))[no_precomp] ▶₂ #i
+4: !KU( h(<'idx0', $src, $ts>) )[no_precomp] @ #vk.1
+5: !KU( aenc(<'rsp',            <'phi', piB, $dst, <vkaB, vkbB, pkcB>, 'ex', 'nodlg'>, z>,          pk(~skc)))[no_precomp] @ #vk.2
+6:  (∃ #j.   (ResponseSent( z,                  <'phi', piB, $dst, <vkaB, vkbB, pkcB>, 'ex', 'nodlg'>,                  <vkaB, vkbB, pkcB>    ) @ #j)  ∧   #j < #i)  ∥ (∃ #j. (!KU( z ) @ #j) ∧ #j < #i)
+
+>>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
+6
+3
+1
+2
+0
+4
+5
+
+>>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
+
+>>>>>>>>>>>>>>>>>>>>>>>> START INPUT
+0: splitEqs(0)
+1: StA1( $src, $dst, $ts, ipkA, h(<'idx0', $src, $ts>), phiA)[no_precomp] ▶₀ #i
+2: !LtkK( ipkA, ~ska, ~skb, ~skc )[no_precomp] ▶₁ #i
+3: !Proof( piB, $dst, <vkaB, vkbB, pkcB>, hidB,        h(<'n1', phiA, z, h(<'n0', h(<'idx0', $src, $ts>)>)>))[no_precomp] ▶₂ #i
+4: !KU( h(<'idx0', $src, $ts>) )[no_precomp] @ #vk.1
+5: !KU( aenc(<'rsp',            <'phi', piB, $dst, <vkaB, vkbB, pkcB>, 'ex', 'nodlg'>, z>,          pk(~skc)))[no_precomp] @ #vk.2
+6: ResponseSent( z,              <'phi', piB, $dst, <vkaB, vkbB, pkcB>, 'ex', 'nodlg'>,              <vkaB, vkbB, pkcB>) @ #j.1
+
+>>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
+6
+3
+1
+2
+0
+4
+5
+
+>>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
+
+>>>>>>>>>>>>>>>>>>>>>>>> START INPUT
+0: StA1( $src, $dst, $ts, ipkA, h(<'idx0', $src, $ts>), phiA)[no_precomp] ▶₀ #i
+1: !LtkK( ipkA, ~ska, ~skb, ~skc )[no_precomp] ▶₁ #i
+2: !Proof( ~piB, $dst, <vkaB, vkbB, pkcB>, hidB,        h(<'n1', phiA, 'g'^~b, h(<'n0', h(<'idx0', $src, $ts>)>)>))[no_precomp] ▶₂ #i
+3: !KU( h(<'idx0', $src, $ts>) )[no_precomp] @ #vk.1
+4: !KU( aenc(<'rsp',            <'phi', ~piB, $dst, <vkaB, vkbB, pkcB>, 'ex', 'nodlg'>, 'g'^~b>,          pk(~skc)))[no_precomp] @ #vk.2
+5: !Etk( $dst, <vkaB, vkbB, pkcB>, ~idB,      <$dst, <vkaB, vkbB, pkcB>, 'ex', hidB.1, esigB>)[no_precomp] ▶₀ #j
+6: !Proof( piA, $src.1, <vkaO, pk(skbO), pkcO>, hidO,        h(<'n0', h(<'idx0', $src.1, $ts.1>)>))[no_precomp] ▶₁ #j
+7: !KU( h(<'idx0', $src.1, $ts.1>) )[no_precomp] @ #vk.4
+8: !KU( pk(skbO) )[no_precomp] @ #vk.15
+9: !KU( sign(<'dlg', <vkaD, vkbD, pkcD>, 'exD', $src.1, 'orig'>, skbO))[no_precomp] @ #vk.29
+10: !KU( 'g'^~b ) @ #j.1
+
+>>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
+2
+6
+0
+1
+5
+10
+3
+4
+7
+8
+9
+
+>>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
+
+>>>>>>>>>>>>>>>>>>>>>>>> START INPUT
+0: StA1( $src, $dst, $ts, ipkA, h(<'idx0', $src, $ts>),      <'phi', piA, $src, <vkaO, pk(skbO), pkcO>, 'ex', 'dlg', 'exD',        <vkaD, vkbD, pkcD>,        sign(<'dlg', <vkaD, vkbD, pkcD>, 'exD', $src, 'orig'>, skbO)>)[no_precomp] ▶₀ #i
+1: !LtkK( ipkA, ~ska, ~skb, ~skc )[no_precomp] ▶₁ #i
+2: !KU( h(<'idx0', $src, $ts>) )[no_precomp] @ #vk.1
+3: !KU( aenc(<'rsp',            <'phi', ~piB, $dst, <pk(~ska.1), pk(~skb.1), pk(~skc.1)>, 'ex',             'nodlg'>,            'g'^~b>,          pk(~skc)))[no_precomp] @ #vk.3
+4: !Proof( piA, $src, <vkaO, pk(skbO), pkcO>, hidO,        h(<'n0', h(<'idx0', $src, $ts>)>))[no_precomp] ▶₁ #j
+5: !KU( pk(skbO) )[no_precomp] @ #vk.14
+6: !KU( sign(<'dlg', <vkaD, vkbD, pkcD>, 'exD', $src, 'orig'>, skbO))[no_precomp] @ #vk.28
+7: !KU( 'g'^~b ) @ #j.1
+
+>>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
+4
+0
+1
+7
+2
+3
+5
+6
+
+>>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
+
+>>>>>>>>>>>>>>>>>>>>>>>> START INPUT
+0: StA1( $src, $dst, $ts, ipkA, h(<'idx0', $src, $ts>),      <'phi', ~pi, $src, <pk(~ska), pk(~skb), pk(~skc)>, 'ex', 'dlg',        'exD', <vkaD, vkbD, pkcD>,        sign(<'dlg', <vkaD, vkbD, pkcD>, 'exD', $src, 'orig'>, ~skb)>)[no_precomp] ▶₀ #i
+1: !LtkK( ipkA, ~ska.1, ~skb.1, ~skc.1 )[no_precomp] ▶₁ #i
+2: !KU( h(<'idx0', $src, $ts>) )[no_precomp] @ #vk.1
+3: !KU( aenc(<'rsp',            <'phi', ~piB, $dst, <pk(~ska.2), pk(~skb.2), pk(~skc.2)>, 'ex',             'nodlg'>,            'g'^~b>,          pk(~skc.1)))[no_precomp] @ #vk.3
+4: !KU( pk(~skb) )[no_precomp] @ #vk.14
+5: !KU( sign(<'dlg', <vkaD, vkbD, pkcD>, 'exD', $src, 'orig'>, ~skb))[no_precomp] @ #vk.28
+6: !KU( 'g'^~b ) @ #j.1
+7: !KU( sign(<'etk', $src, <pk(~ska), pk(~skb), pk(~skc)>, 'ex',            h(<'hid', ~id, pk(~ska), pk(~skb), pk(~skc)>)>,          ~skES))[no_precomp] @ #vk.30
+8: !KU( h(<'hid', ~id, pk(~ska), pk(~skb), pk(~skc)>))[no_precomp] @ #vk.32
+9: !KU( h(<'n0', h(<'idx0', $src, $ts>)>) )[no_precomp] @ #vk.33
+10: !KU( ~pi )[no_precomp] @ #vk.7
+11: !KU( pk(~ska) )[no_precomp] @ #vk.12
+12: !KU( pk(~skc) )[no_precomp] @ #vk.15
+
+>>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
+10
+0
+1
+6
+2
+3
+4
+5
+7
+8
+9
+11
+12
+
+>>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
+
+>>>>>>>>>>>>>>>>>>>>>>>> START INPUT
+0: StA1( $src, $dst, $ts, ipkA, h(<'idx0', $src, $ts>),      <'phi', ~pi, $src, <pk(~ska), pk(~skb), pk(~skc)>, 'ex', 'dlg',        'exD', <vkaD, vkbD, pkcD>,        sign(<'dlg', <vkaD, vkbD, pkcD>, 'exD', $src, 'orig'>, ~skb)>)[no_precomp] ▶₀ #i
+1: !LtkK( ipkA, ~ska.1, ~skb.1, ~skc.1 )[no_precomp] ▶₁ #i
+2: !KU( h(<'idx0', $src, $ts>) )[no_precomp] @ #vk.2
+3: !KU( aenc(<'rsp',            <'phi', ~piB, $dst, <pk(~ska.2), pk(~skb.2), pk(~skc.2)>, 'ex',             'nodlg'>,            'g'^~b>,          pk(~skc.1)))[no_precomp] @ #vk.4
+4: !KU( pk(~skb) )[no_precomp] @ #vk.14
+5: !KU( sign(<'dlg', <vkaD, vkbD, pkcD>, 'exD', $src, 'orig'>, ~skb))[no_precomp] @ #vk.28
+6: !KU( 'g'^~b ) @ #j.1
+7: !KU( sign(<'etk', $src, <pk(~ska), pk(~skb), pk(~skc)>, 'ex',            h(<'hid', ~id, pk(~ska), pk(~skb), pk(~skc)>)>,          ~skES))[no_precomp] @ #vk.30
+8: !KU( h(<'hid', ~id, pk(~ska), pk(~skb), pk(~skc)>))[no_precomp] @ #vk.32
+9: !KU( h(<'n0', h(<'idx0', $src, $ts>)>) )[no_precomp] @ #vk.33
+10: !KU( pk(~ska) )[no_precomp] @ #vk.12
+11: !KU( pk(~skc) )[no_precomp] @ #vk.15
+
+>>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
+0
+1
+6
+2
+3
+4
+5
+7
+8
+9
+10
+11
+
+>>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
+
+>>>>>>>>>>>>>>>>>>>>>>>> START INPUT
+0: StA1( $src, $dst, $ts, ipkA, h(<'idx0', $src, $ts>),      <'phi', ~piA, $src, <pk(~skaO), pk(~skbO), pk(~skcO)>, 'ex',        'dlg', 'exD', <vkaD, vkbD, pkcD>,        sign(<'dlg', <vkaD, vkbD, pkcD>, 'exD', $src, 'orig'>, ~skbO)>)[no_precomp] ▶₀ #i
+1: !LtkK( ipkA, ~ska, ~skb, ~skc )[no_precomp] ▶₁ #i
+2: !KU( h(<'idx0', $src, $ts>) )[no_precomp] @ #vk.1
+3: !KU( aenc(<'rsp',            <'phi', ~piB, $dst, <pk(~ska.1), pk(~skb.1), pk(~skc.1)>, 'ex',             'nodlg'>,            'g'^~b>,          pk(~skc)))[no_precomp] @ #vk.3
+4: !KU( pk(~skbO) )[no_precomp] @ #vk.14
+5: !KU( sign(<'dlg', <vkaD, vkbD, pkcD>, 'exD', $src, 'orig'>, ~skbO))[no_precomp] @ #vk.28
+6: !KU( 'g'^~b ) @ #j.1
+7: !KU( ~piA )[no_precomp] @ #vk.7
+8: !KU( pk(~skaO) )[no_precomp] @ #vk.12
+9: !KU( pk(~skcO) )[no_precomp] @ #vk.15
+
+>>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
+7
+0
+1
+6
+2
+3
+4
+5
+8
+9
+
+>>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
+
+>>>>>>>>>>>>>>>>>>>>>>>> START INPUT
+0: StA1( $src, $dst, $ts, ipkA, h(<'idx0', $src, $ts>),      <'phi', ~piA, $src, <pk(~skaO), pk(~skbO), pk(~skcO)>, 'ex',        'dlg', 'exD', <vkaD, vkbD, pkcD>,        sign(<'dlg', <vkaD, vkbD, pkcD>, 'exD', $src, 'orig'>, ~skbO)>)[no_precomp] ▶₀ #i
+1: !LtkK( ipkA, ~ska, ~skb, ~skc )[no_precomp] ▶₁ #i
+2: !KU( h(<'idx0', $src, $ts>) )[no_precomp] @ #vk.2
+3: !KU( aenc(<'rsp',            <'phi', ~piB, $dst, <pk(~ska.1), pk(~skb.1), pk(~skc.1)>, 'ex',             'nodlg'>,            'g'^~b>,          pk(~skc)))[no_precomp] @ #vk.4
+4: !KU( pk(~skbO) )[no_precomp] @ #vk.14
+5: !KU( sign(<'dlg', <vkaD, vkbD, pkcD>, 'exD', $src, 'orig'>, ~skbO))[no_precomp] @ #vk.28
+6: !KU( 'g'^~b ) @ #j.1
+7: !KU( pk(~skaO) )[no_precomp] @ #vk.12
+8: !KU( pk(~skcO) )[no_precomp] @ #vk.15
+
+>>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
+0
+1
+6
+2
+3
+4
+5
+7
+8
+
+>>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
+
+>>>>>>>>>>>>>>>>>>>>>>>> START INPUT
+0: StA1( $src, $dst, $ts, ipkA, h(<'idx0', $src, $ts>),      <'phi', ~piA, $src, <pk(~ska), pk(~skb), pk(~skc)>, 'ex', 'dlg',        'exD', <vkaD, vkbD, pkcD>,        sign(<'dlg', <vkaD, vkbD, pkcD>, 'exD', $src, 'orig'>, ~skb)>)[no_precomp] ▶₀ #i
+1: !LtkK( ipkA, ~ska.1, ~skb.1, ~skc.1 )[no_precomp] ▶₁ #i
+2: !KU( h(<'idx0', $src, $ts>) )[no_precomp] @ #vk.1
+3: !KU( aenc(<'rsp',            <'phi', ~piB, $dst, <pk(~ska.2), pk(~skb.2), pk(~skc.2)>, 'ex',             'nodlg'>,            'g'^~b>,          pk(~skc.1)))[no_precomp] @ #vk.3
+4: !KU( pk(~skb) )[no_precomp] @ #vk.14
+5: !KU( sign(<'dlg', <vkaD, vkbD, pkcD>, 'exD', $src, 'orig'>, ~skb))[no_precomp] @ #vk.28
+6: !KU( 'g'^~b ) @ #j.1
+7: !KU( ~piA )[no_precomp] @ #vk.7
+8: !KU( pk(~ska) )[no_precomp] @ #vk.12
+9: !KU( pk(~skc) )[no_precomp] @ #vk.15
+
+>>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
+7
+0
+1
+6
+2
+3
+4
+5
+8
+9
+
+>>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
+
+>>>>>>>>>>>>>>>>>>>>>>>> START INPUT
+0: StA1( $src, $dst, $ts, ipkA, h(<'idx0', $src, $ts>),      <'phi', ~piA, $src, <pk(~ska), pk(~skb), pk(~skc)>, 'ex', 'dlg',        'exD', <vkaD, vkbD, pkcD>,        sign(<'dlg', <vkaD, vkbD, pkcD>, 'exD', $src, 'orig'>, ~skb)>)[no_precomp] ▶₀ #i
+1: !LtkK( ipkA, ~ska.1, ~skb.1, ~skc.1 )[no_precomp] ▶₁ #i
+2: !KU( h(<'idx0', $src, $ts>) )[no_precomp] @ #vk.2
+3: !KU( aenc(<'rsp',            <'phi', ~piB, $dst, <pk(~ska.2), pk(~skb.2), pk(~skc.2)>, 'ex',             'nodlg'>,            'g'^~b>,          pk(~skc.1)))[no_precomp] @ #vk.4
+4: !KU( pk(~skb) )[no_precomp] @ #vk.14
+5: !KU( sign(<'dlg', <vkaD, vkbD, pkcD>, 'exD', $src, 'orig'>, ~skb))[no_precomp] @ #vk.28
+6: !KU( 'g'^~b ) @ #j.1
+7: !KU( pk(~ska) )[no_precomp] @ #vk.12
+8: !KU( pk(~skc) )[no_precomp] @ #vk.15
+
+>>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
+0
+1
+6
+2
+3
+4
+5
+7
+8
+
+>>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
+
+>>>>>>>>>>>>>>>>>>>>>>>> START INPUT
+0: StA1( $src, $dst, $ts, ipkA, h(<'idx0', $src, $ts>), phiA)[no_precomp] ▶₀ #i
+1: !LtkK( ipkA, ~ska, ~skb, ~skc )[no_precomp] ▶₁ #i
+2: !Proof( ~piB, $dst, <vkaB, vkbB, pkcB>, hidB,        h(<'n1', phiA, 'g'^~b, h(<'n0', h(<'idx0', $src, $ts>)>)>))[no_precomp] ▶₂ #i
+3: !KU( h(<'idx0', $src, $ts>) )[no_precomp] @ #vk.1
+4: !KU( aenc(<'rsp',            <'phi', ~piB, $dst, <vkaB, vkbB, pkcB>, 'ex', 'nodlg'>, 'g'^~b>,          pk(~skc)))[no_precomp] @ #vk.2
+5: !Etk( $dst, <vkaB, vkbB, pkcB>, ~idB,      <$dst, <vkaB, vkbB, pkcB>, 'ex', hidB.1, esigB>)[no_precomp] ▶₀ #j
+6: !Proof( piA, $src.1, <vkaA, vkbA, pkcA>, hidA,        h(<'n0', h(<'idx0', $src.1, $ts.1>)>))[no_precomp] ▶₁ #j
+7: !KU( h(<'idx0', $src.1, $ts.1>) )[no_precomp] @ #vk.4
+8: !KU( 'g'^~b ) @ #j.1
+
+>>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
+2
+6
+0
+1
+5
+8
+3
+4
+7
+
+>>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
+
+>>>>>>>>>>>>>>>>>>>>>>>> START INPUT
+0: StA1( $src, $dst, $ts, ipkA, h(<'idx0', $src, $ts>),      <'phi', piA, $src, <vkaA, vkbA, pkcA>, 'ex', 'nodlg'>)[no_precomp] ▶₀ #i
+1: !LtkK( ipkA, ~ska, ~skb, ~skc )[no_precomp] ▶₁ #i
+2: !KU( h(<'idx0', $src, $ts>) )[no_precomp] @ #vk.1
+3: !KU( aenc(<'rsp',            <'phi', ~piB, $dst, <pk(~ska.1), pk(~skb.1), pk(~skc.1)>, 'ex',             'nodlg'>,            'g'^~b>,          pk(~skc)))[no_precomp] @ #vk.3
+4: !Proof( piA, $src, <vkaA, vkbA, pkcA>, hidA,        h(<'n0', h(<'idx0', $src, $ts>)>))[no_precomp] ▶₁ #j
+5: !KU( 'g'^~b ) @ #j.1
+
+>>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
+4
+0
+1
+5
+2
+3
+
+>>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
+
+>>>>>>>>>>>>>>>>>>>>>>>> START INPUT
+0: StA1( $src, $dst, $ts, ipkA, h(<'idx0', $src, $ts>),      <'phi', ~pi, $src, <pk(~ska), pk(~skb), pk(~skc)>, 'ex', 'nodlg'>)[no_precomp] ▶₀ #i
+1: !LtkK( ipkA, ~ska.1, ~skb.1, ~skc.1 )[no_precomp] ▶₁ #i
+2: !KU( h(<'idx0', $src, $ts>) )[no_precomp] @ #vk.1
+3: !KU( aenc(<'rsp',            <'phi', ~piB, $dst, <pk(~ska.2), pk(~skb.2), pk(~skc.2)>, 'ex',             'nodlg'>,            'g'^~b>,          pk(~skc.1)))[no_precomp] @ #vk.3
+4: !KU( 'g'^~b ) @ #j.1
+5: !KU( sign(<'etk', $src, <pk(~ska), pk(~skb), pk(~skc)>, 'ex',            h(<'hid', ~id, pk(~ska), pk(~skb), pk(~skc)>)>,          ~skES))[no_precomp] @ #vk.20
+6: !KU( h(<'hid', ~id, pk(~ska), pk(~skb), pk(~skc)>))[no_precomp] @ #vk.22
+7: !KU( h(<'n0', h(<'idx0', $src, $ts>)>) )[no_precomp] @ #vk.23
+8: !KU( ~pi )[no_precomp] @ #vk.7
+9: !KU( pk(~ska) )[no_precomp] @ #vk.12
+10: !KU( pk(~skb) )[no_precomp] @ #vk.14
+11: !KU( pk(~skc) )[no_precomp] @ #vk.15
+12:  (∃ #r.   (Reveal( <pk(~ska), pk(~skb), pk(~skc)> ) @ #r) ∧ #r < #j.1)  ∥ (∃ #r.   (Reveal( <pk(~ska.2), pk(~skb.2), pk(~skc.2)> ) @ #r) ∧ #r < #j.1)
+
+>>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
+12
+8
+0
+1
+4
+2
+3
+5
+6
+7
+9
+10
+11
+
+>>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
+
+>>>>>>>>>>>>>>>>>>>>>>>> START INPUT
+0: StA1( $src, $dst, $ts, ipkA, h(<'idx0', $src, $ts>),      <'phi', ~pi, $src, <pk(~ska), pk(~skb), pk(~skc)>, 'ex', 'nodlg'>)[no_precomp] ▶₀ #i
+1: !LtkK( ipkA, ~ska.1, ~skb.1, ~skc.1 )[no_precomp] ▶₁ #i
+2: !KU( h(<'idx0', $src, $ts>) )[no_precomp] @ #vk.1
+3: !KU( aenc(<'rsp',            <'phi', ~piB, $dst, <pk(~ska.2), pk(~skb.2), pk(~skc.2)>, 'ex',             'nodlg'>,            'g'^~b>,          pk(~skc.1)))[no_precomp] @ #vk.3
+4: !KU( 'g'^~b ) @ #j.1
+5: !KU( sign(<'etk', $src, <pk(~ska), pk(~skb), pk(~skc)>, 'ex',            h(<'hid', ~id, pk(~ska), pk(~skb), pk(~skc)>)>,          ~skES))[no_precomp] @ #vk.20
+6: !KU( h(<'hid', ~id, pk(~ska), pk(~skb), pk(~skc)>))[no_precomp] @ #vk.22
+7: !KU( h(<'n0', h(<'idx0', $src, $ts>)>) )[no_precomp] @ #vk.23
+8: !KU( ~pi )[no_precomp] @ #vk.7
+9: !KU( pk(~ska) )[no_precomp] @ #vk.12
+10: !KU( pk(~skb) )[no_precomp] @ #vk.14
+11: !KU( pk(~skc) )[no_precomp] @ #vk.15
+12: !Ltk( $tn, <pk(~ska), pk(~skb), pk(~skc)>, ~ska.3, ~skb.3, ~skc.3)[no_precomp] ▶₀ #r
+
+>>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
+8
+0
+1
+12
+4
+2
+3
+5
+6
+7
+9
+10
+11
+
+>>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
+
+>>>>>>>>>>>>>>>>>>>>>>>> START INPUT
+0: StA1( $src, $dst, $ts, ipkA, h(<'idx0', $src, $ts>),      <'phi', ~pi, $src, <pk(~ska), pk(~skb), pk(~skc)>, 'ex', 'nodlg'>)[no_precomp] ▶₀ #i
+1: !LtkK( ipkA, ~ska.1, ~skb.1, ~skc.1 )[no_precomp] ▶₁ #i
+2: !KU( h(<'idx0', $src, $ts>) )[no_precomp] @ #vk.2
+3: !KU( aenc(<'rsp',            <'phi', ~piB, $dst, <pk(~ska.2), pk(~skb.2), pk(~skc.2)>, 'ex',             'nodlg'>,            'g'^~b>,          pk(~skc.1)))[no_precomp] @ #vk.4
+4: !KU( 'g'^~b ) @ #j.1
+5: !KU( sign(<'etk', $src, <pk(~ska), pk(~skb), pk(~skc)>, 'ex',            h(<'hid', ~id, pk(~ska), pk(~skb), pk(~skc)>)>,          ~skES))[no_precomp] @ #vk.20
+6: !KU( h(<'hid', ~id, pk(~ska), pk(~skb), pk(~skc)>))[no_precomp] @ #vk.22
+7: !KU( h(<'n0', h(<'idx0', $src, $ts>)>) )[no_precomp] @ #vk.23
+8: !KU( pk(~ska) )[no_precomp] @ #vk.12
+9: !KU( pk(~skb) )[no_precomp] @ #vk.14
+10: !KU( pk(~skc) )[no_precomp] @ #vk.15
+11: !Ltk( $tn, <pk(~ska), pk(~skb), pk(~skc)>, ~ska.3, ~skb.3, ~skc.3)[no_precomp] ▶₀ #r
+
+>>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
+0
+1
+11
+4
+2
+3
+5
+6
+7
+8
+9
+10
+
+>>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
+
+>>>>>>>>>>>>>>>>>>>>>>>> START INPUT
+0: StA1( $src, $dst, $ts, ipkA, h(<'idx0', $src, $ts>),      <'phi', ~piA, $src, <pk(~skaO), pk(~skbO), pk(~skcO)>, 'ex',        'nodlg'>)[no_precomp] ▶₀ #i
+1: !LtkK( ipkA, ~ska, ~skb, ~skc )[no_precomp] ▶₁ #i
+2: !KU( h(<'idx0', $src, $ts>) )[no_precomp] @ #vk.1
+3: !KU( aenc(<'rsp',            <'phi', ~piB, $dst, <pk(~ska.1), pk(~skb.1), pk(~skc.1)>, 'ex',             'nodlg'>,            'g'^~b>,          pk(~skc)))[no_precomp] @ #vk.3
+4: !KU( 'g'^~b ) @ #j.1
+5: !KU( ~piA )[no_precomp] @ #vk.7
+6: !KU( pk(~skaO) )[no_precomp] @ #vk.12
+7: !KU( pk(~skbO) )[no_precomp] @ #vk.14
+8: !KU( pk(~skcO) )[no_precomp] @ #vk.15
+9:  (∃ #r.   (Reveal( <pk(~skaO), pk(~skbO), pk(~skcO)> ) @ #r) ∧ #r < #j.1)  ∥ (∃ #r.   (Reveal( <pk(~ska.1), pk(~skb.1), pk(~skc.1)> ) @ #r) ∧ #r < #j.1)
+
+>>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
+9
+5
+0
+1
+4
+2
+3
+6
+7
+8
+
+>>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
+
+>>>>>>>>>>>>>>>>>>>>>>>> START INPUT
+0: StA1( $src, $dst, $ts, ipkA, h(<'idx0', $src, $ts>),      <'phi', ~piA, $src, <pk(~skaO), pk(~skbO), pk(~skcO)>, 'ex',        'nodlg'>)[no_precomp] ▶₀ #i
+1: !LtkK( ipkA, ~ska, ~skb, ~skc )[no_precomp] ▶₁ #i
+2: !KU( h(<'idx0', $src, $ts>) )[no_precomp] @ #vk.1
+3: !KU( aenc(<'rsp',            <'phi', ~piB, $dst, <pk(~ska.1), pk(~skb.1), pk(~skc.1)>, 'ex',             'nodlg'>,            'g'^~b>,          pk(~skc)))[no_precomp] @ #vk.3
+4: !KU( 'g'^~b ) @ #j.1
+5: !KU( ~piA )[no_precomp] @ #vk.7
+6: !KU( pk(~skaO) )[no_precomp] @ #vk.12
+7: !KU( pk(~skbO) )[no_precomp] @ #vk.14
+8: !KU( pk(~skcO) )[no_precomp] @ #vk.15
+9: !Ltk( $tn, <pk(~skaO), pk(~skbO), pk(~skcO)>, ~ska.2, ~skb.2,      ~skc.2)[no_precomp] ▶₀ #r
+
+>>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
+5
+0
+1
+9
+4
+2
+3
+6
+7
+8
+
+>>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
+
+>>>>>>>>>>>>>>>>>>>>>>>> START INPUT
+0: StA1( $src, $dst, $ts, ipkA, h(<'idx0', $src, $ts>),      <'phi', ~piA, $src, <pk(~skaO), pk(~skbO), pk(~skcO)>, 'ex',        'nodlg'>)[no_precomp] ▶₀ #i
+1: !LtkK( ipkA, ~ska, ~skb, ~skc )[no_precomp] ▶₁ #i
+2: !KU( h(<'idx0', $src, $ts>) )[no_precomp] @ #vk.2
+3: !KU( aenc(<'rsp',            <'phi', ~piB, $dst, <pk(~ska.1), pk(~skb.1), pk(~skc.1)>, 'ex',             'nodlg'>,            'g'^~b>,          pk(~skc)))[no_precomp] @ #vk.4
+4: !KU( 'g'^~b ) @ #j.1
+5: !KU( pk(~skaO) )[no_precomp] @ #vk.12
+6: !KU( pk(~skbO) )[no_precomp] @ #vk.14
+7: !KU( pk(~skcO) )[no_precomp] @ #vk.15
+8: !Ltk( $tn, <pk(~skaO), pk(~skbO), pk(~skcO)>, ~ska.2, ~skb.2,      ~skc.2)[no_precomp] ▶₀ #r
+
+>>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
+0
+1
+8
+4
+2
+3
+5
+6
+7
+
+>>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
+
+>>>>>>>>>>>>>>>>>>>>>>>> START INPUT
+0: StA1( $src, $dst, $ts, ipkA, h(<'idx0', $src, $ts>),      <'phi', ~piA, $src, <pk(~ska), pk(~skb), pk(~skc)>, 'ex', 'nodlg'>)[no_precomp] ▶₀ #i
+1: !LtkK( ipkA, ~ska.1, ~skb.1, ~skc.1 )[no_precomp] ▶₁ #i
+2: !KU( h(<'idx0', $src, $ts>) )[no_precomp] @ #vk.1
+3: !KU( aenc(<'rsp',            <'phi', ~piB, $dst, <pk(~ska.2), pk(~skb.2), pk(~skc.2)>, 'ex',             'nodlg'>,            'g'^~b>,          pk(~skc.1)))[no_precomp] @ #vk.3
+4: !KU( 'g'^~b ) @ #j.1
+5: !KU( ~piA )[no_precomp] @ #vk.7
+6: !KU( pk(~ska) )[no_precomp] @ #vk.12
+7: !KU( pk(~skb) )[no_precomp] @ #vk.14
+8: !KU( pk(~skc) )[no_precomp] @ #vk.15
+9:  (∃ #r.   (Reveal( <pk(~ska), pk(~skb), pk(~skc)> ) @ #r) ∧ #r < #j.1)  ∥ (∃ #r.   (Reveal( <pk(~ska.2), pk(~skb.2), pk(~skc.2)> ) @ #r) ∧ #r < #j.1)
+
+>>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
+9
+5
+0
+1
+4
+2
+3
+6
+7
+8
+
+>>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
+
+>>>>>>>>>>>>>>>>>>>>>>>> START INPUT
+0: StA1( $src, $dst, $ts, ipkA, h(<'idx0', $src, $ts>),      <'phi', ~piA, $src, <pk(~ska), pk(~skb), pk(~skc)>, 'ex', 'nodlg'>)[no_precomp] ▶₀ #i
+1: !LtkK( ipkA, ~ska.1, ~skb.1, ~skc.1 )[no_precomp] ▶₁ #i
+2: !KU( h(<'idx0', $src, $ts>) )[no_precomp] @ #vk.1
+3: !KU( aenc(<'rsp',            <'phi', ~piB, $dst, <pk(~ska.2), pk(~skb.2), pk(~skc.2)>, 'ex',             'nodlg'>,            'g'^~b>,          pk(~skc.1)))[no_precomp] @ #vk.3
+4: !KU( 'g'^~b ) @ #j.1
+5: !KU( ~piA )[no_precomp] @ #vk.7
+6: !KU( pk(~ska) )[no_precomp] @ #vk.12
+7: !KU( pk(~skb) )[no_precomp] @ #vk.14
+8: !KU( pk(~skc) )[no_precomp] @ #vk.15
+9: !Ltk( $tn, <pk(~ska), pk(~skb), pk(~skc)>, ~ska.3, ~skb.3, ~skc.3)[no_precomp] ▶₀ #r
+
+>>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
+5
+0
+1
+9
+4
+2
+3
+6
+7
+8
+
+>>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
+
+>>>>>>>>>>>>>>>>>>>>>>>> START INPUT
+0: StA1( $src, $dst, $ts, ipkA, h(<'idx0', $src, $ts>),      <'phi', ~piA, $src, <pk(~ska), pk(~skb), pk(~skc)>, 'ex', 'nodlg'>)[no_precomp] ▶₀ #i
+1: !LtkK( ipkA, ~ska.1, ~skb.1, ~skc.1 )[no_precomp] ▶₁ #i
+2: !KU( h(<'idx0', $src, $ts>) )[no_precomp] @ #vk.2
+3: !KU( aenc(<'rsp',            <'phi', ~piB, $dst, <pk(~ska.2), pk(~skb.2), pk(~skc.2)>, 'ex',             'nodlg'>,            'g'^~b>,          pk(~skc.1)))[no_precomp] @ #vk.4
+4: !KU( 'g'^~b ) @ #j.1
+5: !KU( pk(~ska) )[no_precomp] @ #vk.12
+6: !KU( pk(~skb) )[no_precomp] @ #vk.14
+7: !KU( pk(~skc) )[no_precomp] @ #vk.15
+8: !Ltk( $tn, <pk(~ska), pk(~skb), pk(~skc)>, ~ska.3, ~skb.3, ~skc.3)[no_precomp] ▶₀ #r
+
+>>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
+0
+1
+8
+4
+2
+3
+5
+6
+7
+
+>>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
+
+>>>>>>>>>>>>>>>>>>>>>>>> START INPUT
+0: splitEqs(0)
+1: StA1( $src, $dst, $ts, ipkA, h(<'idx0', $src, $ts>), phiA)[no_precomp] ▶₀ #i
+2: !LtkK( ipkA, ~ska, ~skb, ~skc )[no_precomp] ▶₁ #i
+3: !Proof( piB, $dst, <vkaB, vkbB, pkcB>, hidB,        h(<'n1', phiA, z, h(<'n0', h(<'idx0', $src, $ts>)>)>))[no_precomp] ▶₂ #i
+4: !KU( h(<'idx0', $src, $ts>) )[no_precomp] @ #vk.1
+5: !KU( aenc(<'rsp',            <'phi', piB, $dst, <vkaB, vkbB, pkcB>, 'ex', 'nodlg'>, z>,          pk(~skc)))[no_precomp] @ #vk.2
+
+>>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
+3
+1
+2
+0
+4
+5
+
+>>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
+
+>>>>>>>>>>>>>>>>>>>>>>>> START INPUT
+0: splitEqs(0)
+1: StA1( $src, $dst, $ts, ipkA, h(<'idx0', $src, $ts>), phiA)[no_precomp] ▶₀ #i
+2: !LtkK( ipkA, ~ska, ~skb, ~skc )[no_precomp] ▶₁ #i
+3: !KU( h(<'idx0', $src, $ts>) )[no_precomp] @ #vk.1
+4: !KU( aenc(<'rsp',            <'phi', ~pi, $dst, <pk(~ska.1), pk(~skb.1), pk(~skc.1)>, 'ex',             'nodlg'>,            z>,          pk(~skc)))[no_precomp] @ #vk.2
+5: !KU( sign(<'etk', $dst, <pk(~ska.1), pk(~skb.1), pk(~skc.1)>,            'ex', h(<'hid', ~id, pk(~ska.1), pk(~skb.1), pk(~skc.1)>)>,          ~skES))[no_precomp] @ #vk.4
+6: !KU( h(<'hid', ~id, pk(~ska.1), pk(~skb.1), pk(~skc.1)>))[no_precomp] @ #vk.6
+7: !KU( h(<'n1', phiA, z, h(<'n0', h(<'idx0', $src, $ts>)>)>))[no_precomp] @ #vk.7
+
+>>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
+1
+2
+0
+3
+4
+5
+6
+7
+
+>>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
+
+>>>>>>>>>>>>>>>>>>>>>>>> START INPUT
+0: splitEqs(0)
+1: !LtkK( <pk(~skaD), pk(~skbD), pk(~skcD)>, ~ska, ~skb, ~skc)[no_precomp] ▶₁ #i
+2: !KU( h(<'idx0', $src, $ts>) )[no_precomp] @ #vk.1
+3: !KU( aenc(<'rsp',            <'phi', ~pi, $dst, <pk(~ska.1), pk(~skb.1), pk(~skc.1)>, 'ex',             'nodlg'>,            z>,          pk(~skc)))[no_precomp] @ #vk.2
+4: !KU( sign(<'etk', $dst, <pk(~ska.1), pk(~skb.1), pk(~skc.1)>,            'ex', h(<'hid', ~id, pk(~ska.1), pk(~skb.1), pk(~skc.1)>)>,          ~skES))[no_precomp] @ #vk.4
+5: !KU( h(<'hid', ~id, pk(~ska.1), pk(~skb.1), pk(~skc.1)>))[no_precomp] @ #vk.6
+6: !KU( h(<'n1',         <'phi', ~piA, $src, <pk(~skaO), pk(~skbO), pk(~skcO)>, 'ex',          'dlg', 'exD', <pk(~skaD), pk(~skbD), pk(~skcD)>,          sign(<'dlg', <pk(~skaD), pk(~skbD), pk(~skcD)>, 'exD', $src, 'orig'              >,              ~skbO)        >,         z, h(<'n0', h(<'idx0', $src, $ts>)>)>))[no_precomp] @ #vk.7
+
+>>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
+1
+0
+2
+3
+4
+5
+6
+
+>>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
+
+>>>>>>>>>>>>>>>>>>>>>>>> START INPUT
+0: splitEqs(0)
+1: !KU( h(<'idx0', $src, $ts>) )[no_precomp] @ #vk.1
+2: !KU( aenc(<'rsp',            <'phi', ~pi, $dst, <pk(~ska.1), pk(~skb.1), pk(~skc.1)>, 'ex',             'nodlg'>,            z>,          pk(~skc)))[no_precomp] @ #vk.2
+3: !KU( sign(<'etk', $dst, <pk(~ska.1), pk(~skb.1), pk(~skc.1)>,            'ex', h(<'hid', ~id, pk(~ska.1), pk(~skb.1), pk(~skc.1)>)>,          ~skES))[no_precomp] @ #vk.4
+4: !KU( h(<'hid', ~id, pk(~ska.1), pk(~skb.1), pk(~skc.1)>))[no_precomp] @ #vk.6
+5: !KU( h(<'n1',         <'phi', ~piA, $src, <pk(~skaO), pk(~skbO), pk(~skcO)>, 'ex',          'dlg', 'exD', <pk(~ska), pk(~skb), pk(~skc)>,          sign(<'dlg', <pk(~ska), pk(~skb), pk(~skc)>, 'exD', $src, 'orig'>,              ~skbO)        >,         z, h(<'n0', h(<'idx0', $src, $ts>)>)>))[no_precomp] @ #vk.7
+
+>>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
+0
+1
+2
+3
+4
+5
+
+>>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
+
+>>>>>>>>>>>>>>>>>>>>>>>> START INPUT
+0: !KU( h(<'idx0', $src, $ts>) )[no_precomp] @ #vk.1
+1: !KU( aenc(<'rsp',            <'phi', ~pi, $dst, <pk(~ska.1), pk(~skb.1), pk(~skc.1)>, 'ex',             'nodlg'>,            'g'>,          pk(~skc)))[no_precomp] @ #vk.2
+2: !KU( sign(<'etk', $dst, <pk(~ska.1), pk(~skb.1), pk(~skc.1)>,            'ex', h(<'hid', ~id, pk(~ska.1), pk(~skb.1), pk(~skc.1)>)>,          ~skES))[no_precomp] @ #vk.4
+3: !KU( h(<'hid', ~id, pk(~ska.1), pk(~skb.1), pk(~skc.1)>))[no_precomp] @ #vk.6
+4: !KU( h(<'n1',         <'phi', ~piA, $src, <pk(~skaO), pk(~skbO), pk(~skcO)>, 'ex',          'dlg', 'exD', <pk(~ska), pk(~skb), pk(~skc)>,          sign(<'dlg', <pk(~ska), pk(~skb), pk(~skc)>, 'exD', $src, 'orig'>,              ~skbO)        >,         'g', h(<'n0', h(<'idx0', $src, $ts>)>)>))[no_precomp] @ #vk.7
+
+>>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
+0
+1
+2
+3
+4
+
+>>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
+
+>>>>>>>>>>>>>>>>>>>>>>>> START INPUT
+0: !KU( aenc(<'rsp',            <'phi', ~pi, $dst, <pk(~ska.1), pk(~skb.1), pk(~skc.1)>, 'ex',             'nodlg'>,            'g'>,          pk(~skc)))[no_precomp] @ #vk.2
+1: !KU( sign(<'etk', $dst, <pk(~ska.1), pk(~skb.1), pk(~skc.1)>,            'ex', h(<'hid', ~id, pk(~ska.1), pk(~skb.1), pk(~skc.1)>)>,          ~skES))[no_precomp] @ #vk.4
+2: !KU( h(<'hid', ~id, pk(~ska.1), pk(~skb.1), pk(~skc.1)>))[no_precomp] @ #vk.6
+3: !KU( h(<'n1',         <'phi', ~piA, $src, <pk(~skaO), pk(~skbO), pk(~skcO)>, 'ex',          'dlg', 'exD', <pk(~ska), pk(~skb), pk(~skc)>,          sign(<'dlg', <pk(~ska), pk(~skb), pk(~skc)>, 'exD', $src, 'orig'>,              ~skbO)        >,         'g', h(<'n0', h(<'idx0', $src, $ts>)>)>))[no_precomp] @ #vk.7
+
+>>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
+0
+1
+2
+3
+
+>>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
+
+>>>>>>>>>>>>>>>>>>>>>>>> START INPUT
+0: !KU( sign(<'etk', $dst, <pk(~ska.1), pk(~skb.1), pk(~skc.1)>,            'ex', h(<'hid', ~id, pk(~ska.1), pk(~skb.1), pk(~skc.1)>)>,          ~skES))[no_precomp] @ #vk.5
+1: !KU( h(<'hid', ~id, pk(~ska.1), pk(~skb.1), pk(~skc.1)>))[no_precomp] @ #vk.7
+2: !KU( h(<'n1',         <'phi', ~piA, $src, <pk(~skaO), pk(~skbO), pk(~skcO)>, 'ex',          'dlg', 'exD', <pk(~ska), pk(~skb), pk(~skc)>,          sign(<'dlg', <pk(~ska), pk(~skb), pk(~skc)>, 'exD', $src, 'orig'>,              ~skbO)        >,         'g', h(<'n0', h(<'idx0', $src, $ts>)>)>))[no_precomp] @ #vk.8
+3: !KU( pk(~skc) ) @ #vk.15
+4: !KU( ~pi ) @ #vk.20
+5: !KU( pk(~ska.1) ) @ #vk.25
+6: !KU( pk(~skb.1) ) @ #vk.27
+7: !KU( pk(~skc.1) ) @ #vk.28
+
+>>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
+4
+0
+1
+2
+3
+5
+6
+7
+
+>>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
+
+>>>>>>>>>>>>>>>>>>>>>>>> START INPUT
+0: !KU( sign(<'etk', $dst, <pk(~ska.1), pk(~skb.1), pk(~skc.1)>,            'ex', h(<'hid', ~id, pk(~ska.1), pk(~skb.1), pk(~skc.1)>)>,          ~skES))[no_precomp] @ #vk.7
+1: !KU( h(<'hid', ~id, pk(~ska.1), pk(~skb.1), pk(~skc.1)>))[no_precomp] @ #vk.9
+2: !KU( h(<'n1',         <'phi', ~piA, $src, <pk(~skaO), pk(~skbO), pk(~skcO)>, 'ex',          'dlg', 'exD', <pk(~ska), pk(~skb), pk(~skc)>,          sign(<'dlg', <pk(~ska), pk(~skb), pk(~skc)>, 'exD', $src, 'orig'>,              ~skbO)        >,         'g', h(<'n0', h(<'idx0', $src, $ts>)>)>))[no_precomp] @ #vk.10
+3: !KU( pk(~skc) ) @ #vk.16
+4: !KU( pk(~ska.1) ) @ #vk.25
+5: !KU( pk(~skb.1) ) @ #vk.27
+6: !KU( pk(~skc.1) ) @ #vk.28
+
+>>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
+0
+1
+2
+3
+4
+5
+6
+
+>>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
+
+>>>>>>>>>>>>>>>>>>>>>>>> START INPUT
+0: !KU( h(<'hid', ~id, pk(~ska.1), pk(~skb.1), pk(~skc.1)>))[no_precomp] @ #vk.10
+1: !KU( h(<'n1',         <'phi', ~piA, $src, <pk(~skaO), pk(~skbO), pk(~skcO)>, 'ex',          'dlg', 'exD', <pk(~ska), pk(~skb), pk(~skc)>,          sign(<'dlg', <pk(~ska), pk(~skb), pk(~skc)>, 'exD', $src, 'orig'>,              ~skbO)        >,         'g', h(<'n0', h(<'idx0', $src, $ts>)>)>))[no_precomp] @ #vk.11
+2: !KU( pk(~skc) ) @ #vk.17
+3: !KU( pk(~ska.1) ) @ #vk.25
+4: !KU( pk(~skb.1) ) @ #vk.27
+5: !KU( pk(~skc.1) ) @ #vk.28
+
+>>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
+0
+1
+2
+3
+4
+5
+
+>>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
+
+>>>>>>>>>>>>>>>>>>>>>>>> START INPUT
+0: !KU( h(<'n1',         <'phi', ~piA, $src, <pk(~skaO), pk(~skbO), pk(~skcO)>, 'ex',          'dlg', 'exD', <pk(~ska), pk(~skb), pk(~skc)>,          sign(<'dlg', <pk(~ska), pk(~skb), pk(~skc)>, 'exD', $src, 'orig'>,              ~skbO)        >,         'g', h(<'n0', h(<'idx0', $src, $ts>)>)>))[no_precomp] @ #vk.12
+1: !KU( pk(~skc) ) @ #vk.18
+2: !KU( pk(~ska.1) ) @ #vk.25
+3: !KU( pk(~skb.1) ) @ #vk.27
+4: !KU( pk(~skc.1) ) @ #vk.28
+
+>>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
+0
+1
+2
+3
+4
+
+>>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
+
+>>>>>>>>>>>>>>>>>>>>>>>> START INPUT
+0: !KU( pk(~skc) ) @ #vk.20
+1: !KU( pk(~ska.1) ) @ #vk.29
+2: !KU( pk(~skb.1) ) @ #vk.31
+3: !KU( pk(~skc.1) ) @ #vk.32
+4: !KU( ~piA ) @ #vk.41
+5: !KU( pk(~skaO) ) @ #vk.44
+6: !KU( pk(~skbO) ) @ #vk.46
+7: !KU( pk(~skcO) ) @ #vk.47
+8: !KU( pk(~ska) ) @ #vk.54
+9: !KU( pk(~skb) ) @ #vk.55
+10: !KU( sign(<'dlg', <pk(~ska), pk(~skb), pk(~skc)>, 'exD', $src,            'orig'>,          ~skbO)) @ #vk.56
+11: !KU( h(<'n0', h(<'idx0', $src, $ts>)>) ) @ #vk.57
+
+>>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
+4
+0
+1
+2
+3
+5
+6
+7
+8
+9
+10
+11
+
+>>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
+
+>>>>>>>>>>>>>>>>>>>>>>>> START INPUT
+0: !KU( pk(~skc) ) @ #vk.23
+1: !KU( pk(~ska.1) ) @ #vk.33
+2: !KU( pk(~skb.1) ) @ #vk.35
+3: !KU( pk(~skc.1) ) @ #vk.36
+4: !KU( pk(~skaO) ) @ #vk.45
+5: !KU( pk(~skbO) ) @ #vk.47
+6: !KU( pk(~skcO) ) @ #vk.48
+7: !KU( pk(~ska) ) @ #vk.54
+8: !KU( pk(~skb) ) @ #vk.55
+9: !KU( sign(<'dlg', <pk(~ska), pk(~skb), pk(~skc)>, 'exD', $src,            'orig'>,          ~skbO)) @ #vk.56
+10: !KU( h(<'n0', h(<'idx0', $src, $ts>)>) ) @ #vk.57
+
+>>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+
+>>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
+
+>>>>>>>>>>>>>>>>>>>>>>>> START INPUT
+0: !KU( pk(~ska.1) ) @ #vk.35
+1: !KU( pk(~skb.1) ) @ #vk.37
+2: !KU( pk(~skc.1) ) @ #vk.38
+3: !KU( pk(~skaO) ) @ #vk.46
+4: !KU( pk(~skbO) ) @ #vk.48
+5: !KU( pk(~skcO) ) @ #vk.49
+6: !KU( pk(~ska) ) @ #vk.54
+7: !KU( pk(~skb) ) @ #vk.55
+8: !KU( sign(<'dlg', <pk(~ska), pk(~skb), pk(~skc)>, 'exD', $src,            'orig'>,          ~skbO)) @ #vk.56
+9: !KU( h(<'n0', h(<'idx0', $src, $ts>)>) ) @ #vk.57
+
+>>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+
+>>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
+
+>>>>>>>>>>>>>>>>>>>>>>>> START INPUT
+0: !KU( pk(~skb.1) ) @ #vk.38
+1: !KU( pk(~skc.1) ) @ #vk.39
+2: !KU( pk(~skaO) ) @ #vk.47
+3: !KU( pk(~skbO) ) @ #vk.49
+4: !KU( pk(~skcO) ) @ #vk.50
+5: !KU( pk(~ska) ) @ #vk.54
+6: !KU( pk(~skb) ) @ #vk.55
+7: !KU( sign(<'dlg', <pk(~ska), pk(~skb), pk(~skc)>, 'exD', $src,            'orig'>,          ~skbO)) @ #vk.56
+8: !KU( h(<'n0', h(<'idx0', $src, $ts>)>) ) @ #vk.57
+
+>>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
+0
+1
+2
+3
+4
+5
+6
+7
+8
+
+>>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
+
+>>>>>>>>>>>>>>>>>>>>>>>> START INPUT
+0: !KU( pk(~skc.1) ) @ #vk.40
+1: !KU( pk(~skaO) ) @ #vk.48
+2: !KU( pk(~skbO) ) @ #vk.50
+3: !KU( pk(~skcO) ) @ #vk.51
+4: !KU( pk(~ska) ) @ #vk.54
+5: !KU( pk(~skb) ) @ #vk.55
+6: !KU( sign(<'dlg', <pk(~ska), pk(~skb), pk(~skc)>, 'exD', $src,            'orig'>,          ~skbO)) @ #vk.56
+7: !KU( h(<'n0', h(<'idx0', $src, $ts>)>) ) @ #vk.57
+
+>>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
+0
+1
+2
+3
+4
+5
+6
+7
+
+>>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
+
+>>>>>>>>>>>>>>>>>>>>>>>> START INPUT
+0: !KU( pk(~skaO) ) @ #vk.48
+1: !KU( pk(~skbO) ) @ #vk.50
+2: !KU( pk(~skcO) ) @ #vk.51
+3: !KU( pk(~ska) ) @ #vk.54
+4: !KU( pk(~skb) ) @ #vk.55
+5: !KU( sign(<'dlg', <pk(~ska), pk(~skb), pk(~skc)>, 'exD', $src,            'orig'>,          ~skbO)) @ #vk.56
+6: !KU( h(<'n0', h(<'idx0', $src, $ts>)>) ) @ #vk.57
+
+>>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
+0
+1
+2
+3
+4
+5
+6
+
+>>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
+
+>>>>>>>>>>>>>>>>>>>>>>>> START INPUT
+0: !KU( pk(~skbO) ) @ #vk.50
+1: !KU( pk(~skcO) ) @ #vk.51
+2: !KU( pk(~ska) ) @ #vk.54
+3: !KU( pk(~skb) ) @ #vk.55
+4: !KU( sign(<'dlg', <pk(~ska), pk(~skb), pk(~skc)>, 'exD', $src,            'orig'>,          ~skbO)) @ #vk.56
+5: !KU( h(<'n0', h(<'idx0', $src, $ts>)>) ) @ #vk.57
+
+>>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
+0
+1
+2
+3
+4
+5
+
+>>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
+
+>>>>>>>>>>>>>>>>>>>>>>>> START INPUT
+0: !KU( pk(~skcO) ) @ #vk.51
+1: !KU( pk(~ska) ) @ #vk.54
+2: !KU( pk(~skb) ) @ #vk.55
+3: !KU( sign(<'dlg', <pk(~ska), pk(~skb), pk(~skc)>, 'exD', $src,            'orig'>,          ~skbO)) @ #vk.56
+4: !KU( h(<'n0', h(<'idx0', $src, $ts>)>) ) @ #vk.57
+
+>>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
+0
+1
+2
+3
+4
+
+>>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
+
+>>>>>>>>>>>>>>>>>>>>>>>> START INPUT
+0: !KU( pk(~ska) ) @ #vk.54
+1: !KU( pk(~skb) ) @ #vk.55
+2: !KU( sign(<'dlg', <pk(~ska), pk(~skb), pk(~skc)>, 'exD', $src,            'orig'>,          ~skbO)) @ #vk.56
+3: !KU( h(<'n0', h(<'idx0', $src, $ts>)>) ) @ #vk.57
+
+>>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
+0
+1
+2
+3
+
+>>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
+
+>>>>>>>>>>>>>>>>>>>>>>>> START INPUT
+0: !KU( pk(~skb) ) @ #vk.55
+1: !KU( sign(<'dlg', <pk(~ska), pk(~skb), pk(~skc)>, 'exD', $src,            'orig'>,          ~skbO)) @ #vk.56
+2: !KU( h(<'n0', h(<'idx0', $src, $ts>)>) ) @ #vk.57
+
+>>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
+0
+1
+2
+
+>>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
+
+>>>>>>>>>>>>>>>>>>>>>>>> START INPUT
+0: !KU( sign(<'dlg', <pk(~ska), pk(~skb), pk(~skc)>, 'exD', $src,            'orig'>,          ~skbO)) @ #vk.56
+1: !KU( h(<'n0', h(<'idx0', $src, $ts>)>) ) @ #vk.57
+
+>>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
+0
+1
+
+>>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
+
+>>>>>>>>>>>>>>>>>>>>>>>> START INPUT
+0: !KU( h(<'n0', h(<'idx0', $src, $ts>)>) ) @ #vk.57
+
+>>>>>>>>>>>>>>>>>>>>>>>> START OUTPUT
+0
+
+>>>>>>>>>>>>>>>>>>>>>>>> END Oracle call
+
+theory JulepPairing
+
+begin
+
+// Function signature and definition of the equational theory E
+
+builtins: diffie-hellman
+functions: adec/2, aenc/2, fst/1, h/1, kdf/1, pair/2, pk/1, sign/2, snd/1
+equations:
+    adec(aenc(x.1, pk(x.2)), x.2) = x.1,
+    fst(<x.1, x.2>) = x.1,
+    snd(<x.1, x.2>) = x.2
+
+heuristic: S
+
+restriction OnlyOnce:
+  "∀ x #i #j. ((OnlyOnce( x ) @ #i) ∧ (OnlyOnce( x ) @ #j)) ⇒ (#i = #j)"
+  // safety formula
+
+  /*
+  expanded formula:
+  "∀ x #i #j. ((OnlyOnce( x ) @ #i) ∧ (OnlyOnce( x ) @ #j)) ⇒ (#i = #j)"
+  */
+
+rule (modulo E) ES_Init:
+   [ Fr( ~skES ) ]
+  --[ OnlyOnce( 'ES' ) ]->
+   [ !ES( ~skES ), Out( pk(~skES) ) ]
+
+  /* has exactly the trivial AC variant */
+
+rule (modulo E) Enroll:
+   [ !ES( ~skES )[no_precomp], Fr( ~ska ), Fr( ~skb ), Fr( ~skc ), Fr( ~id )
+   ]
+  --[
+  Enrolled( $tn, <pk(~ska), pk(~skb), pk(~skc)>, ~id ),
+  DecryptionKey( <pk(~ska), pk(~skb), pk(~skc)>, ~skc )
+  ]->
+   [
+   !Ltk( $tn, <pk(~ska), pk(~skb), pk(~skc)>, ~ska, ~skb, ~skc ),
+   !LtkK( <pk(~ska), pk(~skb), pk(~skc)>, ~ska, ~skb, ~skc ),
+   !Etk( $tn, <pk(~ska), pk(~skb), pk(~skc)>, ~id,
+         <$tn, <pk(~ska), pk(~skb), pk(~skc)>, 'ex', 
+          h(<'hid', ~id, pk(~ska), pk(~skb), pk(~skc)>), 
+          sign(<'etk', $tn, <pk(~ska), pk(~skb), pk(~skc)>, 'ex', 
+                h(<'hid', ~id, pk(~ska), pk(~skb), pk(~skc)>)>,
+               ~skES)
+         >
+   ),
+   !Token( $tn, <pk(~ska), pk(~skb), pk(~skc)>,
+           h(<'hid', ~id, pk(~ska), pk(~skb), pk(~skc)>),
+           sign(<'etk', $tn, <pk(~ska), pk(~skb), pk(~skc)>, 'ex', 
+                 h(<'hid', ~id, pk(~ska), pk(~skb), pk(~skc)>)>,
+                ~skES)
+   ),
+   Out( <$tn, <pk(~ska), pk(~skb), pk(~skc)>, 'ex', 
+         h(<'hid', ~id, pk(~ska), pk(~skb), pk(~skc)>), 
+         sign(<'etk', $tn, <pk(~ska), pk(~skb), pk(~skc)>, 'ex', 
+               h(<'hid', ~id, pk(~ska), pk(~skb), pk(~skc)>)>,
+              ~skES)
+        >
+   )
+   ]
+
+  /* has exactly the trivial AC variant */
+
+rule (modulo E) Delegate:
+   [
+   !Ltk( $src, <pk(~skaO), pk(~skbO), pk(~skcO)>, ~skaO, ~skbO, ~skcO
+   )[no_precomp],
+   !Etk( $src, <pk(~skaO), pk(~skbO), pk(~skcO)>, ~idO, etkO )[no_precomp],
+   !Etk( $tnD, ipkD, ~idD, etkD )[no_precomp]
+   ]
+  --[ Delegated( $src, <pk(~skaO), pk(~skbO), pk(~skcO)>, ipkD ) ]->
+   [
+   !Dtk( $src, <pk(~skaO), pk(~skbO), pk(~skcO)>, ipkD,
+         <~idO, etkO, 'exD', ipkD, sign(<'dlg', ipkD, 'exD', $src, 'orig'>, ~skbO)
+         >
+   ),
+   Out( <etkO, 'exD', ipkD, sign(<'dlg', ipkD, 'exD', $src, 'orig'>, ~skbO)>
+   )
+   ]
+
+  /* has exactly the trivial AC variant */
+
+rule (modulo E) Reveal_Ltk:
+   [ !Ltk( $tn, ipk, ~ska, ~skb, ~skc )[no_precomp] ]
+  --[ Reveal( ipk ) ]->
+   [ Out( <~ska, ~skb, ~skc> ) ]
+
+  /* has exactly the trivial AC variant */
+
+rule (modulo E) Adversary_Prove_Token:
+   [
+   !Token( tn, ipk, hid, sig )[no_precomp],
+   In( <sig, hid, challenge> )[no_precomp], Fr( ~pi )
+   ]
+  -->
+   [ !Proof( ~pi, tn, ipk, hid, challenge ), Out( ~pi ) ]
+
+  /* has exactly the trivial AC variant */
+
+rule (modulo E) Pair_A1_direct:
+   [
+   !Etk( $src, ipkA, ~idA, <$src, ipkA, 'ex', hidA, esigA> )[no_precomp],
+   Fr( ~piA )
+   ]
+  --[ PairStartA( $src, $dst, $ts, ipkA ) ]->
+   [
+   StA1( $src, $dst, $ts, ipkA, h(<'idx0', $src, $ts>),
+         <'phi', ~piA, $src, ipkA, 'ex', 'nodlg'>
+   ),
+   !Proof( ~piA, $src, ipkA, hidA, h(<'n0', h(<'idx0', $src, $ts>)>) ),
+   Out( <h(<'idx0', $src, $ts>), 'phi', ~piA, $src, ipkA, 'ex', 'nodlg'> )
+   ]
+
+  /* has exactly the trivial AC variant */
+
+rule (modulo E) Pair_A1_delegated:
+   [
+   !Dtk( $src, ipkO, ipkD,
+         <~idO, <$src, ipkO, 'ex', hidO, esigO>, 'exD', ipkD, dsig>
+   )[no_precomp],
+   !Etk( $src, ipkO, ~idO, <$src, ipkO, 'ex', hidO, esigO> )[no_precomp],
+   !LtkK( ipkD, ~skaD, ~skbD, ~skcD )[no_precomp], Fr( ~piA )
+   ]
+  --[
+  PairStartA( $src, $dst, $ts, ipkD ),
+  PairStartDelegated( $src, ipkO, ipkD )
+  ]->
+   [
+   StA1( $src, $dst, $ts, ipkD, h(<'idx0', $src, $ts>),
+         <'phi', ~piA, $src, ipkO, 'ex', 'dlg', 'exD', ipkD, dsig>
+   ),
+   !Proof( ~piA, $src, ipkO, hidO, h(<'n0', h(<'idx0', $src, $ts>)>) ),
+   Out( <h(<'idx0', $src, $ts>), 'phi', ~piA, $src, ipkO, 'ex', 'dlg', 
+         'exD', ipkD, dsig>
+   )
+   ]
+
+  /* has exactly the trivial AC variant */
+
+rule (modulo E) Pair_B1_direct:
+   [
+   !Etk( $dst, ipkB, ~idB, <$dst, ipkB, 'ex', hidB, esigB> )[no_precomp],
+   !Proof( piA, $src, <vkaA, vkbA, pkcA>, hidA,
+           h(<'n0', h(<'idx0', $src, $ts>)>)
+   )[no_precomp],
+   In( <h(<'idx0', $src, $ts>), 'phi', piA, $src, <vkaA, vkbA, pkcA>, 'ex', 
+        'nodlg'>
+   )[no_precomp],
+   Fr( ~b ), Fr( ~piB )
+   ]
+  --[
+  HiddenShare( 'g'^~b, <vkaA, vkbA, pkcA>, ipkB ),
+  ResponseSent( 'g'^~b, <'phi', ~piB, $dst, ipkB, 'ex', 'nodlg'>, ipkB ),
+  HiddenProof( ~piB, <vkaA, vkbA, pkcA>, ipkB ), SendB( 'g'^~b ),
+  PairRespB( $dst, $src, $ts, ipkB, <vkaA, vkbA, pkcA>, 'g'^~b ),
+  AcceptedCallerKey( $dst, $src, <vkaA, vkbA, pkcA> ), DhExp( ~b )
+  ]->
+   [
+   StB1( $dst, $src, $ts, h(<'idx0', $src, $ts>),
+         <'phi', piA, $src, <vkaA, vkbA, pkcA>, 'ex', 'nodlg'>,
+         <'phi', ~piB, $dst, ipkB, 'ex', 'nodlg'>, ~b, <vkaA, vkbA, pkcA>, ipkB
+   ),
+   !Proof( ~piB, $dst, ipkB, hidB,
+           h(<'n1', <'phi', piA, $src, <vkaA, vkbA, pkcA>, 'ex', 'nodlg'>, 'g'^~b, 
+              h(<'n0', h(<'idx0', $src, $ts>)>)>)
+   ),
+   Out( <h(<'idx0', $src, $ts>), 
+         aenc(<'rsp', <'phi', ~piB, $dst, ipkB, 'ex', 'nodlg'>, 'g'^~b>, pkcA)>
+   )
+   ]
+
+  /* has exactly the trivial AC variant */
+
+rule (modulo E) Pair_B1_delegated:
+   [
+   !Etk( $dst, ipkB, ~idB, <$dst, ipkB, 'ex', hidB, esigB> )[no_precomp],
+   !Proof( piA, $src, <vkaO, pk(skbO), pkcO>, hidO,
+           h(<'n0', h(<'idx0', $src, $ts>)>)
+   )[no_precomp],
+   In( <h(<'idx0', $src, $ts>), 'phi', piA, $src, <vkaO, pk(skbO), pkcO>, 
+        'ex', 'dlg', 'exD', <vkaD, vkbD, pkcD>, 
+        sign(<'dlg', <vkaD, vkbD, pkcD>, 'exD', $src, 'orig'>, skbO)>
+   )[no_precomp],
+   Fr( ~b ), Fr( ~piB )
+   ]
+  --[
+  HiddenShare( 'g'^~b, <vkaD, vkbD, pkcD>, ipkB ),
+  ResponseSent( 'g'^~b, <'phi', ~piB, $dst, ipkB, 'ex', 'nodlg'>, ipkB ),
+  HiddenProof( ~piB, <vkaD, vkbD, pkcD>, ipkB ), SendB( 'g'^~b ),
+  PairRespB( $dst, $src, $ts, ipkB, <vkaD, vkbD, pkcD>, 'g'^~b ),
+  AcceptedCallerKey( $dst, $src, <vkaD, vkbD, pkcD> ),
+  AcceptedDelegation( $dst, $src, <vkaO, pk(skbO), pkcO>,
+                      <vkaD, vkbD, pkcD>
+  ),
+  DhExp( ~b )
+  ]->
+   [
+   StB1( $dst, $src, $ts, h(<'idx0', $src, $ts>),
+         <'phi', piA, $src, <vkaO, pk(skbO), pkcO>, 'ex', 'dlg', 'exD', 
+          <vkaD, vkbD, pkcD>, 
+          sign(<'dlg', <vkaD, vkbD, pkcD>, 'exD', $src, 'orig'>, skbO)>,
+         <'phi', ~piB, $dst, ipkB, 'ex', 'nodlg'>, ~b, <vkaD, vkbD, pkcD>, ipkB
+   ),
+   !Proof( ~piB, $dst, ipkB, hidB,
+           h(<'n1', 
+              <'phi', piA, $src, <vkaO, pk(skbO), pkcO>, 'ex', 'dlg', 'exD', 
+               <vkaD, vkbD, pkcD>, 
+               sign(<'dlg', <vkaD, vkbD, pkcD>, 'exD', $src, 'orig'>, skbO)>, 
+              'g'^~b, h(<'n0', h(<'idx0', $src, $ts>)>)>)
+   ),
+   Out( <h(<'idx0', $src, $ts>), 
+         aenc(<'rsp', <'phi', ~piB, $dst, ipkB, 'ex', 'nodlg'>, 'g'^~b>, pkcD)>
+   )
+   ]
+
+  /* has exactly the trivial AC variant */
+
+rule (modulo E) Pair_A2:
+   [
+   StA1( $src, $dst, $ts, ipkA, h(<'idx0', $src, $ts>), phiA )[no_precomp],
+   !LtkK( ipkA, ~ska, ~skb, ~skc )[no_precomp],
+   !Proof( piB, $dst, <vkaB, vkbB, pkcB>, hidB,
+           h(<'n1', phiA, 'g'^xb, h(<'n0', h(<'idx0', $src, $ts>)>)>)
+   )[no_precomp],
+   In( <h(<'idx0', $src, $ts>), 
+        aenc(<'rsp', <'phi', piB, $dst, <vkaB, vkbB, pkcB>, 'ex', 'nodlg'>, 
+              'g'^xb>,
+             pk(~skc))
+       >
+   )[no_precomp],
+   Fr( ~a )
+   ]
+  --[
+  ResponseReceived( 'g'^xb,
+                    <'phi', piB, $dst, <vkaB, vkbB, pkcB>, 'ex', 'nodlg'>, <vkaB, vkbB, pkcB>
+  ),
+  SecretA( 'g'^~a, <vkaB, vkbB, pkcB> ), RecvB( 'g'^xb ),
+  PairedA( $src, $dst, $ts,
+           kdf(<h(<'idx0', $src, $ts>), phiA, 
+                <'phi', piB, $dst, <vkaB, vkbB, pkcB>, 'ex', 'nodlg'>, 'g'^~a, 'g'^xb, 
+                'g'^xb^~a>),
+           ipkA, <vkaB, vkbB, pkcB>
+  ),
+  AcceptedRecipientKey( $src, $dst, <vkaB, vkbB, pkcB> ), DhExp( ~a )
+  ]->
+   [
+   PairStA( $src, $dst,
+            kdf(<h(<'idx0', $src, $ts>), phiA, 
+                 <'phi', piB, $dst, <vkaB, vkbB, pkcB>, 'ex', 'nodlg'>, 'g'^~a, 'g'^xb, 
+                 'g'^xb^~a>),
+            ipkA, <vkaB, vkbB, pkcB>
+   ),
+   Out( <h(<'idx0', $src, $ts>), aenc(<'fin', 'g'^~a, 'g'^xb>, pkcB)> )
+   ]
+
+  /*
+  rule (modulo AC) Pair_A2:
+     [
+     StA1( $src, $dst, $ts, ipkA, h(<'idx0', $src, $ts>), phiA )[no_precomp],
+     !LtkK( ipkA, ~ska, ~skb, ~skc )[no_precomp],
+     !Proof( piB, $dst, <vkaB, vkbB, pkcB>, hidB,
+             h(<'n1', phiA, z, h(<'n0', h(<'idx0', $src, $ts>)>)>)
+     )[no_precomp],
+     In( <h(<'idx0', $src, $ts>), 
+          aenc(<'rsp', <'phi', piB, $dst, <vkaB, vkbB, pkcB>, 'ex', 'nodlg'>, z>,
+               pk(~skc))
+         >
+     )[no_precomp],
+     Fr( ~a )
+     ]
+    --[
+    ResponseReceived( z,
+                      <'phi', piB, $dst, <vkaB, vkbB, pkcB>, 'ex', 'nodlg'>, <vkaB, vkbB, pkcB>
+    ),
+    SecretA( 'g'^~a, <vkaB, vkbB, pkcB> ), RecvB( z ),
+    PairedA( $src, $dst, $ts,
+             kdf(<h(<'idx0', $src, $ts>), phiA, 
+                  <'phi', piB, $dst, <vkaB, vkbB, pkcB>, 'ex', 'nodlg'>, 'g'^~a, z, 'g'^x
+                 >),
+             ipkA, <vkaB, vkbB, pkcB>
+    ),
+    AcceptedRecipientKey( $src, $dst, <vkaB, vkbB, pkcB> ), DhExp( ~a )
+    ]->
+     [
+     PairStA( $src, $dst,
+              kdf(<h(<'idx0', $src, $ts>), phiA, 
+                   <'phi', piB, $dst, <vkaB, vkbB, pkcB>, 'ex', 'nodlg'>, 'g'^~a, z, 'g'^x
+                  >),
+              ipkA, <vkaB, vkbB, pkcB>
+     ),
+     Out( <h(<'idx0', $src, $ts>), aenc(<'fin', 'g'^~a, z>, pkcB)> )
+     ]
+    variants (modulo AC)
+    1. ~a    = ~a.33
+       x     = ~a.33
+       z     = 'g'
+    
+    2. ~a    = ~a.387
+       x     = (~a.387*xb.769)
+       z     = 'g'^xb.769
+  */
+
+rule (modulo E) Pair_B2:
+   [
+   StB1( $dst, $src, $ts, idx, phiA, phiB, ~b, ipkAstar, ipkB )[no_precomp],
+   !LtkK( ipkB, ~ska, ~skb, ~skc )[no_precomp],
+   In( <idx, aenc(<'fin', 'g'^xa, 'g'^~b>, pk(~skc))> )[no_precomp]
+   ]
+  --[
+  PairedB( $dst, $src, $ts,
+           kdf(<idx, phiA, phiB, 'g'^xa, 'g'^~b, 'g'^xa^~b>), ipkB, ipkAstar
+  )
+  ]->
+   [
+   PairStB( $dst, $src, kdf(<idx, phiA, phiB, 'g'^xa, 'g'^~b, 'g'^xa^~b>),
+            ipkB, ipkAstar
+   )
+   ]
+
+  /*
+  rule (modulo AC) Pair_B2:
+     [
+     StB1( $dst, $src, $ts, idx, phiA, phiB, ~b, ipkAstar, ipkB )[no_precomp],
+     !LtkK( ipkB, ~ska, ~skb, ~skc )[no_precomp],
+     In( <idx, aenc(<'fin', z, 'g'^~b>, pk(~skc))> )[no_precomp]
+     ]
+    --[
+    PairedB( $dst, $src, $ts, kdf(<idx, phiA, phiB, z, 'g'^~b, z.1>), ipkB,
+             ipkAstar
+    )
+    ]->
+     [
+     PairStB( $dst, $src, kdf(<idx, phiA, phiB, z, 'g'^~b, z.1>), ipkB,
+              ipkAstar
+     )
+     ]
+    variants (modulo AC)
+    1. ~b    = ~b.19
+       z     = 'g'
+       z.1   = 'g'^~b.19
+    
+    2. ~b    = ~b.19
+       z     = 'g'^inv(~b.19)
+       z.1   = 'g'
+    
+    3. ~b    = ~b.85
+       z     = 'g'^xa.165
+       z.1   = 'g'^(~b.85*xa.165)
+    
+    4. ~b    = ~b.94
+       z     = 'g'^inv((~b.94*x.183))
+       z.1   = 'g'^inv(x.183)
+    
+    5. ~b    = ~b.94
+       z     = 'g'^(x.183*inv(~b.94))
+       z.1   = 'g'^x.183
+    
+    6. ~b    = ~b.95
+       z     = 'g'^(x.184*inv((~b.95*x.185)))
+       z.1   = 'g'^(x.184*inv(x.185))
+  */
+
+lemma dh_exponents_secret [reuse]:
+  all-traces "∀ x #i. (DhExp( x ) @ #i) ⇒ (¬(∃ #j. !KU( x ) @ #j))"
+/*
+guarded formula characterizing all counter-examples:
+"∃ x #i. (DhExp( x ) @ #i) ∧ ∃ #j. (!KU( x ) @ #j)"
+*/
+by sorry
+
+lemma decryption_key_secret [reuse, use_induction]:
+  all-traces
+  "∀ ipk sk #i #j.
+    ((DecryptionKey( ipk, sk ) @ #i) ∧ (!KU( sk ) @ #j)) ⇒
+    (∃ #r. (Reveal( ipk ) @ #r) ∧ (#r < #j))"
+/*
+guarded formula characterizing all counter-examples:
+"∃ ipk sk #i #j.
+  (DecryptionKey( ipk, sk ) @ #i) ∧ (!KU( sk ) @ #j)
+ ∧
+  ∀ #r. (Reveal( ipk ) @ #r) ⇒ ¬(#r < #j)"
+*/
+by sorry
+
+lemma hidden_proof_secret [reuse, use_induction]:
+  all-traces
+  "∀ pi ipkA ipkB tn id #i #j #e.
+    (((HiddenProof( pi, ipkA, ipkB ) @ #i) ∧
+      (Enrolled( tn, ipkA, id ) @ #e)) ∧
+     (!KU( pi ) @ #j)) ⇒
+    ((∃ #r. (Reveal( ipkA ) @ #r) ∧ (#r < #j)) ∨
+     (∃ #r. (Reveal( ipkB ) @ #r) ∧ (#r < #j)))"
+/*
+guarded formula characterizing all counter-examples:
+"∃ pi ipkA ipkB tn id #i #j #e.
+  (HiddenProof( pi, ipkA, ipkB ) @ #i) ∧
+  (Enrolled( tn, ipkA, id ) @ #e) ∧
+  (!KU( pi ) @ #j)
+ ∧
+  (∀ #r. (Reveal( ipkA ) @ #r) ⇒ ¬(#r < #j)) ∧
+  (∀ #r. (Reveal( ipkB ) @ #r) ⇒ ¬(#r < #j))"
+*/
+by sorry
+
+lemma received_share_origin [reuse, use_induction]:
+  all-traces
+  "∀ B #i.
+    (RecvB( B ) @ #i) ⇒
+    ((∃ #j. (!KU( B ) @ #j) ∧ (#j < #i)) ∨
+     (∃ #j. (SendB( B ) @ #j) ∧ (#j < #i)))"
+/*
+guarded formula characterizing all counter-examples:
+"∃ B #i.
+  (RecvB( B ) @ #i)
+ ∧
+  (∀ #j. (!KU( B ) @ #j) ⇒ ¬(#j < #i)) ∧
+  (∀ #j. (SendB( B ) @ #j) ⇒ ¬(#j < #i))"
+*/
+by sorry
+
+lemma response_binding [reuse, use_induction]:
+  all-traces
+  "∀ B phiB ipkB #i.
+    (ResponseReceived( B, phiB, ipkB ) @ #i) ⇒
+    ((∃ #j. (ResponseSent( B, phiB, ipkB ) @ #j) ∧ (#j < #i)) ∨
+     (∃ #j. (!KU( B ) @ #j) ∧ (#j < #i)))"
+/*
+guarded formula characterizing all counter-examples:
+"∃ B phiB ipkB #i.
+  (ResponseReceived( B, phiB, ipkB ) @ #i)
+ ∧
+  (∀ #j. (ResponseSent( B, phiB, ipkB ) @ #j) ⇒ ¬(#j < #i)) ∧
+  (∀ #j. (!KU( B ) @ #j) ⇒ ¬(#j < #i))"
+*/
+by sorry
+
+lemma share_B_secret [reuse, use_induction]:
+  all-traces
+  "∀ B ipkA ipkB tn id #i #j #e.
+    (((HiddenShare( B, ipkA, ipkB ) @ #i) ∧
+      (Enrolled( tn, ipkA, id ) @ #e)) ∧
+     (!KU( B ) @ #j)) ⇒
+    ((∃ #r. (Reveal( ipkA ) @ #r) ∧ (#r < #j)) ∨
+     (∃ #r. (Reveal( ipkB ) @ #r) ∧ (#r < #j)))"
+/*
+guarded formula characterizing all counter-examples:
+"∃ B ipkA ipkB tn id #i #j #e.
+  (HiddenShare( B, ipkA, ipkB ) @ #i) ∧
+  (Enrolled( tn, ipkA, id ) @ #e) ∧
+  (!KU( B ) @ #j)
+ ∧
+  (∀ #r. (Reveal( ipkA ) @ #r) ⇒ ¬(#r < #j)) ∧
+  (∀ #r. (Reveal( ipkB ) @ #r) ⇒ ¬(#r < #j))"
+*/
+by sorry
+
+lemma accepted_recipient_key_secret [reuse]:
+  all-traces
+  "∀ src dst vka vkb sk #i #j.
+    ((AcceptedRecipientKey( src, dst, <vka, vkb, pk(sk)> ) @ #i) ∧
+     (!KU( sk ) @ #j)) ⇒
+    (∃ #r. (Reveal( <vka, vkb, pk(sk)> ) @ #r) ∧ (#r < #j))"
+/*
+guarded formula characterizing all counter-examples:
+"∃ src dst vka vkb sk #i #j.
+  (AcceptedRecipientKey( src, dst, <vka, vkb, pk(sk)> ) @ #i) ∧
+  (!KU( sk ) @ #j)
+ ∧
+  ∀ #r. (Reveal( <vka, vkb, pk(sk)> ) @ #r) ⇒ ¬(#r < #j)"
+*/
+by sorry
+
+lemma share_A_secret [reuse, use_induction]:
+  all-traces
+  "∀ A ipkB #i #j.
+    ((SecretA( A, ipkB ) @ #i) ∧ (!KU( A ) @ #j)) ⇒
+    (∃ #r. (Reveal( ipkB ) @ #r) ∧ (#r < #j))"
+/*
+guarded formula characterizing all counter-examples:
+"∃ A ipkB #i #j.
+  (SecretA( A, ipkB ) @ #i) ∧ (!KU( A ) @ #j)
+ ∧
+  ∀ #r. (Reveal( ipkB ) @ #r) ⇒ ¬(#r < #j)"
+*/
+by sorry
+
+lemma executable:
+  exists-trace
+  "∃ src dst ts K ipkA ipkB #i #j.
+    (((PairedA( src, dst, ts, K, ipkA, ipkB ) @ #i) ∧
+      (PairedB( dst, src, ts, K, ipkB, ipkA ) @ #j)) ∧
+     (¬(ipkA = ipkB))) ∧
+    (¬(∃ x #r. Reveal( x ) @ #r))"
+/*
+guarded formula characterizing all satisfying traces:
+"∃ src dst ts K ipkA ipkB #i #j.
+  (PairedA( src, dst, ts, K, ipkA, ipkB ) @ #i) ∧
+  (PairedB( dst, src, ts, K, ipkB, ipkA ) @ #j)
+ ∧
+  (¬(ipkA = ipkB)) ∧ (∀ x #r. (Reveal( x ) @ #r) ⇒ ⊥)"
+*/
+by sorry
+
+lemma executable_delegated:
+  exists-trace
+  "∃ src dst ipkO ipkD #i #j.
+    ((PairStartDelegated( src, ipkO, ipkD ) @ #i) ∧
+     (AcceptedDelegation( dst, src, ipkO, ipkD ) @ #j)) ∧
+    (¬(∃ x #r. Reveal( x ) @ #r))"
+/*
+guarded formula characterizing all satisfying traces:
+"∃ src dst ipkO ipkD #i #j.
+  (PairStartDelegated( src, ipkO, ipkD ) @ #i) ∧
+  (AcceptedDelegation( dst, src, ipkO, ipkD ) @ #j)
+ ∧
+  ∀ x #r. (Reveal( x ) @ #r) ⇒ ⊥"
+*/
+by sorry
+
+lemma executable_delegated_full:
+  exists-trace
+  "∃ src dst ts K ipkO ipkD ipkB #i #j #k #l.
+    (((((((PairStartDelegated( src, ipkO, ipkD ) @ #i) ∧
+          (AcceptedDelegation( dst, src, ipkO, ipkD ) @ #j)) ∧
+         (PairedA( src, dst, ts, K, ipkD, ipkB ) @ #k)) ∧
+        (PairedB( dst, src, ts, K, ipkB, ipkD ) @ #l)) ∧
+       (¬(ipkO = ipkD))) ∧
+      (¬(ipkD = ipkB))) ∧
+     (¬(ipkO = ipkB))) ∧
+    (¬(∃ x #r. Reveal( x ) @ #r))"
+/*
+guarded formula characterizing all satisfying traces:
+"∃ src dst ts K ipkO ipkD ipkB #i #j #k #l.
+  (PairStartDelegated( src, ipkO, ipkD ) @ #i) ∧
+  (AcceptedDelegation( dst, src, ipkO, ipkD ) @ #j) ∧
+  (PairedA( src, dst, ts, K, ipkD, ipkB ) @ #k) ∧
+  (PairedB( dst, src, ts, K, ipkB, ipkD ) @ #l)
+ ∧
+  (¬(ipkO = ipkD)) ∧
+  (¬(ipkD = ipkB)) ∧
+  (¬(ipkO = ipkB)) ∧
+  (∀ x #r. (Reveal( x ) @ #r) ⇒ ⊥)"
+*/
+by sorry
+
+lemma pair_K_secret_B:
+  all-traces
+  "∀ dst src ts kk ipkB ipkA tnA idA #i #e.
+    ((PairedB( dst, src, ts, kk, ipkB, ipkA ) @ #i) ∧
+     (Enrolled( tnA, ipkA, idA ) @ #e)) ⇒
+    (((¬(∃ #j. !KU( kk ) @ #j)) ∨ (∃ #r. Reveal( ipkA ) @ #r)) ∨
+     (∃ #r. Reveal( ipkB ) @ #r))"
+/*
+guarded formula characterizing all counter-examples:
+"∃ dst src ts kk ipkB ipkA tnA idA #i #e.
+  (PairedB( dst, src, ts, kk, ipkB, ipkA ) @ #i) ∧
+  (Enrolled( tnA, ipkA, idA ) @ #e)
+ ∧
+  (∃ #j. (!KU( kk ) @ #j)) ∧
+  (∀ #r. (Reveal( ipkA ) @ #r) ⇒ ⊥) ∧
+  (∀ #r. (Reveal( ipkB ) @ #r) ⇒ ⊥)"
+*/
+by sorry
+
+lemma pair_K_secret_A:
+  all-traces
+  "∀ src dst ts kk ipkA ipkB #i.
+    (PairedA( src, dst, ts, kk, ipkA, ipkB ) @ #i) ⇒
+    (((¬(∃ #j. !KU( kk ) @ #j)) ∨ (∃ #r. Reveal( ipkA ) @ #r)) ∨
+     (∃ #r. Reveal( ipkB ) @ #r))"
+/*
+guarded formula characterizing all counter-examples:
+"∃ src dst ts kk ipkA ipkB #i.
+  (PairedA( src, dst, ts, kk, ipkA, ipkB ) @ #i)
+ ∧
+  (∃ #j. (!KU( kk ) @ #j)) ∧
+  (∀ #r. (Reveal( ipkA ) @ #r) ⇒ ⊥) ∧
+  (∀ #r. (Reveal( ipkB ) @ #r) ⇒ ⊥)"
+*/
+by sorry
+
+lemma pair_K_forward_secret_B:
+  all-traces
+  "∀ dst src ts kk ipkB ipkA tnA idA #i #e.
+    ((PairedB( dst, src, ts, kk, ipkB, ipkA ) @ #i) ∧
+     (Enrolled( tnA, ipkA, idA ) @ #e)) ⇒
+    (((¬(∃ #j. !KU( kk ) @ #j)) ∨
+      (∃ #r. (Reveal( ipkA ) @ #r) ∧ (#r < #i))) ∨
+     (∃ #r. (Reveal( ipkB ) @ #r) ∧ (#r < #i)))"
+/*
+guarded formula characterizing all counter-examples:
+"∃ dst src ts kk ipkB ipkA tnA idA #i #e.
+  (PairedB( dst, src, ts, kk, ipkB, ipkA ) @ #i) ∧
+  (Enrolled( tnA, ipkA, idA ) @ #e)
+ ∧
+  (∃ #j. (!KU( kk ) @ #j)) ∧
+  (∀ #r. (Reveal( ipkA ) @ #r) ⇒ ¬(#r < #i)) ∧
+  (∀ #r. (Reveal( ipkB ) @ #r) ⇒ ¬(#r < #i))"
+*/
+by sorry
+
+lemma pair_K_forward_secret_A_genuine:
+  all-traces
+  "∀ src dst ts kk ipkA ipkB B phiB #i #j.
+    ((((PairedA( src, dst, ts, kk, ipkA, ipkB ) @ #i) ∧
+       (ResponseReceived( B, phiB, ipkB ) @ #i)) ∧
+      (ResponseSent( B, phiB, ipkB ) @ #j)) ∧
+     (#j < #i)) ⇒
+    (((¬(∃ #k. !KU( kk ) @ #k)) ∨
+      (∃ #r. (Reveal( ipkA ) @ #r) ∧ (#r < #i))) ∨
+     (∃ #r. (Reveal( ipkB ) @ #r) ∧ (#r < #i)))"
+/*
+guarded formula characterizing all counter-examples:
+"∃ src dst ts kk ipkA ipkB B phiB #i #j.
+  (PairedA( src, dst, ts, kk, ipkA, ipkB ) @ #i) ∧
+  (ResponseReceived( B, phiB, ipkB ) @ #i) ∧
+  (ResponseSent( B, phiB, ipkB ) @ #j)
+ ∧
+  (#j < #i) ∧
+  (∃ #k. (!KU( kk ) @ #k)) ∧
+  (∀ #r. (Reveal( ipkA ) @ #r) ⇒ ¬(#r < #i)) ∧
+  (∀ #r. (Reveal( ipkB ) @ #r) ⇒ ¬(#r < #i))"
+*/
+by sorry
+
+lemma pair_agreement_B:
+  all-traces
+  "∀ dst src ts kk ipkB ipkA tnA idA #i #e.
+    ((PairedB( dst, src, ts, kk, ipkB, ipkA ) @ #i) ∧
+     (Enrolled( tnA, ipkA, idA ) @ #e)) ⇒
+    (((∃ #j. (PairedA( src, dst, ts, kk, ipkA, ipkB ) @ #j) ∧ (#j < #i)) ∨
+      (∃ #r. Reveal( ipkA ) @ #r)) ∨
+     (∃ #r. Reveal( ipkB ) @ #r))"
+/*
+guarded formula characterizing all counter-examples:
+"∃ dst src ts kk ipkB ipkA tnA idA #i #e.
+  (PairedB( dst, src, ts, kk, ipkB, ipkA ) @ #i) ∧
+  (Enrolled( tnA, ipkA, idA ) @ #e)
+ ∧
+  (∀ #j. (PairedA( src, dst, ts, kk, ipkA, ipkB ) @ #j) ⇒ ¬(#j < #i)) ∧
+  (∀ #r. (Reveal( ipkA ) @ #r) ⇒ ⊥) ∧
+  (∀ #r. (Reveal( ipkB ) @ #r) ⇒ ⊥)"
+*/
+by sorry
+
+lemma pair_agreement_B_injective:
+  all-traces
+  "∀ dst src ts kk ipkB ipkA tnA idA #i1 #i2 #e.
+    (((PairedB( dst, src, ts, kk, ipkB, ipkA ) @ #i1) ∧
+      (PairedB( dst, src, ts, kk, ipkB, ipkA ) @ #i2)) ∧
+     (Enrolled( tnA, ipkA, idA ) @ #e)) ⇒
+    (((#i1 = #i2) ∨ (∃ #r. Reveal( ipkA ) @ #r)) ∨
+     (∃ #r. Reveal( ipkB ) @ #r))"
+/*
+guarded formula characterizing all counter-examples:
+"∃ dst src ts kk ipkB ipkA tnA idA #i1 #i2 #e.
+  (PairedB( dst, src, ts, kk, ipkB, ipkA ) @ #i1) ∧
+  (PairedB( dst, src, ts, kk, ipkB, ipkA ) @ #i2) ∧
+  (Enrolled( tnA, ipkA, idA ) @ #e)
+ ∧
+  (¬(#i1 = #i2)) ∧
+  (∀ #r. (Reveal( ipkA ) @ #r) ⇒ ⊥) ∧
+  (∀ #r. (Reveal( ipkB ) @ #r) ⇒ ⊥)"
+*/
+by sorry
+
+lemma pair_agreement_A_expected_falsified:
+  all-traces
+  "∀ src dst ts kk ipkA ipkB #i.
+    (PairedA( src, dst, ts, kk, ipkA, ipkB ) @ #i) ⇒
+    (((∃ B #j. (PairRespB( dst, src, ts, ipkB, ipkA, B ) @ #j) ∧ (#j < #i)) ∨
+      (∃ #r. Reveal( ipkA ) @ #r)) ∨
+     (∃ #r. Reveal( ipkB ) @ #r))"
+/*
+guarded formula characterizing all counter-examples:
+"∃ src dst ts kk ipkA ipkB #i.
+  (PairedA( src, dst, ts, kk, ipkA, ipkB ) @ #i)
+ ∧
+  (∀ B #j. (PairRespB( dst, src, ts, ipkB, ipkA, B ) @ #j) ⇒ ¬(#j < #i)) ∧
+  (∀ #r. (Reveal( ipkA ) @ #r) ⇒ ⊥) ∧
+  (∀ #r. (Reveal( ipkB ) @ #r) ⇒ ⊥)"
+*/
+simplify
+solve( (∃ #j. (!KU( z ) @ #j) ∧ #j < #i)  ∥
+       (∃ #j. (SendB( z ) @ #j) ∧ #j < #i) )
+  case case_1
+  solve( (∃ #j.
+           (ResponseSent( z, <'phi', piB, $dst, <vkaB, vkbB, pkcB>, 'ex', 'nodlg'>,
+                          <vkaB, vkbB, pkcB>
+            ) @ #j)
+          ∧
+           #j < #i)  ∥
+         (∃ #j. (!KU( z ) @ #j) ∧ #j < #i) )
+    case case_2
+    solve( !Proof( piB, $dst, <vkaB, vkbB, pkcB>, hidB,
+                   h(<'n1', phiA, z, h(<'n0', h(<'idx0', $src, $ts>)>)>)
+           )[no_precomp] ▶₂ #i )
+      case Adversary_Prove_Token
+      solve( StA1( $src, $dst, $ts, ipkA, h(<'idx0', $src, $ts>), phiA
+             )[no_precomp] ▶₀ #i )
+        case Pair_A1_delegated
+        solve( !LtkK( <pk(~skaD), pk(~skbD), pk(~skcD)>, ~ska, ~skb, ~skc
+               )[no_precomp] ▶₁ #i )
+          case Enroll
+          solve( splitEqs(0) )
+            case split_case_1
+            solve( !KU( h(<'idx0', $src, $ts>) )[no_precomp] @ #vk.1 )
+              case c_h
+              solve( !KU( aenc(<'rsp', 
+                                <'phi', ~pi, $dst, <pk(~ska.1), pk(~skb.1), pk(~skc.1)>, 'ex', 'nodlg'>, 
+                                'g'>,
+                               pk(~skc))
+                     )[no_precomp] @ #vk.2 )
+                case c_aenc
+                solve( !KU( ~pi ) @ #vk.20 )
+                  case Adversary_Prove_Token
+                  solve( !KU( sign(<'etk', $dst, <pk(~ska.1), pk(~skb.1), pk(~skc.1)>, 
+                                    'ex', h(<'hid', ~id, pk(~ska.1), pk(~skb.1), pk(~skc.1)>)>,
+                                   ~skES)
+                         )[no_precomp] @ #vk.7 )
+                    case Delegate
+                    solve( !KU( h(<'hid', ~id, pk(~ska.1), pk(~skb.1), pk(~skc.1)>)
+                           )[no_precomp] @ #vk.10 )
+                      case Delegate
+                      solve( !KU( h(<'n1', 
+                                     <'phi', ~piA, $src, <pk(~skaO), pk(~skbO), pk(~skcO)>, 'ex', 'dlg', 
+                                      'exD', <pk(~ska), pk(~skb), pk(~skc)>, 
+                                      sign(<'dlg', <pk(~ska), pk(~skb), pk(~skc)>, 'exD', $src, 'orig'>,
+                                           ~skbO)
+                                     >, 
+                                     'g', h(<'n0', h(<'idx0', $src, $ts>)>)>)
+                             )[no_precomp] @ #vk.12 )
+                        case c_h
+                        solve( !KU( ~piA ) @ #vk.41 )
+                          case Pair_A1_delegated
+                          solve( !KU( pk(~skc) ) @ #vk.23 )
+                            case Delegate_case_1
+                            solve( !KU( pk(~ska.1) ) @ #vk.35 )
+                              case Delegate_case_1
+                              solve( !KU( pk(~skb.1) ) @ #vk.38 )
+                                case Delegate
+                                solve( !KU( pk(~skc.1) ) @ #vk.40 )
+                                  case Delegate
+                                  solve( !KU( pk(~skaO) ) @ #vk.48 )
+                                    case Delegate_case_1
+                                    solve( !KU( pk(~skbO) ) @ #vk.50 )
+                                      case Delegate
+                                      solve( !KU( pk(~skcO) ) @ #vk.51 )
+                                        case Delegate
+                                        solve( !KU( pk(~ska) ) @ #vk.54 )
+                                          case Delegate
+                                          solve( !KU( pk(~skb) ) @ #vk.55 )
+                                            case Delegate
+                                            solve( !KU( sign(<'dlg', <pk(~ska), pk(~skb), pk(~skc)>, 'exD', 
+                                                              $src, 'orig'>,
+                                                             ~skbO)
+                                                   ) @ #vk.56 )
+                                              case Delegate
+                                              solve( !KU( h(<'n0', h(<'idx0', $src, $ts>)>) ) @ #vk.57 )
+                                                case c_h
+                                                SOLVED // trace found
+                                              qed
+                                            qed
+                                          qed
+                                        qed
+                                      qed
+                                    qed
+                                  qed
+                                qed
+                              qed
+                            qed
+                          qed
+                        qed
+                      qed
+                    qed
+                  qed
+                qed
+              qed
+            qed
+          qed
+        qed
+      qed
+    qed
+  qed
+qed
+
+lemma pair_K_forward_secret_A_expected_falsified:
+  all-traces
+  "∀ src dst ts kk ipkA ipkB #i.
+    (PairedA( src, dst, ts, kk, ipkA, ipkB ) @ #i) ⇒
+    (((¬(∃ #j. !KU( kk ) @ #j)) ∨
+      (∃ #r. (Reveal( ipkA ) @ #r) ∧ (#r < #i))) ∨
+     (∃ #r. (Reveal( ipkB ) @ #r) ∧ (#r < #i)))"
+/*
+guarded formula characterizing all counter-examples:
+"∃ src dst ts kk ipkA ipkB #i.
+  (PairedA( src, dst, ts, kk, ipkA, ipkB ) @ #i)
+ ∧
+  (∃ #j. (!KU( kk ) @ #j)) ∧
+  (∀ #r. (Reveal( ipkA ) @ #r) ⇒ ¬(#r < #i)) ∧
+  (∀ #r. (Reveal( ipkB ) @ #r) ⇒ ¬(#r < #i))"
+*/
+by sorry
+
+lemma del1_delegation_chain:
+  all-traces
+  "∀ dst src ipkO ipkD #i.
+    (AcceptedDelegation( dst, src, ipkO, ipkD ) @ #i) ⇒
+    ((∃ idO #j. (Enrolled( src, ipkO, idO ) @ #j) ∧ (#j < #i)) ∧
+     ((∃ #j. (Delegated( src, ipkO, ipkD ) @ #j) ∧ (#j < #i)) ∨
+      (∃ #r. (Reveal( ipkO ) @ #r) ∧ (#r < #i))))"
+/*
+guarded formula characterizing all counter-examples:
+"∃ dst src ipkO ipkD #i.
+  (AcceptedDelegation( dst, src, ipkO, ipkD ) @ #i)
+ ∧
+  ((∀ idO #j. (Enrolled( src, ipkO, idO ) @ #j) ⇒ ¬(#j < #i)) ∨
+   ((∀ #j. (Delegated( src, ipkO, ipkD ) @ #j) ⇒ ¬(#j < #i)) ∧
+    (∀ #r. (Reveal( ipkO ) @ #r) ⇒ ¬(#r < #i))))"
+*/
+by sorry
+
+lemma pair_caller_key_authorized:
+  all-traces
+  "∀ dst src ipkA #i.
+    (AcceptedCallerKey( dst, src, ipkA ) @ #i) ⇒
+    (((∃ idA #j. (Enrolled( src, ipkA, idA ) @ #j) ∧ (#j < #i)) ∨
+      (∃ ipkO idO #j #k.
+        (((Enrolled( src, ipkO, idO ) @ #j) ∧ (#j < #i)) ∧
+         (Delegated( src, ipkO, ipkA ) @ #k)) ∧
+        (#k < #i))) ∨
+     (∃ ipkO idO #j #k.
+       (((Enrolled( src, ipkO, idO ) @ #j) ∧ (#j < #i)) ∧
+        (Reveal( ipkO ) @ #k)) ∧
+       (#k < #i)))"
+/*
+guarded formula characterizing all counter-examples:
+"∃ dst src ipkA #i.
+  (AcceptedCallerKey( dst, src, ipkA ) @ #i)
+ ∧
+  (∀ idA #j. (Enrolled( src, ipkA, idA ) @ #j) ⇒ ¬(#j < #i)) ∧
+  (∀ ipkO idO #j #k.
+    (Enrolled( src, ipkO, idO ) @ #j) ∧ (Delegated( src, ipkO, ipkA ) @ #k)
+   ⇒
+    ((¬(#j < #i)) ∨ (¬(#k < #i)))) ∧
+  (∀ ipkO idO #j #k.
+    (Enrolled( src, ipkO, idO ) @ #j) ∧ (Reveal( ipkO ) @ #k)
+   ⇒
+    ((¬(#j < #i)) ∨ (¬(#k < #i))))"
+*/
+by sorry
+
+lemma del3_recipient_key_attested_for_dst:
+  all-traces
+  "∀ src dst ipkB #i.
+    (AcceptedRecipientKey( src, dst, ipkB ) @ #i) ⇒
+    (∃ idB #j. (Enrolled( dst, ipkB, idB ) @ #j) ∧ (#j < #i))"
+/*
+guarded formula characterizing all counter-examples:
+"∃ src dst ipkB #i.
+  (AcceptedRecipientKey( src, dst, ipkB ) @ #i)
+ ∧
+  ∀ idB #j. (Enrolled( dst, ipkB, idB ) @ #j) ⇒ ¬(#j < #i)"
+*/
+by sorry
+
+lemma del3_no_delegate_as_recipient:
+  all-traces
+  "¬(∃ src dst ipkO ipkD #i #j.
+      ((AcceptedRecipientKey( src, dst, ipkD ) @ #i) ∧
+       (Delegated( dst, ipkO, ipkD ) @ #j)) ∧
+      (¬(∃ idD #k. Enrolled( dst, ipkD, idD ) @ #k)))"
+/*
+guarded formula characterizing all counter-examples:
+"∃ src dst ipkO ipkD #i #j.
+  (AcceptedRecipientKey( src, dst, ipkD ) @ #i) ∧
+  (Delegated( dst, ipkO, ipkD ) @ #j)
+ ∧
+  ∀ idD #k. (Enrolled( dst, ipkD, idD ) @ #k) ⇒ ⊥"
+*/
+by sorry
+
+/* All wellformedness checks were successful. */
+
+/*
+Generated from:
+Tamarin version 1.12.0
+Maude version 3.5.1
+Git revision: UNKNOWN, branch: UNKNOWN
+Compiled at: 2026-03-08 10:05:47.616272992 UTC
+*/
+
+end
+
+==============================================================================
+summary of summaries:
+
+analyzed: logs/review/56608b3a8fcf1e5e/julep_pairing.spthy
+
+  processing time: 27.11s
+  
+  dh_exponents_secret (all-traces): analysis incomplete (1 steps)
+  decryption_key_secret (all-traces): analysis incomplete (1 steps)
+  hidden_proof_secret (all-traces): analysis incomplete (1 steps)
+  received_share_origin (all-traces): analysis incomplete (1 steps)
+  response_binding (all-traces): analysis incomplete (1 steps)
+  share_B_secret (all-traces): analysis incomplete (1 steps)
+  accepted_recipient_key_secret (all-traces): analysis incomplete (1 steps)
+  share_A_secret (all-traces): analysis incomplete (1 steps)
+  executable (exists-trace): analysis incomplete (1 steps)
+  executable_delegated (exists-trace): analysis incomplete (1 steps)
+  executable_delegated_full (exists-trace): analysis incomplete (1 steps)
+  pair_K_secret_B (all-traces): analysis incomplete (1 steps)
+  pair_K_secret_A (all-traces): analysis incomplete (1 steps)
+  pair_K_forward_secret_B (all-traces): analysis incomplete (1 steps)
+  pair_K_forward_secret_A_genuine (all-traces): analysis incomplete (1 steps)
+  pair_agreement_B (all-traces): analysis incomplete (1 steps)
+  pair_agreement_B_injective (all-traces): analysis incomplete (1 steps)
+  pair_agreement_A_expected_falsified (all-traces): falsified - found trace (26 steps)
+  pair_K_forward_secret_A_expected_falsified (all-traces): analysis incomplete (1 steps)
+  del1_delegation_chain (all-traces): analysis incomplete (1 steps)
+  pair_caller_key_authorized (all-traces): analysis incomplete (1 steps)
+  del3_recipient_key_attested_for_dst (all-traces): analysis incomplete (1 steps)
+  del3_no_delegate_as_recipient (all-traces): analysis incomplete (1 steps)
+
+==============================================================================

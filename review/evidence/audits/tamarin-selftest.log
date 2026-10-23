@@ -1,0 +1,77 @@
+maude tool: 'maude'
+ checking version: Self-testing the tamarin-prover installation.
+
+*** Testing the availability of the required tools ***
+3.5.1. OK.
+ checking installation: OK.
+GraphViz tool: 'dot'
+ checking version: 
+dot - graphviz version 16.1.0 (20260904.0139). OK.
+ checking PNG support: OK.
+
+Cases: 55  Tried: 0  Errors: 0  Failures: 0
+Cases: 55  Tried: 1  Errors: 0  Failures: 0
+Cases: 55  Tried: 2  Errors: 0  Failures: 0
+Cases: 55  Tried: 3  Errors: 0  Failures: 0
+Cases: 55  Tried: 4  Errors: 0  Failures: 0
+Cases: 55  Tried: 5  Errors: 0  Failures: 0
+Cases: 55  Tried: 6  Errors: 0  Failures: 0
+Cases: 55  Tried: 7  Errors: 0  Failures: 0
+Cases: 55  Tried: 8  Errors: 0  Failures: 0
+Cases: 55  Tried: 9  Errors: 0  Failures: 0
+Cases: 55  Tried: 10  Errors: 0  Failures: 0
+Cases: 55  Tried: 11  Errors: 0  Failures: 0
+Cases: 55  Tried: 12  Errors: 0  Failures: 0
+Cases: 55  Tried: 13  Errors: 0  Failures: 0
+Cases: 55  Tried: 14  Errors: 0  Failures: 0
+Cases: 55  Tried: 15  Errors: 0  Failures: 0
+Cases: 55  Tried: 16  Errors: 0  Failures: 0
+Cases: 55  Tried: 17  Errors: 0  Failures: 0
+Cases: 55  Tried: 18  Errors: 0  Failures: 0
+Cases: 55  Tried: 19  Errors: 0  Failures: 0
+Cases: 55  Tried: 20  Errors: 0  Failures: 0
+Cases: 55  Tried: 21  Errors: 0  Failures: 0
+Cases: 55  Tried: 22  Errors: 0  Failures: 0
+Cases: 55  Tried: 23  Errors: 0  Failures: 0
+Cases: 55  Tried: 24  Errors: 0  Failures: 0
+Cases: 55  Tried: 25  Errors: 0  Failures: 0
+Cases: 55  Tried: 26  Errors: 0  Failures: 0
+Cases: 55  Tried: 27  Errors: 0  Failures: 0
+Cases: 55  Tried: 28  Errors: 0  Failures: 0
+Cases: 55  Tried: 29  Errors: 0  Failures: 0
+Cases: 55  Tried: 30  Errors: 0  Failures: 0
+Cases: 55  Tried: 31  Errors: 0  Failures: 0
+Cases: 55  Tried: 32  Errors: 0  Failures: 0
+Cases: 55  Tried: 33  Errors: 0  Failures: 0
+Cases: 55  Tried: 34  Errors: 0  Failures: 0
+Cases: 55  Tried: 35  Errors: 0  Failures: 0
+Cases: 55  Tried: 36  Errors: 0  Failures: 0
+Cases: 55  Tried: 37  Errors: 0  Failures: 0
+Cases: 55  Tried: 38  Errors: 0  Failures: 0
+Cases: 55  Tried: 39  Errors: 0  Failures: 0
+Cases: 55  Tried: 40  Errors: 0  Failures: 0
+Cases: 55  Tried: 41  Errors: 0  Failures: 0
+Cases: 55  Tried: 42  Errors: 0  Failures: 0
+Cases: 55  Tried: 43  Errors: 0  Failures: 0
+Cases: 55  Tried: 44  Errors: 0  Failures: 0
+Cases: 55  Tried: 45  Errors: 0  Failures: 0
+Cases: 55  Tried: 46  Errors: 0  Failures: 0
+Cases: 55  Tried: 47  Errors: 0  Failures: 0
+Cases: 55  Tried: 48  Errors: 0  Failures: 0
+Cases: 55  Tried: 49  Errors: 0  Failures: 0
+Cases: 55  Tried: 50  Errors: 0  Failures: 0
+Cases: 55  Tried: 51  Errors: 0  Failures: 0
+Cases: 55  Tried: 52  Errors: 0  Failures: 0
+Cases: 55  Tried: 53  Errors: 0  Failures: 0
+Cases: 55  Tried: 54  Errors: 0  Failures: 0
+                                            
+Cases: 55  Tried: 55  Errors: 0  Failures: 0
+
+*** Testing the unification infrastructure ***
+
+*** TEST SUMMARY ***
+All tests successful.
+The tamarin-prover should work as intended.
+
+           :-) happy proving (-:
+

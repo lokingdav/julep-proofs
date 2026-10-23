@@ -1,0 +1,276 @@
+/* Julep Number Pairing. Randomized selective-disclosure proof handles;
+ * perfect, tagged public-key encryption; validated non-identity DH elements.
+ * Group-element validation is an explicit protocol requirement in this model.
+ * Secrecy/agreement at B quantify over an honestly generated caller key;
+ * attacker-owned delegate keys are not secrecy targets. Delegation publishes
+ * only the delegation signature and the owner's token, as in the protocol.
+ * See ABSTRACTIONS.md.
+ */
+theory JulepPairing
+begin
+
+heuristic: S
+
+builtins: hashing, asymmetric-encryption, diffie-hellman
+
+functions: sign/2, kdf/1
+
+restriction OnlyOnce: "All x #i #j. OnlyOnce(x) @i & OnlyOnce(x) @j ==> #i = #j"
+
+rule ES_Init:
+  [ Fr(~skES) ] --[ OnlyOnce('ES') ]-> [ !ES(~skES), Out(pk(~skES)) ]
+
+rule Enroll:
+  let ipk  = <pk(~ska), pk(~skb), pk(~skc)>
+      hid  = h(<'hid', ~id, ipk>)
+      esig = sign(<'etk', $tn, ipk, 'ex', hid>, ~skES)
+      etk  = <$tn, ipk, 'ex', hid, esig>
+  in
+  [ !ES(~skES)[no_precomp], Fr(~ska), Fr(~skb), Fr(~skc), Fr(~id) ]
+  --[ Enrolled($tn, ipk, ~id), DecryptionKey(ipk, ~skc) ]->
+  [ !Ltk($tn, ipk, ~ska, ~skb, ~skc), !LtkK(ipk, ~ska, ~skb, ~skc),
+    !Etk($tn, ipk, ~id, etk), !Token($tn, ipk, hid, esig), Out(etk) ]
+
+rule Delegate:
+  let ipkO = <pk(~skaO), pk(~skbO), pk(~skcO)>
+      dsig = sign(<'dlg', ipkD, 'exD', $src, 'orig'>, ~skbO)
+      dtk  = <~idO, etkO, 'exD', ipkD, dsig>
+  in
+  [ !Ltk($src, ipkO, ~skaO, ~skbO, ~skcO)[no_precomp], !Etk($src, ipkO, ~idO, etkO)[no_precomp],
+    !Etk($tnD, ipkD, ~idD, etkD)[no_precomp] ]
+  --[ Delegated($src, ipkO, ipkD) ]->
+  [ !Dtk($src, ipkO, ipkD, dtk), Out(<etkO, 'exD', ipkD, dsig>) ]
+
+rule Reveal_Ltk:
+  [ !Ltk($tn, ipk, ~ska, ~skb, ~skc)[no_precomp] ]
+  --[ Reveal(ipk) ]->
+  [ Out(<~ska, ~skb, ~skc>) ]
+
+rule Adversary_Prove_Token:
+  [ !Token(tn, ipk, hid, sig)[no_precomp], In(<sig, hid, challenge>)[no_precomp], Fr(~pi) ]
+  --> [ !Proof(~pi, tn, ipk, hid, challenge), Out(~pi) ]
+
+rule Pair_A1_direct:
+  let idx  = h(<'idx0', $src, $ts>)
+      n0   = h(<'n0', idx>)
+      etkA = <$src, ipkA, 'ex', hidA, esigA>
+      phiA = <'phi', ~piA, $src, ipkA, 'ex', 'nodlg'>
+  in
+  [ !Etk($src, ipkA, ~idA, etkA)[no_precomp], Fr(~piA) ]
+  --[ PairStartA($src, $dst, $ts, ipkA) ]->
+  [ StA1($src, $dst, $ts, ipkA, idx, phiA), !Proof(~piA, $src, ipkA, hidA, n0), Out(<idx, phiA>) ]
+
+rule Pair_A1_delegated:
+  let idx  = h(<'idx0', $src, $ts>)
+      n0   = h(<'n0', idx>)
+      etkO = <$src, ipkO, 'ex', hidO, esigO>
+      dtk  = <~idO, etkO, 'exD', ipkD, dsig>
+      psi  = <'dlg', 'exD', ipkD, dsig>
+      phiA = <'phi', ~piA, $src, ipkO, 'ex', psi>
+  in
+  [ !Dtk($src, ipkO, ipkD, dtk)[no_precomp], !Etk($src, ipkO, ~idO, etkO)[no_precomp],
+    !LtkK(ipkD, ~skaD, ~skbD, ~skcD)[no_precomp], Fr(~piA) ]
+  --[ PairStartA($src, $dst, $ts, ipkD), PairStartDelegated($src, ipkO, ipkD) ]->
+  [ StA1($src, $dst, $ts, ipkD, idx, phiA), !Proof(~piA, $src, ipkO, hidO, n0), Out(<idx, phiA>) ]
+
+rule Pair_B1_direct:
+  let idx  = h(<'idx0', $src, $ts>)
+      n0   = h(<'n0', idx>)
+      ipkA = <vkaA, vkbA, pkcA>
+      phiA = <'phi', piA,
+              $src, ipkA, 'ex', 'nodlg'>
+      B    = 'g'^~b
+      n1   = h(<'n1', phiA, B, n0>)
+      etkB = <$dst, ipkB, 'ex', hidB, esigB>
+      phiB = <'phi', ~piB, $dst, ipkB, 'ex', 'nodlg'>
+      ctxB = aenc(<'rsp', phiB, B>, pkcA)
+  in
+  [ !Etk($dst, ipkB, ~idB, etkB)[no_precomp], !Proof(piA, $src, ipkA, hidA, n0)[no_precomp], In(<idx, phiA>)[no_precomp], Fr(~b), Fr(~piB) ]
+  --[ HiddenShare(B,ipkA,ipkB), ResponseSent(B,phiB,ipkB), HiddenProof(~piB, ipkA, ipkB), SendB(B), PairRespB($dst, $src, $ts, ipkB, ipkA, B),
+      AcceptedCallerKey($dst, $src, ipkA), DhExp(~b) ]->
+  [ StB1($dst, $src, $ts, idx, phiA, phiB, ~b, ipkA, ipkB), !Proof(~piB, $dst, ipkB, hidB, n1), Out(<idx, ctxB>) ]
+
+rule Pair_B1_delegated:
+  let idx  = h(<'idx0', $src, $ts>)
+      n0   = h(<'n0', idx>)
+      ipkO = <vkaO, pk(skbO), pkcO>
+      ipkD = <vkaD, vkbD, pkcD>
+      psi  = <'dlg', 'exD', ipkD, sign(<'dlg', ipkD, 'exD', $src, 'orig'>, skbO)>
+      phiA = <'phi', piA,
+              $src, ipkO, 'ex', psi>
+      B    = 'g'^~b
+      n1   = h(<'n1', phiA, B, n0>)
+      etkB = <$dst, ipkB, 'ex', hidB, esigB>
+      phiB = <'phi', ~piB, $dst, ipkB, 'ex', 'nodlg'>
+      ctxB = aenc(<'rsp', phiB, B>, pkcD)
+  in
+  [ !Etk($dst, ipkB, ~idB, etkB)[no_precomp], !Proof(piA, $src, ipkO, hidO, n0)[no_precomp], In(<idx, phiA>)[no_precomp], Fr(~b), Fr(~piB) ]
+  --[ HiddenShare(B,ipkD,ipkB), ResponseSent(B,phiB,ipkB), HiddenProof(~piB, ipkD, ipkB), SendB(B), PairRespB($dst, $src, $ts, ipkB, ipkD, B),
+      AcceptedCallerKey($dst, $src, ipkD),
+      AcceptedDelegation($dst, $src, ipkO, ipkD), DhExp(~b) ]->
+  [ StB1($dst, $src, $ts, idx, phiA, phiB, ~b, ipkD, ipkB), !Proof(~piB, $dst, ipkB, hidB, n1), Out(<idx, ctxB>) ]
+
+rule Pair_A2:
+  let B = 'g'^xb
+      idx  = h(<'idx0', $src, $ts>)
+      n0   = h(<'n0', idx>)
+      ipkB = <vkaB, vkbB, pkcB>
+      n1   = h(<'n1', phiA, B, n0>)
+      phiB = <'phi', piB,
+              $dst, ipkB, 'ex', 'nodlg'>
+      A    = 'g'^~a
+      ctxA = aenc(<'fin', A, B>, pkcB)
+      K    = kdf(<idx, phiA, phiB, A, B, B^~a>)
+  in
+  [ StA1($src, $dst, $ts, ipkA, idx, phiA)[no_precomp], !LtkK(ipkA, ~ska, ~skb, ~skc)[no_precomp],
+    !Proof(piB, $dst, ipkB, hidB, n1)[no_precomp], In(<idx, aenc(<'rsp', phiB, B>, pk(~skc))>)[no_precomp], Fr(~a) ]
+  --[ ResponseReceived(B,phiB,ipkB), SecretA(A, ipkB), RecvB(B), PairedA($src, $dst, $ts, K, ipkA, ipkB),
+      AcceptedRecipientKey($src, $dst, ipkB), DhExp(~a) ]->
+  [ PairStA($src, $dst, K, ipkA, ipkB), Out(<idx, ctxA>) ]
+
+rule Pair_B2:
+  let A = 'g'^xa
+      B = 'g'^~b
+      K = kdf(<idx, phiA, phiB, A, B, A^~b>)
+  in
+  [ StB1($dst, $src, $ts, idx, phiA, phiB, ~b, ipkAstar, ipkB)[no_precomp],
+    !LtkK(ipkB, ~ska, ~skb, ~skc)[no_precomp],
+    In(<idx, aenc(<'fin', A, B>, pk(~skc))>)[no_precomp] ]
+  --[ PairedB($dst, $src, $ts, K, ipkB, ipkAstar) ]->
+  [ PairStB($dst, $src, K, ipkB, ipkAstar) ]
+
+lemma dh_exponents_secret [reuse]:
+  "All x #i. DhExp(x) @i ==> not (Ex #j. KU(x) @j)"
+
+lemma decryption_key_secret [reuse, use_induction]:
+ "All ipk sk #i #j. DecryptionKey(ipk,sk) @i & KU(sk) @j
+   ==> Ex #r. Reveal(ipk) @r & #r < #j"
+
+lemma hidden_proof_secret [reuse, use_induction]:
+ "All pi ipkA ipkB tn id #i #j #e.
+     HiddenProof(pi,ipkA,ipkB) @i & Enrolled(tn,ipkA,id) @e & KU(pi) @j
+   ==> (Ex #r. Reveal(ipkA) @r & #r < #j)
+     | (Ex #r. Reveal(ipkB) @r & #r < #j)"
+
+lemma received_share_origin [reuse, use_induction]:
+ "All B #i. RecvB(B) @i
+   ==> (Ex #j. KU(B) @j & #j < #i) | (Ex #j. SendB(B) @j & #j < #i)"
+
+lemma response_binding [reuse, use_induction]:
+ "All B phiB ipkB #i. ResponseReceived(B,phiB,ipkB) @i
+   ==> (Ex #j. ResponseSent(B,phiB,ipkB) @j & #j < #i)
+     | (Ex #j. KU(B) @j & #j < #i)"
+
+lemma share_B_secret [reuse, use_induction]:
+ "All B ipkA ipkB tn id #i #j #e.
+    HiddenShare(B,ipkA,ipkB) @i & Enrolled(tn,ipkA,id) @e & KU(B) @j
+   ==> (Ex #r. Reveal(ipkA) @r & #r < #j)
+     | (Ex #r. Reveal(ipkB) @r & #r < #j)"
+
+lemma accepted_recipient_key_secret [reuse]:
+ "All src dst vka vkb sk #i #j.
+    AcceptedRecipientKey(src,dst,<vka,vkb,pk(sk)>) @i & KU(sk) @j
+   ==> Ex #r. Reveal(<vka,vkb,pk(sk)>) @r & #r < #j"
+
+lemma share_A_secret [reuse, use_induction]:
+ "All A ipkB #i #j. SecretA(A,ipkB) @i & KU(A) @j
+   ==> Ex #r. Reveal(ipkB) @r & #r < #j"
+
+lemma executable: exists-trace
+  "Ex src dst ts K ipkA ipkB #i #j.
+      PairedA(src, dst, ts, K, ipkA, ipkB) @i
+    & PairedB(dst, src, ts, K, ipkB, ipkA) @j
+    & not (ipkA = ipkB)
+    & not (Ex x #r. Reveal(x) @r)"
+
+lemma executable_delegated: exists-trace
+  "Ex src dst ipkO ipkD #i #j.
+      PairStartDelegated(src, ipkO, ipkD) @i
+    & AcceptedDelegation(dst, src, ipkO, ipkD) @j
+    & not (Ex x #r. Reveal(x) @r)"
+
+lemma executable_delegated_full: exists-trace
+  "Ex src dst ts K ipkO ipkD ipkB #i #j #k #l.
+      PairStartDelegated(src, ipkO, ipkD) @i
+    & AcceptedDelegation(dst, src, ipkO, ipkD) @j
+    & PairedA(src, dst, ts, K, ipkD, ipkB) @k
+    & PairedB(dst, src, ts, K, ipkB, ipkD) @l
+    & not (ipkO = ipkD) & not (ipkD = ipkB) & not (ipkO = ipkB)
+    & not (Ex x #r. Reveal(x) @r)"
+
+lemma pair_K_secret_B:
+  "All dst src ts kk ipkB ipkA tnA idA #i #e. PairedB(dst, src, ts, kk, ipkB, ipkA) @i & Enrolled(tnA, ipkA, idA) @e
+     ==> not (Ex #j. KU(kk) @j)
+       | (Ex #r. Reveal(ipkA) @r) | (Ex #r. Reveal(ipkB) @r)"
+
+lemma pair_K_secret_A:
+  "All src dst ts kk ipkA ipkB #i. PairedA(src, dst, ts, kk, ipkA, ipkB) @i
+     ==> not (Ex #j. KU(kk) @j)
+       | (Ex #r. Reveal(ipkA) @r) | (Ex #r. Reveal(ipkB) @r)"
+
+lemma pair_K_forward_secret_B:
+  "All dst src ts kk ipkB ipkA tnA idA #i #e. PairedB(dst, src, ts, kk, ipkB, ipkA) @i & Enrolled(tnA, ipkA, idA) @e
+     ==> not (Ex #j. KU(kk) @j)
+       | (Ex #r. Reveal(ipkA) @r & #r < #i) | (Ex #r. Reveal(ipkB) @r & #r < #i)"
+
+/* Alice's provisional key is forward secret whenever the response she accepted
+ * was sent by the recipient device. A fabricated response is the diagnostic
+ * pair_K_forward_secret_A_expected_falsified below. */
+lemma pair_K_forward_secret_A_genuine:
+  "All src dst ts kk ipkA ipkB B phiB #i #j.
+      PairedA(src, dst, ts, kk, ipkA, ipkB) @i
+    & ResponseReceived(B, phiB, ipkB) @i
+    & ResponseSent(B, phiB, ipkB) @j & #j < #i
+     ==> not (Ex #k. KU(kk) @k)
+       | (Ex #r. Reveal(ipkA) @r & #r < #i) | (Ex #r. Reveal(ipkB) @r & #r < #i)"
+
+lemma pair_agreement_B:
+  "All dst src ts kk ipkB ipkA tnA idA #i #e. PairedB(dst, src, ts, kk, ipkB, ipkA) @i & Enrolled(tnA, ipkA, idA) @e
+     ==> (Ex #j. PairedA(src, dst, ts, kk, ipkA, ipkB) @j & #j < #i)
+       | (Ex #r. Reveal(ipkA) @r) | (Ex #r. Reveal(ipkB) @r)"
+
+lemma pair_agreement_B_injective:
+  "All dst src ts kk ipkB ipkA tnA idA #i1 #i2 #e.
+        PairedB(dst, src, ts, kk, ipkB, ipkA) @i1
+      & PairedB(dst, src, ts, kk, ipkB, ipkA) @i2 & Enrolled(tnA, ipkA, idA) @e
+     ==> #i1 = #i2
+       | (Ex #r. Reveal(ipkA) @r) | (Ex #r. Reveal(ipkB) @r)"
+
+lemma pair_agreement_A_expected_falsified:
+  "All src dst ts kk ipkA ipkB #i. PairedA(src, dst, ts, kk, ipkA, ipkB) @i
+     ==> (Ex B #j. PairRespB(dst, src, ts, ipkB, ipkA, B) @j & #j < #i)
+       | (Ex #r. Reveal(ipkA) @r) | (Ex #r. Reveal(ipkB) @r)"
+
+/* Diagnostic: without the genuine-response condition, a response fabricated
+ * from Bob's public token followed by a later reveal of Bob's decryption key
+ * exposes Alice's provisional key (the recorded fin message yields her share). */
+lemma pair_K_forward_secret_A_expected_falsified:
+  "All src dst ts kk ipkA ipkB #i. PairedA(src, dst, ts, kk, ipkA, ipkB) @i
+     ==> not (Ex #j. KU(kk) @j)
+       | (Ex #r. Reveal(ipkA) @r & #r < #i) | (Ex #r. Reveal(ipkB) @r & #r < #i)"
+
+lemma del1_delegation_chain:
+  "All dst src ipkO ipkD #i. AcceptedDelegation(dst, src, ipkO, ipkD) @i
+     ==> ( (Ex idO #j. Enrolled(src, ipkO, idO) @j & #j < #i)
+         & ( (Ex #j. Delegated(src, ipkO, ipkD) @j & #j < #i)
+           | (Ex #r. Reveal(ipkO) @r & #r < #i) ) )"
+
+lemma pair_caller_key_authorized:
+  "All dst src ipkA #i. AcceptedCallerKey(dst, src, ipkA) @i
+     ==> (Ex idA #j. Enrolled(src, ipkA, idA) @j & #j < #i)
+       | (Ex ipkO idO #j #k. Enrolled(src, ipkO, idO) @j & #j < #i
+            & Delegated(src, ipkO, ipkA) @k & #k < #i)
+       | (Ex ipkO idO #j #k. Enrolled(src, ipkO, idO) @j & #j < #i
+            & Reveal(ipkO) @k & #k < #i)"
+
+lemma del3_recipient_key_attested_for_dst:
+  "All src dst ipkB #i. AcceptedRecipientKey(src, dst, ipkB) @i
+     ==> (Ex idB #j. Enrolled(dst, ipkB, idB) @j & #j < #i)"
+
+lemma del3_no_delegate_as_recipient:
+  "not (Ex src dst ipkO ipkD #i #j.
+          AcceptedRecipientKey(src, dst, ipkD) @i
+        & Delegated(dst, ipkO, ipkD) @j
+        & not (Ex idD #k. Enrolled(dst, ipkD, idD) @k))"
+
+end

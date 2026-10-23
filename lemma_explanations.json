@@ -1,0 +1,1309 @@
+{
+  "julep_pairing": {
+    "title": "Pairing: preparing Alice and Bob to authenticate calls",
+    "context": [
+      "Alice is preparing to call Bob. Pairing associates their phone numbers with device keys and establishes a shared secret for later call authentication. Alice saves an unconfirmed key before Bob finishes pairing. Saving it alone does not establish that Bob sent a response: the protocol permits a holder of Bob’s public enrollment token to construct a response Alice accepts. Her state is confirmed only when Bob’s subsequent call-authentication response verifies.",
+      "For a delegated call, an owner such as a business authorizes Alice to call using its number. Alice uses her own device keys. Permission to place those calls does not also authorize her to answer calls to the business number.",
+      "The recipient-side secrecy and agreement statements below apply when the caller device has an honestly issued enrollment record, including an enrolled delegate. They do not promise secrecy against a caller whose keys the attacker owns."
+    ],
+    "lemmas": {
+      "pair_K_secret_B": {
+        "category": "claim",
+        "title": "Bob’s completed pairing key stays secret",
+        "statement": "If Bob finishes pairing with an enrolled Alice, the attacker never learns the key Bob stores, provided neither device’s long-term keys are exposed anywhere in the execution.",
+        "context": "Protects the secret Bob will use for later call authentication.",
+        "paper": {
+          "targets": [
+            "S5"
+          ],
+          "claims": [
+            "C-PAIR-1"
+          ],
+          "role": "Supports S5 by checking initial key secrecy with device keys unexposed; does not prove protection after compromise."
+        },
+        "report": "protocol"
+      },
+      "pair_K_secret_A": {
+        "category": "claim",
+        "title": "Alice’s provisional pairing key stays secret",
+        "statement": "If Alice records a pairing key for Bob, the attacker never learns it, provided neither device’s long-term keys are exposed anywhere in the execution.",
+        "context": "Secrecy alone does not establish that Bob has participated or stored the same key.",
+        "paper": {
+          "targets": [
+            "S5"
+          ],
+          "claims": [
+            "C-PAIR-1"
+          ],
+          "role": "Supports S5 by checking initial key secrecy with device keys unexposed; forward secrecy after later exposure is pair_K_forward_secret_A_genuine."
+        },
+        "report": "protocol"
+      },
+      "pair_K_forward_secret_B": {
+        "category": "claim",
+        "title": "Later device-key theft should not reveal Bob’s earlier pairing key",
+        "statement": "If Bob finishes pairing with an enrolled Alice before either device’s long-term keys are exposed, the attacker never learns that pairing key, even if those device keys are exposed later.",
+        "context": "Checks protection against later theft of long-term private keys. The exposure does not include the stored pairing key or temporary DH secrets.",
+        "paper": {
+          "targets": [
+            "S5"
+          ],
+          "claims": [
+            "C-PAIR-1"
+          ],
+          "role": "Checks the pairing-key part of protection against later device-key theft; does not cover recovery after shared-key exposure."
+        },
+        "report": "protocol"
+      },
+      "pair_agreement_B": {
+        "category": "claim",
+        "title": "When Bob finishes pairing, Alice has already stored the same key",
+        "statement": "If Bob finishes pairing with an enrolled Alice, Alice previously recorded the same shared key, phone numbers, timestamp, and device keys, provided neither device’s long-term keys are ever exposed.",
+        "context": "Bob’s completion corresponds to a matching pairing on Alice’s side.",
+        "paper": {
+          "targets": [
+            "objective-1"
+          ],
+          "claims": [
+            "C-PAIR-2"
+          ],
+          "role": "Checks recipient-side assurance when pairing completes; caller-side state remains provisional."
+        },
+        "report": "protocol"
+      },
+      "pair_agreement_B_injective": {
+        "category": "claim",
+        "title": "Bob does not complete the same pairing twice",
+        "statement": "With neither device’s long-term keys ever exposed and an enrolled caller, two Bob completion records with the same numbers, timestamp, device keys, and shared key must be the very same event.",
+        "context": "Replaying a completed exchange cannot create a second identical completion at Bob.",
+        "paper": {
+          "targets": [
+            "objective-1"
+          ],
+          "claims": [
+            "C-PAIR-2"
+          ],
+          "role": "Checks recipient-side assurance when pairing completes; caller-side state remains provisional."
+        },
+        "report": "protocol"
+      },
+      "del1_delegation_chain": {
+        "category": "claim",
+        "title": "Permission to call on an owner’s behalf comes from that owner",
+        "statement": "If Bob accepts Alice as a delegate for a number, the owner was previously enrolled for that number and either authorized Alice earlier or had its long-term keys exposed before acceptance.",
+        "context": "A business’s enrollment and authorization must back a delegated call; registering an unrelated device is insufficient.",
+        "paper": {
+          "targets": [
+            "objective-1"
+          ],
+          "claims": [
+            "C-DEL-1"
+          ],
+          "role": "Checks that permission to call for a number originates with its enrolled owner; expiry is outside this model."
+        },
+        "report": "protocol"
+      },
+      "del3_recipient_key_attested_for_dst": {
+        "category": "claim",
+        "title": "The recipient’s key belongs to the number being called",
+        "statement": "If Alice accepts Bob’s device key for the destination number, that key was previously enrolled for that number.",
+        "context": "Prevents substituting a key enrolled only for a different number.",
+        "paper": {
+          "targets": [
+            "objective-1"
+          ],
+          "claims": [
+            "C-DEL-3"
+          ],
+          "role": "Checks the boundary between permission to place calls and authorization to receive them."
+        },
+        "report": "protocol"
+      },
+      "del3_no_delegate_as_recipient": {
+        "category": "claim",
+        "title": "Permission to call for an owner does not permit answering for it",
+        "statement": "Alice cannot accept a delegate’s key as the recipient key for an owner’s number unless that delegate key is also enrolled for that destination number.",
+        "context": "An outsourced caller cannot use outgoing-call authorization alone to impersonate the business when it receives a call.",
+        "paper": {
+          "targets": [
+            "objective-1"
+          ],
+          "claims": [
+            "C-DEL-3"
+          ],
+          "role": "Checks the boundary between permission to place calls and authorization to receive them."
+        },
+        "report": "protocol"
+      },
+      "pair_agreement_A_expected_falsified": {
+        "category": "counterexample",
+        "title": "Whether Alice’s saved pairing key confirms that Bob replied",
+        "statement": "If Alice saves a pairing key under Bob’s number, Bob must previously have sent a response to that pairing request, for the same numbers, timestamp, and device keys, provided neither device’s long-term keys are ever exposed.",
+        "context": "Tamarin found an execution where a response constructed using a public enrollment token lets an honest Alice save an unconfirmed pairing key without a matching prior reply from Bob. This tests what an outside attacker can cause during pairing. Alice simulating a transcript with her own secrets is the related deniability argument; this one execution does not prove that genuine and simulated transcripts are indistinguishable.",
+        "paper": {
+          "targets": [
+            "objective-1",
+            "S3"
+          ],
+          "claims": [
+            "C-PAIR-2",
+            "C-AUTH-6"
+          ],
+          "role": "Confirms the intended limit of unconfirmed pairing, consistent with deniability. It proves neither the full simulation claim nor indistinguishability of genuine and simulated transcripts."
+        },
+        "report": "regression"
+      },
+      "executable": {
+        "category": "example",
+        "title": "Two different devices can finish pairing together",
+        "statement": "There is an execution in which Alice and Bob have different device keys, both record the same pairing key and call details, and no long-term keys are exposed.",
+        "context": "Checks that the model allows successful pairing. It does not guarantee that every attempt finishes.",
+        "paper": {
+          "targets": [
+            "objective-1",
+            "S5"
+          ],
+          "claims": [
+            "C-PAIR-1",
+            "C-PAIR-2"
+          ],
+          "role": "Existence check: checks that matching pairing states can be reached, not their security in every execution."
+        },
+        "report": "protocol"
+      },
+      "executable_delegated": {
+        "category": "example",
+        "title": "A delegated pairing can reach acceptance of the authorization",
+        "statement": "There is an execution in which a delegate starts pairing on an owner’s behalf and the recipient accepts that delegation, without any long-term keys being exposed.",
+        "context": "This checks only the start and acceptance of delegation. Completion on both sides is executable_delegated_full.",
+        "paper": {
+          "targets": [
+            "objective-1"
+          ],
+          "claims": [
+            "C-DEL-1",
+            "C-PAIR-2"
+          ],
+          "role": "Existence check: checks that the delegated pairing path can reach acceptance of the authorization."
+        },
+        "report": "protocol"
+      },
+      "dh_exponents_secret": {
+        "category": "helper",
+        "title": "Fresh private key-exchange numbers remain private",
+        "statement": "The attacker never learns either device’s fresh private number used to calculate a pairing key.",
+        "context": "These temporary secrets differ from both the values sent in pairing messages and the device’s long-term keys.",
+        "paper": {
+          "targets": [
+            "S5"
+          ],
+          "claims": [
+            "C-PAIR-1"
+          ],
+          "role": "Supporting check for pairing-key secrecy, not an independent proof of S5."
+        },
+        "report": "protocol"
+      },
+      "decryption_key_secret": {
+        "category": "helper",
+        "title": "Pairing traffic does not disclose a device’s private decryption key",
+        "statement": "If the attacker learns an enrolled device’s private decryption key, that device’s long-term keys were explicitly exposed earlier.",
+        "context": "Checks that handling pairing messages does not itself leak the key used to open them.",
+        "paper": {
+          "targets": [
+            "S5"
+          ],
+          "claims": [
+            "C-PAIR-1"
+          ],
+          "role": "Supporting check for pairing-key secrecy, not an independent proof of S5."
+        },
+        "report": "protocol"
+      },
+      "hidden_proof_secret": {
+        "category": "helper",
+        "title": "The enrollment proof inside Bob’s response remains hidden",
+        "statement": "If Bob’s response is addressed to an enrolled caller and the attacker learns the enclosed enrollment proof, Alice’s or Bob’s long-term keys were exposed before the attacker learned it.",
+        "context": "Supports the secrecy of the encrypted pairing response. This concerns the proof sent in that response, not the public enrollment token.",
+        "paper": {
+          "targets": [
+            "S5"
+          ],
+          "claims": [
+            "C-PAIR-1"
+          ],
+          "role": "Supporting check for pairing-key secrecy, not an independent proof of S5."
+        },
+        "report": "protocol"
+      },
+      "received_share_origin": {
+        "category": "helper",
+        "title": "A key-exchange value accepted by Alice has a source",
+        "statement": "If Alice accepts a recipient’s key-exchange value, a recipient previously sent that value or the attacker already knew it.",
+        "context": "Accounts for both legitimate responses and values chosen by an attacker; it is not an authentication guarantee by itself.",
+        "paper": {
+          "targets": [
+            "objective-1",
+            "S5"
+          ],
+          "claims": [
+            "C-PAIR-2",
+            "C-PAIR-1"
+          ],
+          "role": "Supporting check for pairing agreement and key secrecy; it does not establish either full paper requirement alone."
+        },
+        "report": "protocol"
+      },
+      "response_binding": {
+        "category": "helper",
+        "title": "An unknown key-exchange value cannot be transplanted into another response",
+        "statement": "If Alice accepts a response, either a recipient previously sent that same combination of key-exchange value, enrollment proof, and device key, or the attacker already knew the key-exchange value.",
+        "context": "Checks the connection between the response’s parts while allowing attackers to construct responses using values they know.",
+        "paper": {
+          "targets": [
+            "objective-1",
+            "S5"
+          ],
+          "claims": [
+            "C-PAIR-2",
+            "C-PAIR-1"
+          ],
+          "role": "Supporting check for pairing agreement and key secrecy; it does not establish either full paper requirement alone."
+        },
+        "report": "protocol"
+      },
+      "share_B_secret": {
+        "category": "helper",
+        "title": "Bob’s encrypted key-exchange value stays hidden",
+        "statement": "If Bob sends his key-exchange value to an enrolled Alice and the attacker learns it, one of their devices’ long-term keys was exposed before that knowledge.",
+        "context": "Supports pairing-key secrecy by checking the protection of Bob’s encrypted contribution.",
+        "paper": {
+          "targets": [
+            "S5"
+          ],
+          "claims": [
+            "C-PAIR-1"
+          ],
+          "role": "Supporting check for pairing-key secrecy, not an independent proof of S5."
+        },
+        "report": "protocol"
+      },
+      "accepted_recipient_key_secret": {
+        "category": "helper",
+        "title": "An accepted recipient key has a protected private counterpart",
+        "statement": "If Alice accepts Bob’s public encryption key and the attacker learns its private counterpart, Bob’s long-term keys were exposed before that knowledge.",
+        "context": "Connects Alice’s accepted recipient key to the secrecy needed for her final encrypted message.",
+        "paper": {
+          "targets": [
+            "S5"
+          ],
+          "claims": [
+            "C-PAIR-1"
+          ],
+          "role": "Supporting check for pairing-key secrecy, not an independent proof of S5."
+        },
+        "report": "protocol"
+      },
+      "share_A_secret": {
+        "category": "helper",
+        "title": "Alice’s final key-exchange value stays hidden",
+        "statement": "If Alice sends her key-exchange value encrypted to Bob and the attacker learns that value, Bob’s long-term keys were exposed before that knowledge.",
+        "context": "Checks that Alice’s final pairing message protects her contribution to the shared key.",
+        "paper": {
+          "targets": [
+            "S5"
+          ],
+          "claims": [
+            "C-PAIR-1"
+          ],
+          "role": "Supporting check for pairing-key secrecy, not an independent proof of S5."
+        },
+        "report": "protocol"
+      },
+      "executable_delegated_full": {
+        "category": "example",
+        "title": "Delegated pairing can finish on both sides",
+        "statement": "There is an execution in which a delegate device starts pairing with the owner's authorization, Bob accepts that authorization, and both devices then derive the same pairing key with the delegate's key, for three distinct devices and without exposing any long-term key.",
+        "context": "Shows that the recipient-side pairing statements are not vacuous on the delegated path: Bob can reach a completed delegated pairing, not merely acceptance of the delegation.",
+        "paper": {
+          "targets": [
+            "objective-1"
+          ],
+          "claims": [
+            "C-DEL-1",
+            "C-PAIR-2"
+          ],
+          "role": "Executability of the delegated pairing flow through completion; it is not a security claim."
+        },
+        "report": "protocol"
+      },
+      "pair_K_forward_secret_A_genuine": {
+        "category": "claim",
+        "title": "Alice’s provisional key stays secret after later device-key exposure when Bob really answered",
+        "statement": "If Alice saves a provisional pairing key and the response she accepted was sent by Bob’s device, the attacker never learns that key, even if either device’s long-term keys are exposed after she saves it.",
+        "context": "Forward secrecy on the caller side for every genuine pairing. Alice’s fresh share is encrypted to Bob and both temporary exponents are deleted, so later theft of long-term keys does not recover the key. A separate diagnostic in the findings appendix shows that a response fabricated from Bob’s public token lacks this property.",
+        "paper": {
+          "targets": [
+            "S5"
+          ],
+          "claims": [
+            "C-PAIR-1"
+          ],
+          "role": "Checks S5’s forward-secrecy clause for the caller’s pairing key whenever the recipient sent the accepted response."
+        },
+        "report": "protocol"
+      },
+      "pair_K_forward_secret_A_expected_falsified": {
+        "category": "counterexample",
+        "title": "Whether Alice’s provisional key is forward secret when the response may be fabricated",
+        "statement": "If Alice saves a provisional pairing key, the attacker never learns it unless a relevant long-term key was exposed before she saved it.",
+        "context": "Tamarin found the expected execution: an attacker fabricates Bob’s response from Bob’s public enrollment token with its own share, Alice saves a provisional key, and a later exposure of Bob’s decryption key lets the attacker read Alice’s recorded final message, recover her share, and compute the key. The candidate is discarded at fallback and Bob never holds it; genuine pairings are covered by pair_K_forward_secret_A_genuine.",
+        "paper": {
+          "targets": [
+            "S5"
+          ],
+          "claims": [
+            "C-PAIR-1"
+          ],
+          "role": "Records the limit of forward secrecy for an unconfirmed pairing candidate, so the guarantee is stated precisely."
+        },
+        "report": "regression"
+      },
+      "pair_caller_key_authorized": {
+        "category": "claim",
+        "title": "Bob accepts a caller key only if it is enrolled for the calling number or delegated by its owner",
+        "statement": "Whenever Bob accepts a caller’s key at pairing, that key is enrolled for the calling number, or the enrolled owner of that number delegated to it, or the owner’s long-term keys were exposed before acceptance.",
+        "context": "States caller authorization at pairing directly, covering the direct case that the delegation-chain check does not mention.",
+        "paper": {
+          "targets": [
+            "objective-1"
+          ],
+          "claims": [
+            "C-PAIR-2",
+            "C-DEL-1"
+          ],
+          "role": "Checks number authorization of the caller key accepted at pairing."
+        },
+        "report": "protocol"
+      }
+    }
+  },
+  "julep_auth": {
+    "title": "Call authentication: knowing who called and who answered",
+    "context": [
+      "Alice calls Bob. Bob checks the incoming request before displaying the caller’s identity. If Bob chooses to answer, he sends an authenticated response; Alice then checks it and displays Bob’s identity. Answering is an explicit action, not merely receiving a ring or displaying a name.",
+      "For a delegated call, Bob sees the owner’s identity, while the delegate’s device authenticates the request. The checks distinguish the owner of the displayed number from the device placing the call.",
+      "This model starts with Alice and Bob already holding the same shared key. It checks one authentication round, including the replacement key they store afterward. The shared key that encrypts the exchange is separate from each device’s long-term keys. Several checks allow the former to leak while requiring the latter to stay private."
+    ],
+    "lemmas": {
+      "auth1_caller_authentication": {
+        "category": "claim",
+        "title": "The displayed caller identity is backed by the actual request",
+        "statement": "If Bob displays a caller identity, the caller device previously authenticated that same request to Bob, and the identity was previously enrolled for the calling number, provided neither device’s long-term keys are ever exposed.",
+        "context": "For a direct call the displayed identity is Alice’s; for a delegated call it is the owner’s. This check still applies if the shared call key leaks.",
+        "paper": {
+          "targets": [
+            "objective-1"
+          ],
+          "claims": [
+            "C-AUTH-1"
+          ],
+          "role": "Checks the authenticated caller request and number/identity binding; real ring-time and expiry checks are outside the model."
+        },
+        "report": "protocol"
+      },
+      "auth2_recipient_authentication": {
+        "category": "claim",
+        "title": "Alice sees Bob’s identity only after Bob answers her request",
+        "statement": "If Alice accepts Bob’s authenticated identity, Bob previously answered the matching request with the same response, provided neither device’s long-term keys are ever exposed.",
+        "context": "A network attacker cannot make Alice accept a response as Bob’s answer merely by learning the shared call key.",
+        "paper": {
+          "targets": [
+            "objective-1"
+          ],
+          "claims": [
+            "C-AUTH-2"
+          ],
+          "role": "Checks the recipient-authentication part of mutual number authorization."
+        },
+        "report": "protocol"
+      },
+      "auth2_recipient_authentication_injective": {
+        "category": "claim",
+        "title": "Replaying Bob’s answer cannot create a second identical acceptance",
+        "statement": "With neither device’s long-term keys ever exposed, two Alice acceptance records with the same numbers, identity, devices, request reference, and response must be the very same event.",
+        "context": "Prevents a replayed answer from being counted twice as the same completed authentication.",
+        "paper": {
+          "targets": [
+            "objective-1"
+          ],
+          "claims": [
+            "C-AUTH-2"
+          ],
+          "role": "Checks the recipient-authentication part of mutual number authorization."
+        },
+        "report": "protocol"
+      },
+      "auth2_key_agreement": {
+        "category": "claim",
+        "title": "After authentication, both devices store the same next key",
+        "statement": "If Alice finishes authentication and stores a replacement shared key, Bob previously stored that same replacement for the same devices, numbers, and starting key, provided neither device’s long-term keys nor the current shared key are ever exposed.",
+        "context": "Checks that successful authentication leaves both sides with matching keys for the next exchange.",
+        "paper": {
+          "targets": [
+            "objective-1",
+            "S5"
+          ],
+          "claims": [
+            "C-AUTH-2"
+          ],
+          "role": "Checks agreement on the refreshed key. This supports the refresh used by S5, but does not prove its secrecy."
+        },
+        "report": "protocol"
+      },
+      "auth2_key_agreement_with_exposed_state": {
+        "category": "claim",
+        "title": "Both devices still agree on the next key when the current shared key leaks",
+        "statement": "If Alice finishes authentication and stores a replacement shared key, Bob previously stored that same replacement for the same devices, numbers, and starting key, provided neither device’s long-term keys are ever exposed. The current shared key may be exposed.",
+        "context": "Checks the key update against an attacker who can open and re-encrypt the current messages. It proves agreement on the replacement, not secrecy of that replacement.",
+        "paper": {
+          "targets": [
+            "objective-1",
+            "S5"
+          ],
+          "claims": [
+            "C-AUTH-2"
+          ],
+          "role": "Checks agreement after current-key exposure. S5’s recovery of secrecy is a separate claim."
+        },
+        "report": "protocol"
+      },
+      "auth4_recipient_identity_confidentiality": {
+        "category": "claim",
+        "title": "An identity cannot become known without a modeled disclosure route",
+        "statement": "If the attacker learns an enrolled identity, then beforehand that person sent it as caller or as an answering recipient, or it was explicitly exposed, or a delegate device holding that person’s delegation token was compromised.",
+        "context": "Tracks where an identity could have come from. Sending an encrypted identity is a possible route, not proof that the attacker can decrypt it.",
+        "paper": {
+          "targets": [
+            "S1"
+          ],
+          "claims": [
+            "C-AUTH-4"
+          ],
+          "role": "Checks the disclosure-route part of S1, allowing the paper’s caller, answering-recipient, and delegation roles."
+        },
+        "report": "protocol"
+      },
+      "auth4_recipient_send_requires_answer": {
+        "category": "claim",
+        "title": "Bob sends his recipient identity only when he chooses to answer",
+        "statement": "Whenever a device sends its identity in the recipient role, that same protocol step records its decision to answer the call.",
+        "context": "Receiving a call or showing the caller’s identity does not itself send Bob’s recipient identity. Bob may separately disclose the same identity when he places a call.",
+        "paper": {
+          "targets": [
+            "S1"
+          ],
+          "claims": [
+            "C-AUTH-4"
+          ],
+          "role": "Checks the answer-as-authorization part of S1 for the recipient’s identity message."
+        },
+        "report": "protocol"
+      },
+      "auth4_identity_secrecy": {
+        "category": "claim",
+        "title": "Encrypted identities stay hidden unless a disclosure route is usable",
+        "statement": "If the attacker learns an enrolled identity, then beforehand it was explicitly exposed, disclosed by a compromised delegate device holding the owner’s delegation token, or both sent in a call message and the shared key encrypting that message was exposed.",
+        "context": "Adds an encryption guarantee to the disclosure-order check. Exposure of device long-term keys alone does not reveal this separately protected identity in the model. The model releases a delegation token, which carries the owner’s identity, only through an explicit delegate-compromise event; a delegated call records the owner’s identity as sent under the call key.",
+        "paper": {
+          "targets": [
+            "S1"
+          ],
+          "claims": [
+            "C-AUTH-4"
+          ],
+          "role": "Checks confidentiality of the modeled identity value; candidate-identity guessing and reports are outside this proof."
+        },
+        "report": "protocol"
+      },
+      "del3_recipient_key_attested_for_dst": {
+        "category": "claim",
+        "title": "The authenticated recipient key is enrolled for the called number",
+        "statement": "If Alice accepts Bob’s device key when authenticating the recipient, that key was previously enrolled for the destination number.",
+        "context": "The response must use a key registered for the number Alice actually called.",
+        "paper": {
+          "targets": [
+            "objective-1"
+          ],
+          "claims": [
+            "C-DEL-3"
+          ],
+          "role": "Checks that the recipient is authorized for the called number, rather than merely delegated to place calls for it."
+        },
+        "report": "protocol"
+      },
+      "del3_no_delegate_as_recipient": {
+        "category": "claim",
+        "title": "An outgoing-call delegate cannot answer as the owner without enrollment",
+        "statement": "Alice cannot accept a delegate’s key as the recipient key for an owner’s number unless that key is also enrolled for the destination number.",
+        "context": "The distinction between permission to place calls and permission to receive them remains enforced during call authentication.",
+        "paper": {
+          "targets": [
+            "objective-1"
+          ],
+          "claims": [
+            "C-DEL-3"
+          ],
+          "role": "Checks that the recipient is authorized for the called number, rather than merely delegated to place calls for it."
+        },
+        "report": "protocol"
+      },
+      "auth4_recipient_identity_confidentiality_expected_falsified": {
+        "category": "counterexample",
+        "title": "Test variant: every identity disclosure requires an answer",
+        "statement": "If the attacker learns an enrolled identity, that person must previously have answered a call, unless their identity or long-term keys are exposed, or a delegate device holding their delegation token is compromised, somewhere in the execution.",
+        "context": "This test deliberately excludes the caller-disclosure route from its statement. A caller can send an identity without answering, and an attacker can read it after the matching shared key is exposed.",
+        "paper": {
+          "targets": [
+            "S1"
+          ],
+          "claims": [
+            "C-AUTH-4"
+          ],
+          "role": "Boundary test for S1: checks that an answer-only formulation fails to account for caller disclosure."
+        },
+        "report": "regression"
+      },
+      "executable_direct": {
+        "category": "example",
+        "title": "A normal call can complete authentication",
+        "statement": "There is an execution between different devices in which Alice sends a request, Bob displays Alice’s identity and answers, and Alice then displays Bob’s identity, without exposing device keys, identities, or the shared call key through the model’s explicit exposure actions.",
+        "context": "Shows that the request, display, answer, and response checks allow a successful direct call.",
+        "paper": {
+          "targets": [
+            "objective-1",
+            "S1"
+          ],
+          "claims": [
+            "C-AUTH-1",
+            "C-AUTH-2",
+            "C-AUTH-4"
+          ],
+          "role": "Existence check: exercises authentication and the intended identity-disclosure sequence in a normal call."
+        },
+        "report": "protocol"
+      },
+      "executable_delegated": {
+        "category": "example",
+        "title": "A delegated call can complete authentication",
+        "statement": "There is an execution with distinct owner, delegate, and recipient devices in which the delegate calls, Bob accepts the delegation and displays the owner’s identity, Bob answers, and the delegate displays Bob’s identity, without exposing long-term or shared call keys.",
+        "context": "Shows a complete example of calling on a business’s behalf; the displayed owner and the device placing the call are different.",
+        "paper": {
+          "targets": [
+            "objective-1"
+          ],
+          "claims": [
+            "C-AUTH-1",
+            "C-AUTH-2",
+            "C-DEL-1"
+          ],
+          "role": "Existence check: exercises delegated caller authorization and recipient authentication; it is not a delegation-security proof."
+        },
+        "report": "protocol"
+      },
+      "auth4_caller_disclosure_without_answer": {
+        "category": "example",
+        "title": "A caller’s identity can be learned even when nobody answers",
+        "statement": "There is an execution in which Alice sends her identity as a caller, the shared key leaks, and the attacker learns her identity, although nobody answers and there is no device-key exposure, direct identity exposure, or delegation.",
+        "context": "Shows why identity privacy depends on both the person’s call role and the confidentiality of the key protecting their message.",
+        "paper": {
+          "targets": [
+            "S1"
+          ],
+          "claims": [
+            "C-AUTH-4"
+          ],
+          "role": "Existence check of S1’s scope: a caller can disclose an identity without answering, and exposure of the matching shared key lets the attacker read it."
+        },
+        "report": "protocol"
+      },
+      "executable_with_state_reveal": {
+        "category": "example",
+        "title": "Authentication can finish after the actual call key has leaked",
+        "statement": "There is an execution in which the shared key for Alice and Bob’s accepted round is exposed before Alice accepts Bob and stores the replacement key, while no device’s long-term keys are exposed.",
+        "context": "Checks that the model permits the exposed-key scenario covered by the stronger agreement statement.",
+        "paper": {
+          "targets": [
+            "objective-1",
+            "S5"
+          ],
+          "claims": [
+            "C-AUTH-2"
+          ],
+          "role": "Existence check: reaches completion with the actual starting key exposed; this does not establish S5’s recovery of secrecy."
+        },
+        "report": "protocol"
+      },
+      "auth4_guard_satisfiable": {
+        "category": "example",
+        "title": "The model can represent an attacker learning an identity",
+        "statement": "There is an execution in which a device is enrolled, its identity is explicitly exposed, and the attacker knows that identity.",
+        "context": "Checks that identity-secrecy statements are not passing just because attacker knowledge is impossible to represent.",
+        "paper": {
+          "targets": [
+            "S1"
+          ],
+          "claims": [
+            "C-AUTH-4"
+          ],
+          "role": "Existence check: checks that the model can represent identity exposure, so the S1 checks have meaningful cases to consider."
+        },
+        "report": "protocol"
+      },
+      "amf_secret": {
+        "category": "helper",
+        "title": "Authenticating messages does not leak the private authentication key",
+        "statement": "If the attacker learns a device’s private message-authentication key, that device’s long-term keys were explicitly exposed earlier.",
+        "context": "Supports the claim that accepted requests and answers cannot be forged through ordinary message exchange.",
+        "paper": {
+          "targets": [
+            "objective-1"
+          ],
+          "claims": [
+            "C-AUTH-1",
+            "C-AUTH-2"
+          ],
+          "role": "Supporting check for caller and recipient authentication, not a deniability or accountability proof."
+        },
+        "report": "protocol"
+      },
+      "state_secret": {
+        "category": "helper",
+        "title": "The initial shared call key has to be explicitly exposed to become known",
+        "statement": "If the attacker learns the shared key installed for an authentication round, that same key was explicitly exposed earlier.",
+        "context": "Checks secrecy of the starting key under this model’s setup. It does not prove secrecy of every later replacement key.",
+        "paper": {
+          "targets": [
+            "S1",
+            "S5"
+          ],
+          "claims": [
+            "C-AUTH-4"
+          ],
+          "role": "Supporting check for the secret starting state used to protect identities and refresh keys; it does not prove refreshed-key secrecy."
+        },
+        "report": "protocol"
+      },
+      "dlg_key_secret": {
+        "category": "helper",
+        "title": "Delegation signing keys stay private unless the device is compromised",
+        "statement": "The attacker learns a device’s delegation signing key only after that device’s long-term keys are exposed.",
+        "context": "Supports the call-authentication delegation-chain proof.",
+        "paper": {
+          "targets": [
+            "objective-1"
+          ],
+          "claims": [
+            "C-DEL-1"
+          ],
+          "role": "Supporting check for owner authorization of delegated calls."
+        },
+        "report": "protocol"
+      },
+      "dlg_sig_origin": {
+        "category": "helper",
+        "title": "A delegation signature comes from the owner or from a compromised owner",
+        "statement": "Whenever the attacker knows a delegation signature under an enrolled owner’s key, that owner delegated exactly that key for that number earlier, or the owner’s long-term keys were exposed earlier.",
+        "context": "Supports the call-authentication delegation-chain proof.",
+        "paper": {
+          "targets": [
+            "objective-1"
+          ],
+          "claims": [
+            "C-DEL-1"
+          ],
+          "role": "Supporting check for owner authorization of delegated calls."
+        },
+        "report": "protocol"
+      },
+      "del1_delegation_chain": {
+        "category": "claim",
+        "title": "Delegated call requests are authorized by the enrolled owner",
+        "statement": "If Bob accepts a delegated call request, the number’s owner was enrolled and either delegated to the calling device earlier or had its long-term keys exposed before acceptance.",
+        "context": "Verifies at call authentication what the pairing model verifies at pairing: the delegation signature Bob checks under the owner’s attested key originates from the owner’s delegation step unless the owner was compromised.",
+        "paper": {
+          "targets": [
+            "objective-1"
+          ],
+          "claims": [
+            "C-DEL-1"
+          ],
+          "role": "Checks owner authorization of delegated calls in the call-authentication model."
+        },
+        "report": "protocol"
+      },
+      "deniability_witness_ca_request": {
+        "category": "example",
+        "title": "Bob’s device can accept a call request that Alice never sent",
+        "statement": "There is an execution in which Bob’s device displays Alice’s identity for a request that Alice’s device never produced, while the attacker uses only Bob’s long-term keys, the shared key Bob holds, and the identity Alice had already disclosed to Bob.",
+        "context": "The attacker stands in for Bob: it forges the AMF signature with Bob’s own key, which AMF grants the designated receiver, and encrypts under the shared key. Bob’s transcript therefore cannot show a third party that Alice called.",
+        "paper": {
+          "targets": [
+            "S3"
+          ],
+          "claims": [
+            "C-AUTH-6"
+          ],
+          "role": "Forgeability witness for deniability: shows the transcript is not attributable to the peer. It does not establish indistinguishability of genuine and fabricated transcripts."
+        },
+        "report": "protocol"
+      },
+      "deniability_witness_ca_response": {
+        "category": "example",
+        "title": "Alice’s device can accept an answer that Bob never gave",
+        "statement": "There is an execution in which Alice’s device displays Bob’s identity as having answered her request although Bob’s device never answered, while the attacker uses only Alice’s long-term keys, the shared key Alice holds, and the identity Bob had already disclosed to Alice.",
+        "context": "The attacker stands in for Alice and forges Bob’s response with Alice’s receiver key. Alice’s transcript therefore cannot show a third party that Bob answered.",
+        "paper": {
+          "targets": [
+            "S3"
+          ],
+          "claims": [
+            "C-AUTH-6"
+          ],
+          "role": "Forgeability witness for deniability: shows the transcript is not attributable to the peer. It does not establish indistinguishability of genuine and fabricated transcripts."
+        },
+        "report": "protocol"
+      }
+    }
+  },
+  "julep_oda": {
+    "title": "On-demand credentials: choosing whether to share evidence during a call",
+    "context": [
+      "After call authentication, either person can ask the other for credential evidence—for example, evidence of an affiliation. The person asked can consent to share it or decline. ODA/ICV are the protocol’s names for this exchange. Here, Alice remains the caller and Bob the person who answered, regardless of who asks for evidence.",
+      "A presentation is the payload produced by an external credential component for a particular request. Credential generation and validation are outside Julep’s verification scope; the model assumes their behavior. Julep controls when this payload is sent and protects its transport to the peer. Alice can receive it normally; the confidentiality question concerns the network attacker.",
+      "The transport claim concerns presentation material supplied privately by that component, with no separate publication or disclosure by it. Attribute values are public inputs in the current model, so this is not a proof that facts such as someone’s employer are secret. Transport cannot make an already public payload secret.",
+      "The model assumes an agreed pairing key and includes a shortened call-authentication exchange before credential requests. Disclosure control (authentication, answer, and consent) and transport confidentiality are separate guarantees. The combined recipient statement follows from the answer rule and transport confidentiality; it adds no independent requirement.",
+      "Each device retains one current shared key for the exchange and replaces it on an update. For example, call authentication produces K1. The first credential round encrypts its request and presentation under K1, derives K2 from K1, its authenticated transcript, and a fresh DH secret, then replaces K1 with K2 and deletes K1. If an attacker steals K1 while it is current, the attacker can read round 1 and remember K1 after deletion. Knowing K1 alone does not reveal K2: the update also requires the fresh authenticated DH secret. The next key and relevant long-term private keys must remain unexposed.",
+      "The key-secrecy proof covers the keys produced by the call-authentication prefix and every subsequent credential update. It permits the attacker to remember shared keys stolen during other rounds. The transport proof then establishes that the presentation has no route to the network attacker while its protecting key and the relevant long-term private keys remain unexposed. These are conditional guarantees with temporary DH secrets unavailable to the attacker.",
+      "Shared-key theft is limited to the key a device currently retains for that exchange. Once both devices replace and delete a key, it can no longer be stolen from their state; any copy the attacker already obtained remains known. The compromise event exposes the shared key alone, not temporary DH secrets. See ABSTRACTIONS.md for the exact scope."
+    ],
+    "lemmas": {
+      "oda2_accept_after_ca": {
+        "category": "claim",
+        "title": "A device accepts a credential request only after authenticating the call",
+        "statement": "If Alice or Bob accepts a request to provide credential evidence, that device previously completed its own call-authentication step with the same peer for the same call.",
+        "context": "Accepting the request means processing it before asking for consent; it does not itself mean sharing a credential.",
+        "paper": {
+          "targets": [
+            "objective-3",
+            "S1"
+          ],
+          "claims": [
+            "C-ODA-2"
+          ],
+          "role": "Checks the credential-exchange ordering rule; its connection to S1 is preventing disclosure before an authenticated call."
+        },
+        "report": "protocol"
+      },
+      "oda2_present_after_ca": {
+        "category": "claim",
+        "title": "Sharing credential evidence requires prior call authentication",
+        "statement": "If Alice or Bob sends credential evidence, that device previously completed its own call-authentication step with the same peer for the same call.",
+        "context": "The device must reach the authenticated-call stage before it can share evidence.",
+        "paper": {
+          "targets": [
+            "objective-3",
+            "S1"
+          ],
+          "claims": [
+            "C-ODA-2"
+          ],
+          "role": "Checks the credential-exchange ordering rule; its connection to S1 is preventing disclosure before an authenticated call."
+        },
+        "report": "protocol"
+      },
+      "oda2_recipient_present_after_answer": {
+        "category": "claim",
+        "title": "Bob cannot share recipient-side evidence without first answering",
+        "statement": "If Bob sends credential evidence as the call recipient, Bob previously answered that same call from Alice.",
+        "context": "Merely ringing Bob’s phone cannot trigger it to send his credential evidence.",
+        "paper": {
+          "targets": [
+            "objective-3",
+            "S1"
+          ],
+          "claims": [
+            "C-ODA-2"
+          ],
+          "role": "Checks the answered-call prerequisite for sharing evidence; this checks disclosure control separately from transport confidentiality."
+        },
+        "report": "protocol"
+      },
+      "oda2_caller_present_after_peer_answer": {
+        "category": "claim",
+        "title": "Alice shares caller-side evidence only after Bob answers",
+        "statement": "If Alice sends credential evidence as the caller, Bob previously answered that same call, provided neither device’s long-term keys are ever exposed.",
+        "context": "Also protects the caller: Alice’s evidence is not sent to an unanswered destination under the stated key assumption.",
+        "paper": {
+          "targets": [
+            "objective-3",
+            "S1"
+          ],
+          "claims": [
+            "C-ODA-2"
+          ],
+          "role": "Checks the answered-call prerequisite for sharing evidence; this checks disclosure control separately from transport confidentiality."
+        },
+        "report": "protocol"
+      },
+      "oda2_present_only_with_consent": {
+        "category": "claim",
+        "title": "Sharing evidence requires consent for that peer, call, and request",
+        "statement": "If a device sends credential evidence, its user previously consented to provide evidence of the requested kind to that peer in that call.",
+        "context": "Authentication is not consent. The model requires a separate user decision before disclosure.",
+        "paper": {
+          "targets": [
+            "S1",
+            "objective-3"
+          ],
+          "claims": [
+            "C-ODA-2",
+            "C-AUTH-4"
+          ],
+          "role": "Checks the explicit-consent part of authorized credential disclosure."
+        },
+        "report": "protocol"
+      },
+      "oda2_no_harvesting": {
+        "category": "claim",
+        "title": "Bob’s answer rule combined with transport confidentiality",
+        "statement": "If Bob sends a presentation payload and the network attacker learns it, Bob must have answered that call before sending it, and either device’s long-term private keys or the shared key encrypting that payload must be exposed somewhere in the execution.",
+        "context": "Combines the proved answer-before-sharing rule with recipient-side transport confidentiality; it adds no independent requirement. The exceptions allow key exposure anywhere in the execution, including afterward.",
+        "paper": {
+          "targets": [
+            "S1",
+            "objective-3"
+          ],
+          "claims": [
+            "C-ODA-2",
+            "C-AUTH-4"
+          ],
+          "role": "Combines the C-ODA-2 disclosure rule with transport confidentiality supporting S1; credential generation and validation are assumed external operations."
+        },
+        "report": "protocol"
+      },
+      "oda2_presentation_secret": {
+        "category": "claim",
+        "title": "Presentation payloads stay confidential during transport",
+        "statement": "If Alice or Bob sends a presentation payload, the network attacker never learns that payload, provided neither device’s long-term private keys nor the shared key encrypting it are exposed anywhere in the execution.",
+        "context": "Protects the assumed credential component’s private output, including when the attacker remembers a key stolen during another round. The proof uses secrecy of the key protecting this presentation and checks the payload’s disclosure paths. Temporary DH secrets are not exposed; credential generation and validation remain assumed.",
+        "paper": {
+          "targets": [
+            "S1",
+            "objective-3"
+          ],
+          "claims": [
+            "C-AUTH-4",
+            "C-ODA-2"
+          ],
+          "role": "Checks confidentiality of the transported presentation under the credential-interface assumptions; it does not verify the credential system or secrecy of public attribute values."
+        },
+        "report": "protocol"
+      },
+      "executable": {
+        "category": "example",
+        "title": "A recipient can consent and have their evidence displayed",
+        "statement": "There is an execution between different devices with one credential request, one presentation, and one completed exchange: Bob answers, consents after the request, sends evidence, and Alice completes the exchange and displays it. No request is declined and no long-term or shared keys are exposed.",
+        "context": "Shows one successful exchange. It does not prove that every request succeeds or that both sides’ replacement keys agree.",
+        "paper": {
+          "targets": [
+            "objective-3",
+            "S1"
+          ],
+          "claims": [
+            "C-ODA-2"
+          ],
+          "role": "Existence check: exercises the user’s choice to share or decline; it does not prove general credential security."
+        },
+        "report": "protocol"
+      },
+      "executable_declined": {
+        "category": "example",
+        "title": "A recipient can decline without sending credential evidence",
+        "statement": "There is an execution between different devices with one request, one recipient refusal, and one completed exchange: Alice requests evidence, Bob declines, and Alice completes the exchange and displays the refusal. No presentation is sent and no long-term or shared keys are exposed.",
+        "context": "Shows that declining is a supported outcome, without claiming every decline path completes or proving key agreement afterward.",
+        "paper": {
+          "targets": [
+            "objective-3",
+            "S1"
+          ],
+          "claims": [
+            "C-ODA-2"
+          ],
+          "role": "Existence check: exercises the user’s choice to share or decline; it does not prove general credential security."
+        },
+        "report": "protocol"
+      },
+      "ltk_secret": {
+        "category": "helper",
+        "title": "Credential exchanges do not themselves disclose device keys",
+        "statement": "An enrolled device’s three long-term private keys remain unknown to the attacker unless that device’s long-term keys are explicitly exposed somewhere in the execution.",
+        "context": "Supports the message-authentication assumptions used for the credential exchange.",
+        "paper": {
+          "targets": [
+            "objective-3",
+            "S1"
+          ],
+          "claims": [
+            "C-ODA-2"
+          ],
+          "role": "Supporting key-secrecy check for the authenticated credential exchange."
+        },
+        "report": "protocol"
+      },
+      "cred_sig_secret": {
+        "category": "helper",
+        "title": "The issuer’s signature on the stored credential is never handed out",
+        "statement": "The attacker never learns the issuer’s signature contained in a credential issued to a device.",
+        "context": "Checks that the ideal credential representation keeps its internal signature hidden when it supplies a presentation. This is a supporting abstraction check, not verification of an external credential implementation; credential-store theft and issuer compromise are outside the model.",
+        "paper": {
+          "targets": [
+            "S1",
+            "objective-3"
+          ],
+          "claims": [
+            "C-AUTH-4"
+          ],
+          "role": "Supporting check of the assumed credential interface; the protocol’s obligations are disclosure control and transport confidentiality."
+        },
+        "report": "protocol"
+      },
+      "callst_only_after_ca": {
+        "category": "helper",
+        "title": "The credential-exchange stage has an authentication step behind it",
+        "statement": "Whenever a device records that it is at the credential-exchange stage, it completed its own authentication step for the same peer and call either earlier or in that same step.",
+        "context": "Connects the device’s internal stage to an actual authentication event, including after later credential rounds.",
+        "paper": {
+          "targets": [
+            "objective-3",
+            "S1"
+          ],
+          "claims": [
+            "C-ODA-2"
+          ],
+          "role": "Supporting check connecting the credential-exchange stage to authentication and the recipient’s answer."
+        },
+        "report": "protocol"
+      },
+      "ca_caller_requires_answer": {
+        "category": "helper",
+        "title": "Alice’s authentication completion follows Bob’s answer",
+        "statement": "If Alice completes the shortened call-authentication exchange, Bob previously answered that call, provided neither device’s long-term keys are ever exposed.",
+        "context": "Connects the caller’s permission to proceed with credentials to the recipient’s decision to answer.",
+        "paper": {
+          "targets": [
+            "objective-3",
+            "S1"
+          ],
+          "claims": [
+            "C-ODA-2"
+          ],
+          "role": "Supporting check connecting the credential-exchange stage to authentication and the recipient’s answer."
+        },
+        "report": "protocol"
+      },
+      "dh_exponents_secret": {
+        "category": "helper",
+        "title": "Temporary DH secrets are not disclosed by the exchanges",
+        "statement": "The attacker never learns a temporary private DH exponent generated or used by an honest device in call authentication or credential exchange.",
+        "context": "Devices discard these temporary secrets after use. The modeled compromise events reveal shared keys or long-term keys, not temporary DH secrets.",
+        "paper": {
+          "targets": [
+            "S5"
+          ],
+          "claims": [
+            "C-AUTH-3"
+          ],
+          "role": "Supports secrecy of each fresh contribution to a replacement shared key."
+        },
+        "report": "protocol"
+      },
+      "authenticated_share_origin": {
+        "category": "helper",
+        "title": "An accepted DH contribution comes from an honest device",
+        "statement": "Whenever a device accepts an authenticated Diffie–Hellman share, an honest device freshly generated that share earlier, unless a relevant device’s long-term keys were exposed before the acceptance.",
+        "context": "Knowing the shared encryption key alone does not let the attacker substitute its own DH contribution.",
+        "paper": {
+          "targets": [
+            "S5"
+          ],
+          "claims": [
+            "C-AUTH-3"
+          ],
+          "role": "Supports the authenticated fresh contribution needed for recovery after shared-key theft."
+        },
+        "report": "protocol"
+      },
+      "dh_shared_secret": {
+        "category": "helper",
+        "title": "The fresh DH secret remains unknown even if shared keys are stolen",
+        "statement": "Whenever a device computes the Diffie–Hellman secret of an exchange, the attacker never learns it, unless a relevant device’s long-term keys were exposed before that computation.",
+        "context": "The attacker may know the encrypted messages’ shared keys and therefore see the public DH contributions. The temporary private exponents remain unavailable.",
+        "paper": {
+          "targets": [
+            "S5"
+          ],
+          "claims": [
+            "C-AUTH-3"
+          ],
+          "role": "Establishes the secret input that prevents a stolen shared key from revealing the next key."
+        },
+        "report": "protocol"
+      },
+      "derived_key_secret": {
+        "category": "claim",
+        "title": "Stealing the current shared key does not reveal its replacement",
+        "statement": "Whenever a device derives a key after call authentication or a credential exchange, the attacker never learns that key, provided that exact key is never exposed and neither relevant device’s long-term keys were exposed before the derivation.",
+        "context": "Other shared keys may be stolen while current and remembered after deletion, and long-term keys may be exposed after the derivation. Each update includes a fresh authenticated DH secret whose private exponents are not exposed. This is secrecy of the replacement, not a guarantee that an attacker allows the exchange to finish.",
+        "paper": {
+          "targets": [
+            "S5"
+          ],
+          "claims": [
+            "C-AUTH-3"
+          ],
+          "role": "Checks secrecy of successive keys, recovery after shared-key exposure, and forward secrecy against later long-term-key exposure in the ODA component model."
+        },
+        "report": "protocol"
+      },
+      "presentation_key_origin": {
+        "category": "helper",
+        "title": "Every presentation uses a key produced by an authenticated exchange",
+        "statement": "Whenever a device sends a presentation, it previously derived its protecting key through call authentication or a credential update with the same peer.",
+        "context": "Connects the transport encryption key to the key-secrecy theorem, including after repeated credential rounds.",
+        "paper": {
+          "targets": [
+            "S1",
+            "S5"
+          ],
+          "claims": [
+            "C-ODA-2",
+            "C-AUTH-3"
+          ],
+          "role": "Connects secrecy of derived keys to confidentiality of transported presentations."
+        },
+        "report": "protocol"
+      },
+      "executable_after_state_exposure": {
+        "category": "example",
+        "title": "A credential exchange can complete after its current key is stolen",
+        "statement": "There is an execution between distinct devices in which Bob answers, the attacker steals Bob’s post-authentication shared key before the credential request, Bob consents and sends a presentation, and Alice completes the exchange and displays it. No long-term keys are exposed.",
+        "context": "Shows that shared-key theft does not prevent the model from making progress. This presentation is encrypted under the stolen key and is not promised secrecy; the replacement-key theorem separately protects the next key when it remains unexposed.",
+        "paper": {
+          "targets": [
+            "S5",
+            "objective-3"
+          ],
+          "claims": [
+            "C-AUTH-3",
+            "C-ODA-2"
+          ],
+          "role": "Existence check: makes the permitted shared-key exposure scenario concrete without claiming confidentiality for the exposed round."
+        },
+        "report": "protocol"
+      },
+      "ltk_secret_ordered": {
+        "category": "helper",
+        "title": "Signing keys are known only after the device is compromised",
+        "statement": "Whenever the attacker knows a device’s message-signing key, that device’s long-term keys were exposed earlier.",
+        "context": "Orders long-term-key exposure before its consequences, which the forward-secrecy forms of the key-secrecy checks need.",
+        "paper": {
+          "targets": [
+            "S5"
+          ],
+          "claims": [
+            "C-AUTH-3"
+          ],
+          "role": "Supporting check for the forward-secrecy statements."
+        },
+        "report": "protocol"
+      },
+      "icv_request_authentic": {
+        "category": "claim",
+        "title": "An accepted credential request came from the paired requester for this call",
+        "statement": "Whenever a prover accepts a credential request for a call and policy, the paired requester sent that request for the same call and policy earlier, unless a relevant device’s long-term keys are exposed.",
+        "context": "Authenticates the credential request to the peer whose key was stored at pairing, for the current call.",
+        "paper": {
+          "targets": [
+            "objective-3",
+            "S1"
+          ],
+          "claims": [
+            "C-ODA-1"
+          ],
+          "role": "Checks authentication of credential requests."
+        },
+        "report": "protocol"
+      },
+      "icv_display_authentic": {
+        "category": "claim",
+        "title": "A displayed presentation was sent by the paired prover for this call",
+        "statement": "Whenever a requester displays a presentation for a call and policy, the paired prover sent that presentation for the same call and policy earlier, unless a relevant device’s long-term keys are exposed.",
+        "context": "Together with transport confidentiality, this ties what the requester sees to what its authenticated peer actually presented.",
+        "paper": {
+          "targets": [
+            "objective-3",
+            "S1"
+          ],
+          "claims": [
+            "C-ODA-1"
+          ],
+          "role": "Checks authentication of credential responses."
+        },
+        "report": "protocol"
+      },
+      "icv_key_agreement": {
+        "category": "claim",
+        "title": "Both parties compute the same replacement key after a credential round",
+        "statement": "Whenever the requester derives its replacement key after a credential round, the prover already derived the same key for the same call, even if the current shared key was exposed, unless a relevant device’s long-term keys are exposed.",
+        "context": "Key agreement for the credential exchange, matching the call-authentication agreement result; a declined claim does not desynchronize the parties.",
+        "paper": {
+          "targets": [
+            "objective-3",
+            "S5"
+          ],
+          "claims": [
+            "C-ODA-1"
+          ],
+          "role": "Checks agreement on credential-round replacement keys despite shared-key exposure."
+        },
+        "report": "protocol"
+      },
+      "executable_caller_prover": {
+        "category": "example",
+        "title": "The caller can present a credential to the recipient",
+        "statement": "There is an execution in which, after the recipient answers, the recipient requests a credential, the caller consents and presents it, and the recipient displays it, without any key exposure.",
+        "context": "Shows that the caller-as-prover statements are not vacuous.",
+        "paper": {
+          "targets": [
+            "objective-3"
+          ],
+          "claims": [
+            "C-ODA-1"
+          ],
+          "role": "Executability of the caller-as-prover credential flow."
+        },
+        "report": "protocol"
+      },
+      "executable_two_rounds": {
+        "category": "example",
+        "title": "Two credential rounds can run in one call",
+        "statement": "There is an execution with two consecutive credential rounds on one call, the second running under the replacement key of the first, without any key exposure.",
+        "context": "Shows that repeated rounds, which the security statements quantify over, are reachable.",
+        "paper": {
+          "targets": [
+            "objective-3"
+          ],
+          "claims": [
+            "C-ODA-1"
+          ],
+          "role": "Executability of repeated credential rounds."
+        },
+        "report": "protocol"
+      },
+      "deniability_witness_icv_request": {
+        "category": "example",
+        "title": "A prover’s device can accept a credential request the requester never sent",
+        "statement": "There is an execution in which a prover accepts a credential request for a call and policy although no requester ever sent one, while the attacker uses only the prover’s long-term keys and shared state.",
+        "context": "The attacker stands in for the prover and forges the request with the prover’s receiver key. The prover’s own presentation cannot be forged this way, since it carries a credential proof that needs the issuer’s key; an identifying credential is deliberately not deniable.",
+        "paper": {
+          "targets": [
+            "S3"
+          ],
+          "claims": [
+            "C-AUTH-6"
+          ],
+          "role": "Forgeability witness for deniability: shows the transcript is not attributable to the peer. It does not establish indistinguishability of genuine and fabricated transcripts."
+        },
+        "report": "protocol"
+      }
+    }
+  },
+  "julep_ratchet_regression": {
+    "title": "Key-derivation comparison checks",
+    "context": [
+      "This focused model compares key derivation from ciphertext bytes with key derivation from authenticated message contents on the same exchange. A holder of the current shared key can re-encrypt unchanged authenticated content using different randomness, changing the ciphertext bytes.",
+      "The protocol derives its next key from authenticated contents and their authentication values. The ciphertext-based calculation is included as a test variant. Device private keys remain secret in this experiment. The full call-authentication results appear in the current-protocol report."
+    ],
+    "lemmas": {
+      "corrected_agreement": {
+        "category": "claim",
+        "title": "Key derivation from authenticated contents gives matching keys",
+        "statement": "Whenever Alice finishes using authenticated contents to derive the next key, Bob previously calculated that same next key from the same starting shared key, even if the attacker learns the starting shared key.",
+        "context": "Checks agreement in this focused experiment with device private keys kept secret. The full authentication model checks agreement with the complete call messages.",
+        "paper": {
+          "targets": [
+            "S5",
+            "objective-1"
+          ],
+          "claims": [
+            "C-AUTH-2"
+          ],
+          "role": "Focused check of key-update agreement, supporting the refresh used by S5; it does not prove recovery of secrecy."
+        },
+        "report": "regression"
+      },
+      "legacy_agreement_expected_falsified": {
+        "category": "counterexample",
+        "title": "Test variant: key derivation from ciphertext bytes gives matching keys",
+        "statement": "Whenever Alice finishes using ciphertext bytes to derive the next key, Bob previously calculated the same next key from the same starting shared key, even if that starting shared key is exposed.",
+        "context": "The test seeks an exchange in which re-encryption changes the bytes used by one side and the resulting keys differ. The protocol’s key calculation uses authenticated contents.",
+        "paper": {
+          "targets": [
+            "S5",
+            "objective-1"
+          ],
+          "claims": [
+            "C-AUTH-2"
+          ],
+          "role": "Tests the ciphertext-based variant under state exposure; disagreement demonstrates a key-update defect, not disclosure of the next key."
+        },
+        "report": "regression"
+      },
+      "executable_reencryption": {
+        "category": "example",
+        "title": "The same exchange distinguishes the two key calculations",
+        "statement": "There is an execution where the starting shared key leaks before Alice finishes, Bob finishes before Alice, ciphertext-based key derivation gives them different next keys, and derivation from authenticated contents gives them the same next key.",
+        "context": "Demonstrates the different outcomes of both calculations on the same exchange.",
+        "paper": {
+          "targets": [
+            "S5",
+            "objective-1"
+          ],
+          "claims": [
+            "C-AUTH-2"
+          ],
+          "role": "Existence check: compares ciphertext-based and authenticated-content key agreement; it does not establish S5."
+        },
+        "report": "regression"
+      },
+      "private_keys": {
+        "category": "helper",
+        "title": "The focused attack does not rely on stealing device private keys",
+        "statement": "The attacker never learns either private device key created for the focused exchange.",
+        "context": "Keeps the experiment about exposure of the shared exchange key, rather than exposure of the keys that authenticate the devices.",
+        "paper": {
+          "targets": [
+            "S5",
+            "objective-1"
+          ],
+          "claims": [
+            "C-AUTH-2"
+          ],
+          "role": "Supporting check that the key-update experiment isolates shared-key exposure while device keys remain private."
+        },
+        "report": "regression"
+      }
+    }
+  }
+}

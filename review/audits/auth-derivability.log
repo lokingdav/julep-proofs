@@ -1,0 +1,21 @@
+maude tool: 'maude'
+ checking version: 3.5.1. OK.
+ checking installation: OK.
+[Theory JulepAuth] Theory loaded
+[Theory JulepAuth] Theory translated
+[Theory JulepAuth] Derivation checks started
+[Open Chains] Too many chain constraints, stopping precomputation. Open Chains limits (can be changed with -c=): 10
+[Open Chains] Too many chain constraints, stopping precomputation. Open Chains limits (can be changed with -c=): 10
+[Theory JulepAuth] Derivation checks ended
+[Theory JulepAuth] Theory closed
+quit-on-warning mode selected - aborting on wellformedness errors.
+
+WARNING: the following wellformedness checks failed!
+
+Derivation Checks
+=================
+
+  Derivation checks timed out.
+  Use --derivcheck-timeout=INT to configure timeout.
+  Set to 0 to deactivate for no timeout.
+

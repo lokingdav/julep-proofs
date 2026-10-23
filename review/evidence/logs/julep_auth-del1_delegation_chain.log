@@ -1,0 +1,1314 @@
+maude tool: 'maude'
+ checking version: 3.5.1. OK.
+ checking installation: OK.
+[Theory JulepAuth] Theory loaded
+[Theory JulepAuth] Theory translated
+[Theory JulepAuth] Theory closed
+[Saturating Sources] Step 1 (Max 5)
+[Open Chains] Too many chain constraints, stopping precomputation. Open Chains limits (can be changed with -c=): 10
+[Saturating Sources] Step 2 (Max 5)
+[Saturating Sources] Step 3 (Max 5)
+[Saturating Sources] Done
+theory JulepAuth
+
+begin
+
+// Function signature and definition of the equational theory E
+
+builtins: diffie-hellman
+functions: adec/2, aead/4, aead_nonce/1, aead_open/3, aenc/2, fst/1, h/1,
+           kdf/1, pair/2, pk/1, sdec/2, senc/2, sign/2, snd/1
+equations:
+    adec(aenc(x.1, pk(x.2)), x.2) = x.1,
+    aead_nonce(aead(m, k, r, ad)) = r,
+    aead_open(aead(m, k, r, ad), k, ad) = m,
+    fst(<x.1, x.2>) = x.1,
+    sdec(senc(x.1, x.2), x.2) = x.1,
+    snd(<x.1, x.2>) = x.2
+
+heuristic: S
+
+restriction OnlyOnce:
+  "∀ x #i #j. ((OnlyOnce( x ) @ #i) ∧ (OnlyOnce( x ) @ #j)) ⇒ (#i = #j)"
+  // safety formula
+
+  /*
+  expanded formula:
+  "∀ x #i #j. ((OnlyOnce( x ) @ #i) ∧ (OnlyOnce( x ) @ #j)) ⇒ (#i = #j)"
+  */
+
+rule (modulo E) ES_Init:
+   [ Fr( ~skES ) ]
+  --[ OnlyOnce( 'ES' ) ]->
+   [ !ES( ~skES ), Out( pk(~skES) ) ]
+
+  /* has exactly the trivial AC variant */
+
+rule (modulo E) Au_Init:
+   [ Fr( ~skAu ) ]
+  --[ OnlyOnce( 'Au' ) ]->
+   [ !Au( pk(~skAu) ), Out( pk(~skAu) ) ]
+
+  /* has exactly the trivial AC variant */
+
+rule (modulo E) Enroll:
+   [ !ES( ~skES )[no_precomp], Fr( ~ska ), Fr( ~skb ), Fr( ~skc ), Fr( ~id )
+   ]
+  --[
+  Enrolled( $tn, <pk(~ska), pk(~skb), pk(~skc)>, ~id ),
+  AmfKey( <pk(~ska), pk(~skb), pk(~skc)>, ~ska ),
+  DlgKey( <pk(~ska), pk(~skb), pk(~skc)>, ~skb )
+  ]->
+   [
+   !Ltk( $tn, <pk(~ska), pk(~skb), pk(~skc)>, ~ska, ~skb, ~skc ),
+   !Etk( $tn, <pk(~ska), pk(~skb), pk(~skc)>, ~id,
+         <$tn, <pk(~ska), pk(~skb), pk(~skc)>, 'ex', 
+          h(<'hid', ~id, pk(~ska), pk(~skb), pk(~skc)>), 
+          sign(<'etk', $tn, <pk(~ska), pk(~skb), pk(~skc)>, 'ex', 
+                h(<'hid', ~id, pk(~ska), pk(~skb), pk(~skc)>)>,
+               ~skES)
+         >
+   ),
+   !Token( $tn, <pk(~ska), pk(~skb), pk(~skc)>,
+           h(<'hid', ~id, pk(~ska), pk(~skb), pk(~skc)>),
+           sign(<'etk', $tn, <pk(~ska), pk(~skb), pk(~skc)>, 'ex', 
+                 h(<'hid', ~id, pk(~ska), pk(~skb), pk(~skc)>)>,
+                ~skES)
+   ),
+   Out( <$tn, <pk(~ska), pk(~skb), pk(~skc)>, 'ex', 
+         h(<'hid', ~id, pk(~ska), pk(~skb), pk(~skc)>), 
+         sign(<'etk', $tn, <pk(~ska), pk(~skb), pk(~skc)>, 'ex', 
+               h(<'hid', ~id, pk(~ska), pk(~skb), pk(~skc)>)>,
+              ~skES)
+        >
+   )
+   ]
+
+  /* has exactly the trivial AC variant */
+
+rule (modulo E) Delegate:
+   [
+   !Ltk( $src, <pk(~skaO), pk(~skbO), pk(~skcO)>, ~skaO, ~skbO, ~skcO
+   )[no_precomp],
+   !Etk( $src, <pk(~skaO), pk(~skbO), pk(~skcO)>, ~idO, etkO )[no_precomp],
+   !Etk( $tnD, ipkD, ~idD, etkD )[no_precomp]
+   ]
+  --[ Delegated( $src, <pk(~skaO), pk(~skbO), pk(~skcO)>, ipkD ) ]->
+   [
+   !Dtk( $src, <pk(~skaO), pk(~skbO), pk(~skcO)>, ipkD,
+         <~idO, etkO, 'exD', ipkD, sign(<'dlg', ipkD, 'exD', $src, 'orig'>, ~skbO)
+         >
+   ),
+   Out( <etkO, 'exD', ipkD, sign(<'dlg', ipkD, 'exD', $src, 'orig'>, ~skbO)>
+   )
+   ]
+
+  /* has exactly the trivial AC variant */
+
+rule (modulo E) Reveal_Ltk:
+   [ !Ltk( $tn, ipk, ~ska, ~skb, ~skc )[no_precomp] ]
+  --[ Reveal( ipk ) ]->
+   [ Out( <~ska, ~skb, ~skc> ) ]
+
+  /* has exactly the trivial AC variant */
+
+rule (modulo E) Reveal_Device_Id:
+   [ !Etk( $tn, ipk, ~id, etk )[no_precomp] ]
+  --[ RevealId( ipk ) ]->
+   [ Out( ~id ) ]
+
+  /* has exactly the trivial AC variant */
+
+rule (modulo E) Reveal_Dtk:
+   [ !Dtk( $src, ipkO, ipkD, dtk )[no_precomp] ]
+  --[ RevealDtk( ipkO, ipkD ) ]->
+   [ Out( dtk ) ]
+
+  /* has exactly the trivial AC variant */
+
+rule (modulo E) Adversary_Frank:
+   [ In( <m, sk, ipkR, pkAu> )[no_precomp], Fr( ~sig ) ]
+  -->
+   [ !Amf( ~sig, m, pk(sk), ipkR, pkAu ), Out( ~sig ) ]
+
+  /* has exactly the trivial AC variant */
+
+rule (modulo E) Adversary_Receiver_Forge:
+   [ In( <m, vkaS, skR, vkbR, pkcR, pkAu> )[no_precomp], Fr( ~sig ) ]
+  -->
+   [ !Amf( ~sig, m, vkaS, <pk(skR), vkbR, pkcR>, pkAu ), Out( ~sig ) ]
+
+  /* has exactly the trivial AC variant */
+
+rule (modulo E) Setup_State_direct:
+   [
+   !Etk( $src, ipkA, ~idA, etkA )[no_precomp],
+   !Etk( $dst, ipkB, ~idB, etkB )[no_precomp], Fr( ~K )
+   ]
+  --[ SetupState( ~K, $src, $dst, ipkA, ipkB ) ]->
+   [
+   StA( $src, $dst, ipkA, ipkB, ~K ), StB( $dst, $src, ipkB, ipkA, ~K ),
+   !SharedK( ~K )
+   ]
+
+  /* has exactly the trivial AC variant */
+
+rule (modulo E) Setup_State_delegated:
+   [
+   !Dtk( $src, ipkO, ipkD, dtk )[no_precomp],
+   !Etk( $dst, ipkB, ~idB, etkB )[no_precomp], Fr( ~K )
+   ]
+  --[ SetupState( ~K, $src, $dst, ipkD, ipkB ) ]->
+   [
+   StA( $src, $dst, ipkD, ipkB, ~K ), StB( $dst, $src, ipkB, ipkD, ~K ),
+   !SharedK( ~K )
+   ]
+
+  /* has exactly the trivial AC variant */
+
+rule (modulo E) Reveal_State:
+   [ !SharedK( ~K )[no_precomp] ] --[ RevealState( ~K ) ]-> [ Out( ~K ) ]
+
+  /* has exactly the trivial AC variant */
+
+rule (modulo E) CA_A1_direct:
+   [
+   StA( $src, $dst, ipkA, ipkB, ~K )[no_precomp],
+   !Etk( $src, ipkA, ~idA, <$src, ipkA, 'ex', hidA, esigA> )[no_precomp],
+   !Ltk( $src, ipkA, ~ska, ~skb, ~skc )[no_precomp],
+   !Au( pkAu )[no_precomp], Fr( ~a ), Fr( ~sigA ), Fr( ~rhoA )
+   ]
+  --[
+  IdentitySent( 'caller', ipkA, ~idA, ~K ),
+  FrankedRequest( $src, $dst, $ts, ipkA, ipkB,
+                  <'1', h(<'ratchet-context', ~K, h(<'idxca', ~K, $src, $dst, $ts>)>), 
+                   <$src, $dst, $ts>, $ts, 'g'^~a, $ccx, 'nodlg', 
+                   <$src, ipkA, 'ex', hidA, esigA>, ~idA>
+  ),
+  DhExp( ~a ),
+  Franked( <'1', 
+            h(<'ratchet-context', ~K, h(<'idxca', ~K, $src, $dst, $ts>)>), 
+            <$src, $dst, $ts>, $ts, 'g'^~a, $ccx, 'nodlg', 
+            <$src, ipkA, 'ex', hidA, esigA>, ~idA>,
+           ~ska, ipkB, pkAu
+  )
+  ]->
+   [
+   StA1( $src, $dst, $ts, ipkA, ipkB, ~K, ~a,
+         h(<'idxca', ~K, $src, $dst, $ts>),
+         aead(<
+               <'1', h(<'ratchet-context', ~K, h(<'idxca', ~K, $src, $dst, $ts>)>), 
+                <$src, $dst, $ts>, $ts, 'g'^~a, $ccx, 'nodlg', 
+                <$src, ipkA, 'ex', hidA, esigA>, ~idA>, 
+               ~sigA>,
+              ~K, ~rhoA, <h(<'idxca', ~K, $src, $dst, $ts>), '1', 'caller'>),
+         <'1', h(<'ratchet-context', ~K, h(<'idxca', ~K, $src, $dst, $ts>)>), 
+          <$src, $dst, $ts>, $ts, 'g'^~a, $ccx, 'nodlg', 
+          <$src, ipkA, 'ex', hidA, esigA>, ~idA>,
+         ~sigA
+   ),
+   !Amf( ~sigA,
+         <'1', h(<'ratchet-context', ~K, h(<'idxca', ~K, $src, $dst, $ts>)>), 
+          <$src, $dst, $ts>, $ts, 'g'^~a, $ccx, 'nodlg', 
+          <$src, ipkA, 'ex', hidA, esigA>, ~idA>,
+         pk(~ska), ipkB, pkAu
+   ),
+   Out( <h(<'idxca', ~K, $src, $dst, $ts>), 
+         aead(<
+               <'1', h(<'ratchet-context', ~K, h(<'idxca', ~K, $src, $dst, $ts>)>), 
+                <$src, $dst, $ts>, $ts, 'g'^~a, $ccx, 'nodlg', 
+                <$src, ipkA, 'ex', hidA, esigA>, ~idA>, 
+               ~sigA>,
+              ~K, ~rhoA, <h(<'idxca', ~K, $src, $dst, $ts>), '1', 'caller'>)
+        >
+   )
+   ]
+
+  /* has exactly the trivial AC variant */
+
+rule (modulo E) CA_A1_delegated:
+   [
+   StA( $src, $dst, ipkD, ipkB, ~K )[no_precomp],
+   !Dtk( $src, ipkO, ipkD, <~idO, etkO, 'exD', ipkD, dsig> )[no_precomp],
+   !Etk( $src, ipkO, ~idO, etkO )[no_precomp],
+   !Ltk( $tnD, ipkD, ~skaD, ~skbD, ~skcD )[no_precomp],
+   !Au( pkAu )[no_precomp], Fr( ~a ), Fr( ~sigA ), Fr( ~rhoA )
+   ]
+  --[
+  IdentitySent( 'caller', ipkO, ~idO, ~K ),
+  FrankedRequest( $src, $dst, $ts, ipkD, ipkB,
+                  <'1', h(<'ratchet-context', ~K, h(<'idxca', ~K, $src, $dst, $ts>)>), 
+                   <$src, $dst, $ts>, $ts, 'g'^~a, $ccx, ~idO, etkO, 'exD', ipkD, dsig>
+  ),
+  DhExp( ~a ),
+  Franked( <'1', 
+            h(<'ratchet-context', ~K, h(<'idxca', ~K, $src, $dst, $ts>)>), 
+            <$src, $dst, $ts>, $ts, 'g'^~a, $ccx, ~idO, etkO, 'exD', ipkD, dsig>,
+           ~skaD, ipkB, pkAu
+  ),
+  FrankedRequestDelegated( $src, $dst, ipkO, ipkD )
+  ]->
+   [
+   StA1( $src, $dst, $ts, ipkD, ipkB, ~K, ~a,
+         h(<'idxca', ~K, $src, $dst, $ts>),
+         aead(<
+               <'1', h(<'ratchet-context', ~K, h(<'idxca', ~K, $src, $dst, $ts>)>), 
+                <$src, $dst, $ts>, $ts, 'g'^~a, $ccx, ~idO, etkO, 'exD', ipkD, dsig>, 
+               ~sigA>,
+              ~K, ~rhoA, <h(<'idxca', ~K, $src, $dst, $ts>), '1', 'caller'>),
+         <'1', h(<'ratchet-context', ~K, h(<'idxca', ~K, $src, $dst, $ts>)>), 
+          <$src, $dst, $ts>, $ts, 'g'^~a, $ccx, ~idO, etkO, 'exD', ipkD, dsig>,
+         ~sigA
+   ),
+   !Amf( ~sigA,
+         <'1', h(<'ratchet-context', ~K, h(<'idxca', ~K, $src, $dst, $ts>)>), 
+          <$src, $dst, $ts>, $ts, 'g'^~a, $ccx, ~idO, etkO, 'exD', ipkD, dsig>,
+         pk(~skaD), ipkB, pkAu
+   ),
+   Out( <h(<'idxca', ~K, $src, $dst, $ts>), 
+         aead(<
+               <'1', h(<'ratchet-context', ~K, h(<'idxca', ~K, $src, $dst, $ts>)>), 
+                <$src, $dst, $ts>, $ts, 'g'^~a, $ccx, ~idO, etkO, 'exD', ipkD, dsig>, 
+               ~sigA>,
+              ~K, ~rhoA, <h(<'idxca', ~K, $src, $dst, $ts>), '1', 'caller'>)
+        >
+   )
+   ]
+
+  /* has exactly the trivial AC variant */
+
+rule (modulo E) CA_B_verify_direct:
+   [
+   StB( $dst, $src, ipkB, <pk(skaA), vkbA, pkcA>, ~K )[no_precomp],
+   !Token( $src, <pk(skaA), vkbA, pkcA>,
+           h(<'hid', idA, pk(skaA), vkbA, pkcA>), esigA
+   )[no_precomp],
+   !Au( pkAu )[no_precomp],
+   !Amf( sigA,
+         <'1', h(<'ratchet-context', ~K, h(<'idxca', ~K, $src, $dst, $ts>)>), 
+          <$src, $dst, $ts>, $ts, A, ccx, 'nodlg', 
+          <$src, <pk(skaA), vkbA, pkcA>, 'ex', 
+           h(<'hid', idA, pk(skaA), vkbA, pkcA>), esigA>, 
+          idA>,
+         pk(skaA), ipkB, pkAu
+   )[no_precomp],
+   In( <h(<'idxca', ~K, $src, $dst, $ts>), 
+        aead(<
+              <'1', h(<'ratchet-context', ~K, h(<'idxca', ~K, $src, $dst, $ts>)>), 
+               <$src, $dst, $ts>, $ts, A, ccx, 'nodlg', 
+               <$src, <pk(skaA), vkbA, pkcA>, 'ex', 
+                h(<'hid', idA, pk(skaA), vkbA, pkcA>), esigA>, 
+               idA>, 
+              sigA>,
+             ~K, rhoA, <h(<'idxca', ~K, $src, $dst, $ts>), '1', 'caller'>)
+       >
+   )[no_precomp]
+   ]
+  --[
+  DisplayCaller( $dst, $src, $ts, idA, <pk(skaA), vkbA, pkcA>, ipkB,
+                 <'1', h(<'ratchet-context', ~K, h(<'idxca', ~K, $src, $dst, $ts>)>), 
+                  <$src, $dst, $ts>, $ts, A, ccx, 'nodlg', 
+                  <$src, <pk(skaA), vkbA, pkcA>, 'ex', 
+                   h(<'hid', idA, pk(skaA), vkbA, pkcA>), esigA>, 
+                  idA>
+  )
+  ]->
+   [
+   StB3( $dst, $src, $ts, ipkB, <pk(skaA), vkbA, pkcA>, ~K,
+         h(<'idxca', ~K, $src, $dst, $ts>),
+         aead(<
+               <'1', h(<'ratchet-context', ~K, h(<'idxca', ~K, $src, $dst, $ts>)>), 
+                <$src, $dst, $ts>, $ts, A, ccx, 'nodlg', 
+                <$src, <pk(skaA), vkbA, pkcA>, 'ex', 
+                 h(<'hid', idA, pk(skaA), vkbA, pkcA>), esigA>, 
+                idA>, 
+               sigA>,
+              ~K, rhoA, <h(<'idxca', ~K, $src, $dst, $ts>), '1', 'caller'>),
+         <'1', h(<'ratchet-context', ~K, h(<'idxca', ~K, $src, $dst, $ts>)>), 
+          <$src, $dst, $ts>, $ts, A, ccx, 'nodlg', 
+          <$src, <pk(skaA), vkbA, pkcA>, 'ex', 
+           h(<'hid', idA, pk(skaA), vkbA, pkcA>), esigA>, 
+          idA>,
+         sigA, A
+   )
+   ]
+
+  /* has exactly the trivial AC variant */
+
+rule (modulo E) CA_B_verify_delegated:
+   [
+   StB( $dst, $src, ipkB, <pk(skaD), vkbD, pkcD>, ~K )[no_precomp],
+   !Token( $src, <vkaO, pk(skbO), pkcO>,
+           h(<'hid', idO, vkaO, pk(skbO), pkcO>), esigO
+   )[no_precomp],
+   !Au( pkAu )[no_precomp],
+   !Amf( sigA,
+         <'1', h(<'ratchet-context', ~K, h(<'idxca', ~K, $src, $dst, $ts>)>), 
+          <$src, $dst, $ts>, $ts, A, ccx, idO, 
+          <$src, <vkaO, pk(skbO), pkcO>, 'ex', 
+           h(<'hid', idO, vkaO, pk(skbO), pkcO>), esigO>, 
+          'exD', <pk(skaD), vkbD, pkcD>, 
+          sign(<'dlg', <pk(skaD), vkbD, pkcD>, 'exD', $src, 'orig'>, skbO)>,
+         pk(skaD), ipkB, pkAu
+   )[no_precomp],
+   In( <h(<'idxca', ~K, $src, $dst, $ts>), 
+        aead(<
+              <'1', h(<'ratchet-context', ~K, h(<'idxca', ~K, $src, $dst, $ts>)>), 
+               <$src, $dst, $ts>, $ts, A, ccx, idO, 
+               <$src, <vkaO, pk(skbO), pkcO>, 'ex', 
+                h(<'hid', idO, vkaO, pk(skbO), pkcO>), esigO>, 
+               'exD', <pk(skaD), vkbD, pkcD>, 
+               sign(<'dlg', <pk(skaD), vkbD, pkcD>, 'exD', $src, 'orig'>, skbO)>, 
+              sigA>,
+             ~K, rhoA, <h(<'idxca', ~K, $src, $dst, $ts>), '1', 'caller'>)
+       >
+   )[no_precomp]
+   ]
+  --[
+  DisplayCaller( $dst, $src, $ts, idO, <pk(skaD), vkbD, pkcD>, ipkB,
+                 <'1', h(<'ratchet-context', ~K, h(<'idxca', ~K, $src, $dst, $ts>)>), 
+                  <$src, $dst, $ts>, $ts, A, ccx, idO, 
+                  <$src, <vkaO, pk(skbO), pkcO>, 'ex', 
+                   h(<'hid', idO, vkaO, pk(skbO), pkcO>), esigO>, 
+                  'exD', <pk(skaD), vkbD, pkcD>, 
+                  sign(<'dlg', <pk(skaD), vkbD, pkcD>, 'exD', $src, 'orig'>, skbO)>
+  ),
+  AcceptedDelegation( $dst, $src, <vkaO, pk(skbO), pkcO>,
+                      <pk(skaD), vkbD, pkcD>
+  )
+  ]->
+   [
+   StB3( $dst, $src, $ts, ipkB, <pk(skaD), vkbD, pkcD>, ~K,
+         h(<'idxca', ~K, $src, $dst, $ts>),
+         aead(<
+               <'1', h(<'ratchet-context', ~K, h(<'idxca', ~K, $src, $dst, $ts>)>), 
+                <$src, $dst, $ts>, $ts, A, ccx, idO, 
+                <$src, <vkaO, pk(skbO), pkcO>, 'ex', 
+                 h(<'hid', idO, vkaO, pk(skbO), pkcO>), esigO>, 
+                'exD', <pk(skaD), vkbD, pkcD>, 
+                sign(<'dlg', <pk(skaD), vkbD, pkcD>, 'exD', $src, 'orig'>, skbO)>, 
+               sigA>,
+              ~K, rhoA, <h(<'idxca', ~K, $src, $dst, $ts>), '1', 'caller'>),
+         <'1', h(<'ratchet-context', ~K, h(<'idxca', ~K, $src, $dst, $ts>)>), 
+          <$src, $dst, $ts>, $ts, A, ccx, idO, 
+          <$src, <vkaO, pk(skbO), pkcO>, 'ex', 
+           h(<'hid', idO, vkaO, pk(skbO), pkcO>), esigO>, 
+          'exD', <pk(skaD), vkbD, pkcD>, 
+          sign(<'dlg', <pk(skaD), vkbD, pkcD>, 'exD', $src, 'orig'>, skbO)>,
+         sigA, A
+   )
+   ]
+
+  /* has exactly the trivial AC variant */
+
+rule (modulo E) CA_B_answer:
+   [
+   StB3( $dst, $src, $ts, ipkB, ipkAstar, ~K, idx, ctxA, mA, sigA, A
+   )[no_precomp],
+   !Etk( $dst, ipkB, ~idB, <$dst, ipkB, 'ex', hidB, esigB> )[no_precomp],
+   !Ltk( $dst, ipkB, ~skaB, ~skbB, ~skcB )[no_precomp],
+   !Au( pkAu )[no_precomp], Fr( ~b ), Fr( ~sigB ), Fr( ~rhoB )
+   ]
+  --[
+  IdentitySent( 'recipient', ipkB, ~idB, ~K ),
+  Answered( $dst, $src, ipkB, ipkAstar, h(<'nce', mA, sigA>),
+            <'2', h(<'nce', mA, sigA>), 'g'^~b, <$dst, ipkB, 'ex', hidB, esigB>, ~idB
+            >
+  ),
+  DhExp( ~b ),
+  Franked( <'2', h(<'nce', mA, sigA>), 'g'^~b, 
+            <$dst, ipkB, 'ex', hidB, esigB>, ~idB>,
+           ~skaB, ipkAstar, pkAu
+  ),
+  PersistB( $dst, $src, ipkB, ipkAstar, ~K,
+            kdf(<~K, idx, mA, sigA, 
+                 <'2', h(<'nce', mA, sigA>), 'g'^~b, <$dst, ipkB, 'ex', hidB, esigB>, ~idB
+                 >, 
+                 ~sigB, A^~b>)
+  )
+  ]->
+   [
+   StB4( $dst, $src, ipkB, ipkAstar,
+         kdf(<~K, idx, mA, sigA, 
+              <'2', h(<'nce', mA, sigA>), 'g'^~b, <$dst, ipkB, 'ex', hidB, esigB>, ~idB
+              >, 
+              ~sigB, A^~b>)
+   ),
+   !Amf( ~sigB,
+         <'2', h(<'nce', mA, sigA>), 'g'^~b, <$dst, ipkB, 'ex', hidB, esigB>, ~idB
+         >,
+         pk(~skaB), ipkAstar, pkAu
+   ),
+   Out( <idx, 
+         aead(<
+               <'2', h(<'nce', mA, sigA>), 'g'^~b, <$dst, ipkB, 'ex', hidB, esigB>, ~idB
+               >, 
+               ~sigB>,
+              ~K, ~rhoB, <idx, '2', 'recipient'>)
+        >
+   )
+   ]
+
+  /*
+  rule (modulo AC) CA_B_answer:
+     [
+     StB3( $dst, $src, $ts, ipkB, ipkAstar, ~K, idx, ctxA, mA, sigA, A
+     )[no_precomp],
+     !Etk( $dst, ipkB, ~idB, <$dst, ipkB, 'ex', hidB, esigB> )[no_precomp],
+     !Ltk( $dst, ipkB, ~skaB, ~skbB, ~skcB )[no_precomp],
+     !Au( pkAu )[no_precomp], Fr( ~b ), Fr( ~sigB ), Fr( ~rhoB )
+     ]
+    --[
+    IdentitySent( 'recipient', ipkB, ~idB, ~K ),
+    Answered( $dst, $src, ipkB, ipkAstar, h(<'nce', mA, sigA>),
+              <'2', h(<'nce', mA, sigA>), 'g'^~b, <$dst, ipkB, 'ex', hidB, esigB>, ~idB
+              >
+    ),
+    DhExp( ~b ),
+    Franked( <'2', h(<'nce', mA, sigA>), 'g'^~b, 
+              <$dst, ipkB, 'ex', hidB, esigB>, ~idB>,
+             ~skaB, ipkAstar, pkAu
+    ),
+    PersistB( $dst, $src, ipkB, ipkAstar, ~K,
+              kdf(<~K, idx, mA, sigA, 
+                   <'2', h(<'nce', mA, sigA>), 'g'^~b, <$dst, ipkB, 'ex', hidB, esigB>, ~idB
+                   >, 
+                   ~sigB, z>)
+    )
+    ]->
+     [
+     StB4( $dst, $src, ipkB, ipkAstar,
+           kdf(<~K, idx, mA, sigA, 
+                <'2', h(<'nce', mA, sigA>), 'g'^~b, <$dst, ipkB, 'ex', hidB, esigB>, ~idB
+                >, 
+                ~sigB, z>)
+     ),
+     !Amf( ~sigB,
+           <'2', h(<'nce', mA, sigA>), 'g'^~b, <$dst, ipkB, 'ex', hidB, esigB>, ~idB
+           >,
+           pk(~skaB), ipkAstar, pkAu
+     ),
+     Out( <idx, 
+           aead(<
+                 <'2', h(<'nce', mA, sigA>), 'g'^~b, <$dst, ipkB, 'ex', hidB, esigB>, ~idB
+                 >, 
+                 ~sigB>,
+                ~K, ~rhoB, <idx, '2', 'recipient'>)
+          >
+     )
+     ]
+    variants (modulo AC)
+    1. ~b    = ~b.35
+       A     = A.42
+       z     = A.42^~b.35
+    
+    2. ~b    = ~b.203
+       A     = x.399^x.400
+       z     = x.399^(~b.203*x.400)
+    
+    3. A     = DH_neutral
+       z     = DH_neutral
+  */
+
+rule (modulo E) CA_A2:
+   [
+   StA1( $src, $dst, $ts, ipkA, <pk(skaB), vkbB, pkcB>, ~K, ~a,
+         h(<'idxca', ~K, $src, $dst, $ts>), ctxA, mA, sigA
+   )[no_precomp],
+   !Token( $dst, <pk(skaB), vkbB, pkcB>,
+           h(<'hid', idB, pk(skaB), vkbB, pkcB>), esigB
+   )[no_precomp],
+   !Au( pkAu )[no_precomp],
+   !Amf( sigB,
+         <'2', h(<'nce', mA, sigA>), B, 
+          <$dst, <pk(skaB), vkbB, pkcB>, 'ex', 
+           h(<'hid', idB, pk(skaB), vkbB, pkcB>), esigB>, 
+          idB>,
+         pk(skaB), ipkA, pkAu
+   )[no_precomp],
+   In( <h(<'idxca', ~K, $src, $dst, $ts>), 
+        aead(<
+              <'2', h(<'nce', mA, sigA>), B, 
+               <$dst, <pk(skaB), vkbB, pkcB>, 'ex', 
+                h(<'hid', idB, pk(skaB), vkbB, pkcB>), esigB>, 
+               idB>, 
+              sigB>,
+             ~K, rhoB, <h(<'idxca', ~K, $src, $dst, $ts>), '2', 'recipient'>)
+       >
+   )[no_precomp]
+   ]
+  --[
+  DisplayRecipient( $src, $dst, idB, <pk(skaB), vkbB, pkcB>, ipkA,
+                    h(<'nce', mA, sigA>),
+                    <'2', h(<'nce', mA, sigA>), B, 
+                     <$dst, <pk(skaB), vkbB, pkcB>, 'ex', 
+                      h(<'hid', idB, pk(skaB), vkbB, pkcB>), esigB>, 
+                     idB>
+  ),
+  AcceptedRecipientKey( $src, $dst, <pk(skaB), vkbB, pkcB> ),
+  PersistA( $src, $dst, ipkA, <pk(skaB), vkbB, pkcB>, ~K,
+            kdf(<~K, h(<'idxca', ~K, $src, $dst, $ts>), mA, sigA, 
+                 <'2', h(<'nce', mA, sigA>), B, 
+                  <$dst, <pk(skaB), vkbB, pkcB>, 'ex', 
+                   h(<'hid', idB, pk(skaB), vkbB, pkcB>), esigB>, 
+                  idB>, 
+                 sigB, B^~a>)
+  )
+  ]->
+   [
+   StA2( $src, $dst, ipkA, <pk(skaB), vkbB, pkcB>,
+         kdf(<~K, h(<'idxca', ~K, $src, $dst, $ts>), mA, sigA, 
+              <'2', h(<'nce', mA, sigA>), B, 
+               <$dst, <pk(skaB), vkbB, pkcB>, 'ex', 
+                h(<'hid', idB, pk(skaB), vkbB, pkcB>), esigB>, 
+               idB>, 
+              sigB, B^~a>)
+   )
+   ]
+
+  /*
+  rule (modulo AC) CA_A2:
+     [
+     StA1( $src, $dst, $ts, ipkA, <pk(skaB), vkbB, pkcB>, ~K, ~a,
+           h(<'idxca', ~K, $src, $dst, $ts>), ctxA, mA, sigA
+     )[no_precomp],
+     !Token( $dst, <pk(skaB), vkbB, pkcB>,
+             h(<'hid', idB, pk(skaB), vkbB, pkcB>), esigB
+     )[no_precomp],
+     !Au( pkAu )[no_precomp],
+     !Amf( sigB,
+           <'2', h(<'nce', mA, sigA>), B, 
+            <$dst, <pk(skaB), vkbB, pkcB>, 'ex', 
+             h(<'hid', idB, pk(skaB), vkbB, pkcB>), esigB>, 
+            idB>,
+           pk(skaB), ipkA, pkAu
+     )[no_precomp],
+     In( <h(<'idxca', ~K, $src, $dst, $ts>), 
+          aead(<
+                <'2', h(<'nce', mA, sigA>), B, 
+                 <$dst, <pk(skaB), vkbB, pkcB>, 'ex', 
+                  h(<'hid', idB, pk(skaB), vkbB, pkcB>), esigB>, 
+                 idB>, 
+                sigB>,
+               ~K, rhoB, <h(<'idxca', ~K, $src, $dst, $ts>), '2', 'recipient'>)
+         >
+     )[no_precomp]
+     ]
+    --[
+    DisplayRecipient( $src, $dst, idB, <pk(skaB), vkbB, pkcB>, ipkA,
+                      h(<'nce', mA, sigA>),
+                      <'2', h(<'nce', mA, sigA>), B, 
+                       <$dst, <pk(skaB), vkbB, pkcB>, 'ex', 
+                        h(<'hid', idB, pk(skaB), vkbB, pkcB>), esigB>, 
+                       idB>
+    ),
+    AcceptedRecipientKey( $src, $dst, <pk(skaB), vkbB, pkcB> ),
+    PersistA( $src, $dst, ipkA, <pk(skaB), vkbB, pkcB>, ~K,
+              kdf(<~K, h(<'idxca', ~K, $src, $dst, $ts>), mA, sigA, 
+                   <'2', h(<'nce', mA, sigA>), B, 
+                    <$dst, <pk(skaB), vkbB, pkcB>, 'ex', 
+                     h(<'hid', idB, pk(skaB), vkbB, pkcB>), esigB>, 
+                    idB>, 
+                   sigB, z>)
+    )
+    ]->
+     [
+     StA2( $src, $dst, ipkA, <pk(skaB), vkbB, pkcB>,
+           kdf(<~K, h(<'idxca', ~K, $src, $dst, $ts>), mA, sigA, 
+                <'2', h(<'nce', mA, sigA>), B, 
+                 <$dst, <pk(skaB), vkbB, pkcB>, 'ex', 
+                  h(<'hid', idB, pk(skaB), vkbB, pkcB>), esigB>, 
+                 idB>, 
+                sigB, z>)
+     )
+     ]
+    variants (modulo AC)
+    1. ~a    = ~a.28
+       B     = B.29
+       z     = B.29^~a.28
+    
+    2. ~a    = ~a.47
+       B     = z.67^inv(~a.47)
+       z     = z.67
+    
+    3. ~a    = ~a.133
+       B     = x.259^x.260
+       z     = x.259^(~a.133*x.260)
+    
+    4. ~a    = ~a.134
+       B     = x.261^inv((~a.134*x.262))
+       z     = x.261^inv(x.262)
+    
+    5. ~a    = ~a.134
+       B     = x.261^(x.262*inv(~a.134))
+       z     = x.261^x.262
+    
+    6. ~a    = ~a.135
+       B     = x.262^(x.263*inv((~a.135*x.264)))
+       z     = x.262^(x.263*inv(x.264))
+    
+    7. B     = DH_neutral
+       z     = DH_neutral
+  */
+
+lemma amf_secret [reuse, use_induction]:
+  all-traces
+  "∀ ipk ska #i #j.
+    ((AmfKey( ipk, ska ) @ #i) ∧ (!KU( ska ) @ #j)) ⇒
+    (∃ #r. (Reveal( ipk ) @ #r) ∧ (#r < #j))"
+/*
+guarded formula characterizing all counter-examples:
+"∃ ipk ska #i #j.
+  (AmfKey( ipk, ska ) @ #i) ∧ (!KU( ska ) @ #j)
+ ∧
+  ∀ #r. (Reveal( ipk ) @ #r) ⇒ ¬(#r < #j)"
+*/
+by sorry
+
+lemma state_secret [reuse, use_induction]:
+  all-traces
+  "∀ kk src dst ipkA ipkB #i #j.
+    ((SetupState( kk, src, dst, ipkA, ipkB ) @ #i) ∧ (!KU( kk ) @ #j)) ⇒
+    (∃ #r. (RevealState( kk ) @ #r) ∧ (#r < #j))"
+/*
+guarded formula characterizing all counter-examples:
+"∃ kk src dst ipkA ipkB #i #j.
+  (SetupState( kk, src, dst, ipkA, ipkB ) @ #i) ∧ (!KU( kk ) @ #j)
+ ∧
+  ∀ #r. (RevealState( kk ) @ #r) ⇒ ¬(#r < #j)"
+*/
+by sorry
+
+lemma executable_direct:
+  exists-trace
+  "∃ src dst ts idA idB ipkA ipkB mA nce mB #i #j #k #l.
+    ((((((((((FrankedRequest( src, dst, ts, ipkA, ipkB, mA ) @ #i) ∧
+             (DisplayCaller( dst, src, ts, idA, ipkA, ipkB, mA ) @ #j)) ∧
+            (Answered( dst, src, ipkB, ipkA, nce, mB ) @ #k)) ∧
+           (DisplayRecipient( src, dst, idB, ipkB, ipkA, nce, mB ) @ #l)) ∧
+          (¬(ipkA = ipkB))) ∧
+         (#i < #j)) ∧
+        (#j < #k)) ∧
+       (#k < #l)) ∧
+      (¬(∃ x #r. Reveal( x ) @ #r))) ∧
+     (¬(∃ x #r. RevealId( x ) @ #r))) ∧
+    (¬(∃ kk #r. RevealState( kk ) @ #r))"
+/*
+guarded formula characterizing all satisfying traces:
+"∃ src dst ts idA idB ipkA ipkB mA nce mB #i #j #k #l.
+  (FrankedRequest( src, dst, ts, ipkA, ipkB, mA ) @ #i) ∧
+  (DisplayCaller( dst, src, ts, idA, ipkA, ipkB, mA ) @ #j) ∧
+  (Answered( dst, src, ipkB, ipkA, nce, mB ) @ #k) ∧
+  (DisplayRecipient( src, dst, idB, ipkB, ipkA, nce, mB ) @ #l)
+ ∧
+  (¬(ipkA = ipkB)) ∧
+  (#i < #j) ∧
+  (#j < #k) ∧
+  (#k < #l) ∧
+  (∀ x #r. (Reveal( x ) @ #r) ⇒ ⊥) ∧
+  (∀ x #r. (RevealId( x ) @ #r) ⇒ ⊥) ∧
+  (∀ kk #r. (RevealState( kk ) @ #r) ⇒ ⊥)"
+*/
+by sorry
+
+lemma executable_delegated:
+  exists-trace
+  "∃ src dst ts idO idB ipkO ipkD ipkB mA nce mB #i #j #k #l.
+    ((((((((((((FrankedRequestDelegated( src, dst, ipkO, ipkD ) @ #i) ∧
+               (DisplayCaller( dst, src, ts, idO, ipkD, ipkB, mA ) @ #j)) ∧
+              (AcceptedDelegation( dst, src, ipkO, ipkD ) @ #j)) ∧
+             (Answered( dst, src, ipkB, ipkD, nce, mB ) @ #k)) ∧
+            (DisplayRecipient( src, dst, idB, ipkB, ipkD, nce, mB ) @ #l)) ∧
+           (¬(ipkD = ipkB))) ∧
+          (¬(ipkO = ipkD))) ∧
+         (¬(ipkO = ipkB))) ∧
+        (#i < #j)) ∧
+       (#j < #k)) ∧
+      (#k < #l)) ∧
+     (¬(∃ x #r. Reveal( x ) @ #r))) ∧
+    (¬(∃ kk #r. RevealState( kk ) @ #r))"
+/*
+guarded formula characterizing all satisfying traces:
+"∃ src dst ts idO idB ipkO ipkD ipkB mA nce mB #i #j #k #l.
+  (FrankedRequestDelegated( src, dst, ipkO, ipkD ) @ #i) ∧
+  (DisplayCaller( dst, src, ts, idO, ipkD, ipkB, mA ) @ #j) ∧
+  (AcceptedDelegation( dst, src, ipkO, ipkD ) @ #j) ∧
+  (Answered( dst, src, ipkB, ipkD, nce, mB ) @ #k) ∧
+  (DisplayRecipient( src, dst, idB, ipkB, ipkD, nce, mB ) @ #l)
+ ∧
+  (¬(ipkD = ipkB)) ∧
+  (¬(ipkO = ipkD)) ∧
+  (¬(ipkO = ipkB)) ∧
+  (#i < #j) ∧
+  (#j < #k) ∧
+  (#k < #l) ∧
+  (∀ x #r. (Reveal( x ) @ #r) ⇒ ⊥) ∧
+  (∀ kk #r. (RevealState( kk ) @ #r) ⇒ ⊥)"
+*/
+by sorry
+
+lemma auth1_caller_authentication:
+  all-traces
+  "∀ dst src ts id ipkS ipkB mA #i.
+    (DisplayCaller( dst, src, ts, id, ipkS, ipkB, mA ) @ #i) ⇒
+    ((((∃ #j.
+         (FrankedRequest( src, dst, ts, ipkS, ipkB, mA ) @ #j) ∧ (#j < #i)) ∧
+       (∃ ipkH #k. (Enrolled( src, ipkH, id ) @ #k) ∧ (#k < #i))) ∨
+      (∃ #r. Reveal( ipkS ) @ #r)) ∨
+     (∃ #r. Reveal( ipkB ) @ #r))"
+/*
+guarded formula characterizing all counter-examples:
+"∃ dst src ts id ipkS ipkB mA #i.
+  (DisplayCaller( dst, src, ts, id, ipkS, ipkB, mA ) @ #i)
+ ∧
+  (((∀ #j.
+      (FrankedRequest( src, dst, ts, ipkS, ipkB, mA ) @ #j) ⇒ ¬(#j < #i)) ∨
+    (∀ ipkH #k. (Enrolled( src, ipkH, id ) @ #k) ⇒ ¬(#k < #i)))) ∧
+  (∀ #r. (Reveal( ipkS ) @ #r) ⇒ ⊥) ∧
+  (∀ #r. (Reveal( ipkB ) @ #r) ⇒ ⊥)"
+*/
+by sorry
+
+lemma auth2_recipient_authentication [reuse]:
+  all-traces
+  "∀ src dst idB ipkB ipkA nce mB #i.
+    (DisplayRecipient( src, dst, idB, ipkB, ipkA, nce, mB ) @ #i) ⇒
+    (((∃ #j. (Answered( dst, src, ipkB, ipkA, nce, mB ) @ #j) ∧ (#j < #i)) ∨
+      (∃ #r. Reveal( ipkA ) @ #r)) ∨
+     (∃ #r. Reveal( ipkB ) @ #r))"
+/*
+guarded formula characterizing all counter-examples:
+"∃ src dst idB ipkB ipkA nce mB #i.
+  (DisplayRecipient( src, dst, idB, ipkB, ipkA, nce, mB ) @ #i)
+ ∧
+  (∀ #j. (Answered( dst, src, ipkB, ipkA, nce, mB ) @ #j) ⇒ ¬(#j < #i)) ∧
+  (∀ #r. (Reveal( ipkA ) @ #r) ⇒ ⊥) ∧
+  (∀ #r. (Reveal( ipkB ) @ #r) ⇒ ⊥)"
+*/
+by sorry
+
+lemma auth2_recipient_authentication_injective:
+  all-traces
+  "∀ src dst idB ipkB ipkA nce mB #i1 #i2.
+    ((DisplayRecipient( src, dst, idB, ipkB, ipkA, nce, mB ) @ #i1) ∧
+     (DisplayRecipient( src, dst, idB, ipkB, ipkA, nce, mB ) @ #i2)) ⇒
+    (((#i1 = #i2) ∨ (∃ #r. Reveal( ipkA ) @ #r)) ∨
+     (∃ #r. Reveal( ipkB ) @ #r))"
+/*
+guarded formula characterizing all counter-examples:
+"∃ src dst idB ipkB ipkA nce mB #i1 #i2.
+  (DisplayRecipient( src, dst, idB, ipkB, ipkA, nce, mB ) @ #i1) ∧
+  (DisplayRecipient( src, dst, idB, ipkB, ipkA, nce, mB ) @ #i2)
+ ∧
+  (¬(#i1 = #i2)) ∧
+  (∀ #r. (Reveal( ipkA ) @ #r) ⇒ ⊥) ∧
+  (∀ #r. (Reveal( ipkB ) @ #r) ⇒ ⊥)"
+*/
+by sorry
+
+lemma auth2_key_agreement:
+  all-traces
+  "∀ src dst ipkA ipkB kk knext #i.
+    (PersistA( src, dst, ipkA, ipkB, kk, knext ) @ #i) ⇒
+    ((((∃ #j.
+         (PersistB( dst, src, ipkB, ipkA, kk, knext ) @ #j) ∧ (#j < #i)) ∨
+       (∃ #r. Reveal( ipkA ) @ #r)) ∨
+      (∃ #r. Reveal( ipkB ) @ #r)) ∨
+     (∃ #r. RevealState( kk ) @ #r))"
+/*
+guarded formula characterizing all counter-examples:
+"∃ src dst ipkA ipkB kk knext #i.
+  (PersistA( src, dst, ipkA, ipkB, kk, knext ) @ #i)
+ ∧
+  (∀ #j. (PersistB( dst, src, ipkB, ipkA, kk, knext ) @ #j) ⇒ ¬(#j < #i)) ∧
+  (∀ #r. (Reveal( ipkA ) @ #r) ⇒ ⊥) ∧
+  (∀ #r. (Reveal( ipkB ) @ #r) ⇒ ⊥) ∧
+  (∀ #r. (RevealState( kk ) @ #r) ⇒ ⊥)"
+*/
+by sorry
+
+lemma auth2_key_agreement_with_exposed_state:
+  all-traces
+  "∀ src dst ipkA ipkB kk knext #i.
+    (PersistA( src, dst, ipkA, ipkB, kk, knext ) @ #i) ⇒
+    (((∃ #j.
+        (PersistB( dst, src, ipkB, ipkA, kk, knext ) @ #j) ∧ (#j < #i)) ∨
+      (∃ #r. Reveal( ipkA ) @ #r)) ∨
+     (∃ #r. Reveal( ipkB ) @ #r))"
+/*
+guarded formula characterizing all counter-examples:
+"∃ src dst ipkA ipkB kk knext #i.
+  (PersistA( src, dst, ipkA, ipkB, kk, knext ) @ #i)
+ ∧
+  (∀ #j. (PersistB( dst, src, ipkB, ipkA, kk, knext ) @ #j) ⇒ ¬(#j < #i)) ∧
+  (∀ #r. (Reveal( ipkA ) @ #r) ⇒ ⊥) ∧
+  (∀ #r. (Reveal( ipkB ) @ #r) ⇒ ⊥)"
+*/
+by sorry
+
+lemma auth4_recipient_identity_confidentiality_expected_falsified:
+  all-traces
+  "∀ tn ipkB idB #i #k.
+    ((Enrolled( tn, ipkB, idB ) @ #i) ∧ (!KU( idB ) @ #k)) ⇒
+    ((((∃ dst src ipkA nce mB #j.
+         (Answered( dst, src, ipkB, ipkA, nce, mB ) @ #j) ∧ (#j < #k)) ∨
+       (∃ #r. RevealId( ipkB ) @ #r)) ∨
+      (∃ #r. Reveal( ipkB ) @ #r)) ∨
+     (∃ ipkD #r. RevealDtk( ipkB, ipkD ) @ #r))"
+/*
+guarded formula characterizing all counter-examples:
+"∃ tn ipkB idB #i #k.
+  (Enrolled( tn, ipkB, idB ) @ #i) ∧ (!KU( idB ) @ #k)
+ ∧
+  (∀ dst src ipkA nce mB #j.
+    (Answered( dst, src, ipkB, ipkA, nce, mB ) @ #j) ⇒ ¬(#j < #k)) ∧
+  (∀ #r. (RevealId( ipkB ) @ #r) ⇒ ⊥) ∧
+  (∀ #r. (Reveal( ipkB ) @ #r) ⇒ ⊥) ∧
+  (∀ ipkD #r. (RevealDtk( ipkB, ipkD ) @ #r) ⇒ ⊥)"
+*/
+by sorry
+
+lemma auth4_recipient_identity_confidentiality:
+  all-traces
+  "∀ tn ipk id #i #k.
+    ((Enrolled( tn, ipk, id ) @ #i) ∧ (K( id ) @ #k)) ⇒
+    (((∃ role kk #s. (IdentitySent( role, ipk, id, kk ) @ #s) ∧ (#s < #k)) ∨
+      (∃ #r. (RevealId( ipk ) @ #r) ∧ (#r < #k))) ∨
+     (∃ ipkD #r. (RevealDtk( ipk, ipkD ) @ #r) ∧ (#r < #k)))"
+/*
+guarded formula characterizing all counter-examples:
+"∃ tn ipk id #i #k.
+  (Enrolled( tn, ipk, id ) @ #i) ∧ (K( id ) @ #k)
+ ∧
+  (∀ role kk #s. (IdentitySent( role, ipk, id, kk ) @ #s) ⇒ ¬(#s < #k)) ∧
+  (∀ #r. (RevealId( ipk ) @ #r) ⇒ ¬(#r < #k)) ∧
+  (∀ ipkD #r. (RevealDtk( ipk, ipkD ) @ #r) ⇒ ¬(#r < #k))"
+*/
+by sorry
+
+lemma auth4_recipient_send_requires_answer:
+  all-traces
+  "∀ ipk id kk #i.
+    (IdentitySent( 'recipient', ipk, id, kk ) @ #i) ⇒
+    (∃ dst src peer nce m. Answered( dst, src, ipk, peer, nce, m ) @ #i)"
+/*
+guarded formula characterizing all counter-examples:
+"∃ ipk id kk #i.
+  (IdentitySent( 'recipient', ipk, id, kk ) @ #i)
+ ∧
+  ∀ dst src peer nce m. (Answered( dst, src, ipk, peer, nce, m ) @ #i) ⇒ ⊥"
+*/
+by sorry
+
+lemma auth4_caller_disclosure_without_answer:
+  exists-trace
+  "∃ src dst ts ipkA ipkB id m kk #e #s #r #k.
+    ((((((((Enrolled( src, ipkA, id ) @ #e) ∧
+           (FrankedRequest( src, dst, ts, ipkA, ipkB, m ) @ #s)) ∧
+          (IdentitySent( 'caller', ipkA, id, kk ) @ #s)) ∧
+         (RevealState( kk ) @ #r)) ∧
+        (K( id ) @ #k)) ∧
+       (¬(∃ x #j. Reveal( x ) @ #j))) ∧
+      (¬(∃ x #j. RevealId( x ) @ #j))) ∧
+     (¬(∃ x y z #j. Delegated( x, y, z ) @ #j))) ∧
+    (¬(∃ x y z w n p #j. Answered( x, y, z, w, n, p ) @ #j))"
+/*
+guarded formula characterizing all satisfying traces:
+"∃ src dst ts ipkA ipkB id m kk #e #s #r #k.
+  (Enrolled( src, ipkA, id ) @ #e) ∧
+  (FrankedRequest( src, dst, ts, ipkA, ipkB, m ) @ #s) ∧
+  (IdentitySent( 'caller', ipkA, id, kk ) @ #s) ∧
+  (RevealState( kk ) @ #r) ∧
+  (K( id ) @ #k)
+ ∧
+  (∀ x #j. (Reveal( x ) @ #j) ⇒ ⊥) ∧
+  (∀ x #j. (RevealId( x ) @ #j) ⇒ ⊥) ∧
+  (∀ x y z #j. (Delegated( x, y, z ) @ #j) ⇒ ⊥) ∧
+  (∀ x y z w n p #j. (Answered( x, y, z, w, n, p ) @ #j) ⇒ ⊥)"
+*/
+by sorry
+
+lemma executable_with_state_reveal:
+  exists-trace
+  "∃ src dst ipkA ipkB id nce m kk knext #s #r #a.
+    (((((SetupState( kk, src, dst, ipkA, ipkB ) @ #s) ∧
+        (RevealState( kk ) @ #r)) ∧
+       (DisplayRecipient( src, dst, id, ipkB, ipkA, nce, m ) @ #a)) ∧
+      (PersistA( src, dst, ipkA, ipkB, kk, knext ) @ #a)) ∧
+     (#r < #a)) ∧
+    (¬(∃ x #j. Reveal( x ) @ #j))"
+/*
+guarded formula characterizing all satisfying traces:
+"∃ src dst ipkA ipkB id nce m kk knext #s #r #a.
+  (SetupState( kk, src, dst, ipkA, ipkB ) @ #s) ∧
+  (RevealState( kk ) @ #r) ∧
+  (DisplayRecipient( src, dst, id, ipkB, ipkA, nce, m ) @ #a) ∧
+  (PersistA( src, dst, ipkA, ipkB, kk, knext ) @ #a)
+ ∧
+  (#r < #a) ∧ (∀ x #j. (Reveal( x ) @ #j) ⇒ ⊥)"
+*/
+by sorry
+
+lemma auth4_guard_satisfiable:
+  exists-trace
+  "∃ tn ipkB idB #i #k #r.
+    ((Enrolled( tn, ipkB, idB ) @ #i) ∧ (!KU( idB ) @ #k)) ∧
+    (RevealId( ipkB ) @ #r)"
+/*
+guarded formula characterizing all satisfying traces:
+"∃ tn ipkB idB #i #k #r.
+  (Enrolled( tn, ipkB, idB ) @ #i) ∧
+  (!KU( idB ) @ #k) ∧
+  (RevealId( ipkB ) @ #r)"
+*/
+by sorry
+
+lemma del3_recipient_key_attested_for_dst:
+  all-traces
+  "∀ src dst ipkB #i.
+    (AcceptedRecipientKey( src, dst, ipkB ) @ #i) ⇒
+    (∃ idB #j. (Enrolled( dst, ipkB, idB ) @ #j) ∧ (#j < #i))"
+/*
+guarded formula characterizing all counter-examples:
+"∃ src dst ipkB #i.
+  (AcceptedRecipientKey( src, dst, ipkB ) @ #i)
+ ∧
+  ∀ idB #j. (Enrolled( dst, ipkB, idB ) @ #j) ⇒ ¬(#j < #i)"
+*/
+by sorry
+
+lemma del3_no_delegate_as_recipient:
+  all-traces
+  "¬(∃ src dst ipkO ipkD #i #j.
+      ((AcceptedRecipientKey( src, dst, ipkD ) @ #i) ∧
+       (Delegated( dst, ipkO, ipkD ) @ #j)) ∧
+      (¬(∃ idD #k. Enrolled( dst, ipkD, idD ) @ #k)))"
+/*
+guarded formula characterizing all counter-examples:
+"∃ src dst ipkO ipkD #i #j.
+  (AcceptedRecipientKey( src, dst, ipkD ) @ #i) ∧
+  (Delegated( dst, ipkO, ipkD ) @ #j)
+ ∧
+  ∀ idD #k. (Enrolled( dst, ipkD, idD ) @ #k) ⇒ ⊥"
+*/
+by sorry
+
+lemma auth4_identity_secrecy:
+  all-traces
+  "∀ tn ipk id #e #k.
+    ((Enrolled( tn, ipk, id ) @ #e) ∧ (K( id ) @ #k)) ⇒
+    (((∃ #r. (RevealId( ipk ) @ #r) ∧ (#r < #k)) ∨
+      (∃ ipkD #r. (RevealDtk( ipk, ipkD ) @ #r) ∧ (#r < #k))) ∨
+     (∃ role kk #s #r.
+       (((IdentitySent( role, ipk, id, kk ) @ #s) ∧ (RevealState( kk ) @ #r)) ∧
+        (#s < #k)) ∧
+       (#r < #k)))"
+/*
+guarded formula characterizing all counter-examples:
+"∃ tn ipk id #e #k.
+  (Enrolled( tn, ipk, id ) @ #e) ∧ (K( id ) @ #k)
+ ∧
+  (∀ #r. (RevealId( ipk ) @ #r) ⇒ ¬(#r < #k)) ∧
+  (∀ ipkD #r. (RevealDtk( ipk, ipkD ) @ #r) ⇒ ¬(#r < #k)) ∧
+  (∀ role kk #s #r.
+    (IdentitySent( role, ipk, id, kk ) @ #s) ∧ (RevealState( kk ) @ #r)
+   ⇒
+    ((¬(#s < #k)) ∨ (¬(#r < #k))))"
+*/
+by sorry
+
+lemma dlg_key_secret [reuse, use_induction]:
+  all-traces
+  "∀ ipk skb #i #j.
+    ((DlgKey( ipk, skb ) @ #i) ∧ (!KU( skb ) @ #j)) ⇒
+    (∃ #r. (Reveal( ipk ) @ #r) ∧ (#r < #j))"
+/*
+guarded formula characterizing all counter-examples:
+"∃ ipk skb #i #j.
+  (DlgKey( ipk, skb ) @ #i) ∧ (!KU( skb ) @ #j)
+ ∧
+  ∀ #r. (Reveal( ipk ) @ #r) ⇒ ¬(#r < #j)"
+*/
+by sorry
+
+lemma dlg_sig_origin [reuse, use_induction]:
+  all-traces
+  "∀ ipkO ipkD src skbO #i #e.
+    ((DlgKey( ipkO, skbO ) @ #e) ∧
+     (!KU( sign(<'dlg', ipkD, 'exD', src, 'orig'>, skbO) ) @ #i)) ⇒
+    ((∃ #j. (Delegated( src, ipkO, ipkD ) @ #j) ∧ (#j < #i)) ∨
+     (∃ #r. (Reveal( ipkO ) @ #r) ∧ (#r < #i)))"
+/*
+guarded formula characterizing all counter-examples:
+"∃ ipkO ipkD src skbO #i #e.
+  (DlgKey( ipkO, skbO ) @ #e) ∧
+  (!KU( sign(<'dlg', ipkD, 'exD', src, 'orig'>, skbO) ) @ #i)
+ ∧
+  (∀ #j. (Delegated( src, ipkO, ipkD ) @ #j) ⇒ ¬(#j < #i)) ∧
+  (∀ #r. (Reveal( ipkO ) @ #r) ⇒ ¬(#r < #i))"
+*/
+by sorry
+
+lemma del1_delegation_chain:
+  all-traces
+  "∀ dst src ipkO ipkD #i.
+    (AcceptedDelegation( dst, src, ipkO, ipkD ) @ #i) ⇒
+    ((∃ idO #j. (Enrolled( src, ipkO, idO ) @ #j) ∧ (#j < #i)) ∧
+     ((∃ #j. (Delegated( src, ipkO, ipkD ) @ #j) ∧ (#j < #i)) ∨
+      (∃ #r. (Reveal( ipkO ) @ #r) ∧ (#r < #i))))"
+/*
+guarded formula characterizing all counter-examples:
+"∃ dst src ipkO ipkD #i.
+  (AcceptedDelegation( dst, src, ipkO, ipkD ) @ #i)
+ ∧
+  ((∀ idO #j. (Enrolled( src, ipkO, idO ) @ #j) ⇒ ¬(#j < #i)) ∨
+   ((∀ #j. (Delegated( src, ipkO, ipkD ) @ #j) ⇒ ¬(#j < #i)) ∧
+    (∀ #r. (Reveal( ipkO ) @ #r) ⇒ ¬(#r < #i))))"
+*/
+simplify
+solve( (∀ idO #j.
+         (Enrolled( $src, <vkaO, pk(skbO), pkcO>, idO ) @ #j) ⇒ ¬(#j < #i))  ∥
+       ((∀ #j.
+          (Delegated( $src, <vkaO, pk(skbO), pkcO>, <pk(skaD), vkbD, pkcD> ) @ #j)
+         ⇒
+          ¬(#j < #i)) ∧
+        (∀ #r. (Reveal( <vkaO, pk(skbO), pkcO> ) @ #r) ⇒ ¬(#r < #i))) )
+  case case_1
+  solve( StB( $dst, $src, ipkB, <pk(skaD), vkbD, pkcD>, ~K
+         )[no_precomp] ▶₀ #i )
+    case Setup_State_delegated
+    solve( !Token( $src, <vkaO, pk(skbO), pkcO>,
+                   h(<'hid', idO, vkaO, pk(skbO), pkcO>), esigO
+           )[no_precomp] ▶₁ #i )
+      case Enroll
+      by contradiction /* from formulas */
+    qed
+  next
+    case Setup_State_direct
+    solve( !Token( $src, <vkaO, pk(skbO), pkcO>,
+                   h(<'hid', idO, vkaO, pk(skbO), pkcO>), esigO
+           )[no_precomp] ▶₁ #i )
+      case Enroll
+      by contradiction /* from formulas */
+    qed
+  qed
+next
+  case case_2
+  solve( StB( $dst, $src, ipkB, <pk(skaD), vkbD, pkcD>, ~K
+         )[no_precomp] ▶₀ #i )
+    case Setup_State_delegated
+    solve( !Token( $src, <vkaO, pk(skbO), pkcO>,
+                   h(<'hid', idO, vkaO, pk(skbO), pkcO>), esigO
+           )[no_precomp] ▶₁ #i )
+      case Enroll
+      solve( !Au( pkAu )[no_precomp] ▶₂ #i )
+        case Au_Init
+        solve( !Amf( sigA,
+                     <'1', h(<'ratchet-context', ~K, h(<'idxca', ~K, $src, $dst, $ts>)>), 
+                      <$src, $dst, $ts>, $ts, A, ccx, ~id, 
+                      <$src, <pk(~ska.2), pk(~skb.2), pk(~skc.2)>, 'ex', 
+                       h(<'hid', ~id, pk(~ska.2), pk(~skb.2), pk(~skc.2)>), 
+                       sign(<'etk', $src, <pk(~ska.2), pk(~skb.2), pk(~skc.2)>, 'ex', 
+                             h(<'hid', ~id, pk(~ska.2), pk(~skb.2), pk(~skc.2)>)>,
+                            ~skES)
+                      >, 
+                      'exD', <pk(~ska.1), pk(~skb.1), pk(~skc.1)>, 
+                      sign(<'dlg', <pk(~ska.1), pk(~skb.1), pk(~skc.1)>, 'exD', $src, 'orig'>,
+                           ~skb.2)
+                     >,
+                     pk(~ska.1), <pk(~ska), pk(~skb), pk(~skc)>, pk(~skAu)
+               )[no_precomp] ▶₃ #i )
+          case Adversary_Frank
+          solve( (∃ #j.
+                   (Delegated( $src, <pk(~ska.2), pk(~skb.2), pk(~skc.2)>,
+                               <pk(~ska.1), pk(~skb.1), pk(~skc.1)>
+                    ) @ #j)
+                  ∧
+                   #j < #vk.47)  ∥
+                 (∃ #r.
+                   (Reveal( <pk(~ska.2), pk(~skb.2), pk(~skc.2)> ) @ #r) ∧ #r < #vk.47) )
+            case case_1
+            by contradiction /* from formulas */
+          next
+            case case_2
+            by contradiction /* from formulas */
+          qed
+        next
+          case Adversary_Receiver_Forge
+          solve( (∃ #j.
+                   (Delegated( $src, <pk(~ska.2), pk(~skb.2), pk(~skc.2)>,
+                               <pk(~ska.1), pk(~skb.1), pk(~skc.1)>
+                    ) @ #j)
+                  ∧
+                   #j < #vk.50)  ∥
+                 (∃ #r.
+                   (Reveal( <pk(~ska.2), pk(~skb.2), pk(~skc.2)> ) @ #r) ∧ #r < #vk.50) )
+            case case_1
+            by contradiction /* from formulas */
+          next
+            case case_2
+            by contradiction /* from formulas */
+          qed
+        next
+          case CA_A1_delegated
+          by contradiction /* from formulas */
+        qed
+      qed
+    qed
+  next
+    case Setup_State_direct
+    solve( !Token( $src, <vkaO, pk(skbO), pkcO>,
+                   h(<'hid', idO, vkaO, pk(skbO), pkcO>), esigO
+           )[no_precomp] ▶₁ #i )
+      case Enroll
+      solve( !Au( pkAu )[no_precomp] ▶₂ #i )
+        case Au_Init
+        solve( !Amf( sigA,
+                     <'1', h(<'ratchet-context', ~K, h(<'idxca', ~K, $src, $dst, $ts>)>), 
+                      <$src, $dst, $ts>, $ts, A, ccx, ~id, 
+                      <$src, <pk(~ska.2), pk(~skb.2), pk(~skc.2)>, 'ex', 
+                       h(<'hid', ~id, pk(~ska.2), pk(~skb.2), pk(~skc.2)>), 
+                       sign(<'etk', $src, <pk(~ska.2), pk(~skb.2), pk(~skc.2)>, 'ex', 
+                             h(<'hid', ~id, pk(~ska.2), pk(~skb.2), pk(~skc.2)>)>,
+                            ~skES)
+                      >, 
+                      'exD', <pk(~ska.1), pk(~skb.1), pk(~skc.1)>, 
+                      sign(<'dlg', <pk(~ska.1), pk(~skb.1), pk(~skc.1)>, 'exD', $src, 'orig'>,
+                           ~skb.2)
+                     >,
+                     pk(~ska.1), <pk(~ska), pk(~skb), pk(~skc)>, pk(~skAu)
+               )[no_precomp] ▶₃ #i )
+          case Adversary_Frank
+          solve( (∃ #j.
+                   (Delegated( $src, <pk(~ska.2), pk(~skb.2), pk(~skc.2)>,
+                               <pk(~ska.1), pk(~skb.1), pk(~skc.1)>
+                    ) @ #j)
+                  ∧
+                   #j < #vk.47)  ∥
+                 (∃ #r.
+                   (Reveal( <pk(~ska.2), pk(~skb.2), pk(~skc.2)> ) @ #r) ∧ #r < #vk.47) )
+            case case_1
+            by contradiction /* from formulas */
+          next
+            case case_2
+            by contradiction /* from formulas */
+          qed
+        next
+          case Adversary_Receiver_Forge
+          solve( (∃ #j.
+                   (Delegated( $src, <pk(~ska.2), pk(~skb.2), pk(~skc.2)>,
+                               <pk(~ska.1), pk(~skb.1), pk(~skc.1)>
+                    ) @ #j)
+                  ∧
+                   #j < #vk.50)  ∥
+                 (∃ #r.
+                   (Reveal( <pk(~ska.2), pk(~skb.2), pk(~skc.2)> ) @ #r) ∧ #r < #vk.50) )
+            case case_1
+            by contradiction /* from formulas */
+          next
+            case case_2
+            by contradiction /* from formulas */
+          qed
+        next
+          case CA_A1_delegated
+          by contradiction /* from formulas */
+        qed
+      qed
+    qed
+  qed
+qed
+
+lemma deniability_witness_ca_request:
+  exists-trace
+  "∃ src dst ts id ipkA ipkB mA kk #s #i.
+    ((((((SetupState( kk, src, dst, ipkA, ipkB ) @ #s) ∧
+         (DisplayCaller( dst, src, ts, id, ipkA, ipkB, mA ) @ #i)) ∧
+        (¬(ipkA = ipkB))) ∧
+       (¬(∃ #j. FrankedRequest( src, dst, ts, ipkA, ipkB, mA ) @ #j))) ∧
+      (∀ x #j. (Reveal( x ) @ #j) ⇒ (x = ipkB))) ∧
+     (∀ x #j. (RevealId( x ) @ #j) ⇒ (x = ipkA))) ∧
+    (∀ k #j. (RevealState( k ) @ #j) ⇒ (k = kk))"
+/*
+guarded formula characterizing all satisfying traces:
+"∃ src dst ts id ipkA ipkB mA kk #s #i.
+  (SetupState( kk, src, dst, ipkA, ipkB ) @ #s) ∧
+  (DisplayCaller( dst, src, ts, id, ipkA, ipkB, mA ) @ #i)
+ ∧
+  (¬(ipkA = ipkB)) ∧
+  (∀ #j. (FrankedRequest( src, dst, ts, ipkA, ipkB, mA ) @ #j) ⇒ ⊥) ∧
+  (∀ x #j. (Reveal( x ) @ #j) ⇒ x = ipkB) ∧
+  (∀ x #j. (RevealId( x ) @ #j) ⇒ x = ipkA) ∧
+  (∀ k #j. (RevealState( k ) @ #j) ⇒ k = kk)"
+*/
+by sorry
+
+lemma deniability_witness_ca_response:
+  exists-trace
+  "∃ src dst ts idB ipkA ipkB mA nce mB kk #s #q #i.
+    (((((((SetupState( kk, src, dst, ipkA, ipkB ) @ #s) ∧
+          (FrankedRequest( src, dst, ts, ipkA, ipkB, mA ) @ #q)) ∧
+         (DisplayRecipient( src, dst, idB, ipkB, ipkA, nce, mB ) @ #i)) ∧
+        (¬(ipkA = ipkB))) ∧
+       (¬(∃ x y z w n m #j. Answered( x, y, z, w, n, m ) @ #j))) ∧
+      (∀ x #j. (Reveal( x ) @ #j) ⇒ (x = ipkA))) ∧
+     (∀ x #j. (RevealId( x ) @ #j) ⇒ (x = ipkB))) ∧
+    (∀ k #j. (RevealState( k ) @ #j) ⇒ (k = kk))"
+/*
+guarded formula characterizing all satisfying traces:
+"∃ src dst ts idB ipkA ipkB mA nce mB kk #s #q #i.
+  (SetupState( kk, src, dst, ipkA, ipkB ) @ #s) ∧
+  (FrankedRequest( src, dst, ts, ipkA, ipkB, mA ) @ #q) ∧
+  (DisplayRecipient( src, dst, idB, ipkB, ipkA, nce, mB ) @ #i)
+ ∧
+  (¬(ipkA = ipkB)) ∧
+  (∀ x y z w n m #j. (Answered( x, y, z, w, n, m ) @ #j) ⇒ ⊥) ∧
+  (∀ x #j. (Reveal( x ) @ #j) ⇒ x = ipkA) ∧
+  (∀ x #j. (RevealId( x ) @ #j) ⇒ x = ipkB) ∧
+  (∀ k #j. (RevealState( k ) @ #j) ⇒ k = kk)"
+*/
+by sorry
+
+/* All wellformedness checks were successful. */
+
+/*
+Generated from:
+Tamarin version 1.12.0
+Maude version 3.5.1
+Git revision: UNKNOWN, branch: UNKNOWN
+Compiled at: 2026-03-08 10:05:47.616272992 UTC
+*/
+
+end
+
+==============================================================================
+summary of summaries:
+
+analyzed: logs/review/6b62b8e9a6c40eca/julep_auth.spthy
+
+  processing time: 17.94s
+  
+  amf_secret (all-traces): analysis incomplete (1 steps)
+  state_secret (all-traces): analysis incomplete (1 steps)
+  executable_direct (exists-trace): analysis incomplete (1 steps)
+  executable_delegated (exists-trace): analysis incomplete (1 steps)
+  auth1_caller_authentication (all-traces): analysis incomplete (1 steps)
+  auth2_recipient_authentication (all-traces): analysis incomplete (1 steps)
+  auth2_recipient_authentication_injective (all-traces): analysis incomplete (1 steps)
+  auth2_key_agreement (all-traces): analysis incomplete (1 steps)
+  auth2_key_agreement_with_exposed_state (all-traces): analysis incomplete (1 steps)
+  auth4_recipient_identity_confidentiality_expected_falsified (all-traces): analysis incomplete (1 steps)
+  auth4_recipient_identity_confidentiality (all-traces): analysis incomplete (1 steps)
+  auth4_recipient_send_requires_answer (all-traces): analysis incomplete (1 steps)
+  auth4_caller_disclosure_without_answer (exists-trace): analysis incomplete (1 steps)
+  executable_with_state_reveal (exists-trace): analysis incomplete (1 steps)
+  auth4_guard_satisfiable (exists-trace): analysis incomplete (1 steps)
+  del3_recipient_key_attested_for_dst (all-traces): analysis incomplete (1 steps)
+  del3_no_delegate_as_recipient (all-traces): analysis incomplete (1 steps)
+  auth4_identity_secrecy (all-traces): analysis incomplete (1 steps)
+  dlg_key_secret (all-traces): analysis incomplete (1 steps)
+  dlg_sig_origin (all-traces): analysis incomplete (1 steps)
+  del1_delegation_chain (all-traces): verified (28 steps)
+  deniability_witness_ca_request (exists-trace): analysis incomplete (1 steps)
+  deniability_witness_ca_response (exists-trace): analysis incomplete (1 steps)
+
+==============================================================================
